@@ -3,7 +3,7 @@ from rlbot.utils.structures.game_data_struct import GameTickPacket
 
 import numpy as np
 
-from default_act import DefaultAction
+from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
 from ZZeer import TrainedAgent
 from default_obs import DefaultObs
 from rlgym_compat import GameState
@@ -17,7 +17,7 @@ class RLGymExampleBot(BaseAgent):
         # Swap the obs builder if you are using a different one, RLGym's AdvancedObs is also available
         self.obs_builder = DefaultObs()
         # Swap the action parser if you are using a different one, RLGym's Discrete and Continuous are also available
-        self.act_parser = DefaultAction()
+        self.act_parser = LookupAction()
         # Your neural network logic goes inside the Agent class, go take a look inside src/agent.py
         self.agent = TrainedAgent()
         # Adjust the tickskip if your agent was trained with a different value
