@@ -67,23 +67,3 @@ model.learn(total_timesteps=int(1e4))
 
 
 model.save("rl_model")
-
-
-# Extract the state_dict from the stable_baselines3 model
-state_dict = model.policy.state_dict()
-
-# Remove 'log_std' key if present
-state_dict.pop('log_std', None)
-
-
-
-# Create an instance of the custom policy
-obs_dim = model.observation_space.shape[0]  # Ensure to use the correct observation space dimensions
-act_dim = model.action_space.shape[0]       # Ensure to use the correct action space dimensions
-torch_model = CustomPolicy(obs_dim, act_dim)
-print(obs_dim, act_dim)
-# Load the modified state_dict into the PyTorch model
-torch_model.load_state_dict(state_dict)
-
-# Save the PyTorch model
-torch.save(torch_model.state_dict(), "pytorch_model.pth")
