@@ -1,21 +1,57 @@
 import rlgym
 from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import DummyVecEnv
+from rlgym.utils.terminal_conditions import TerminalCondition
+from rlgym.utils.terminal_conditions import common_conditions
+from rlgym.utils.gamestates import PlayerData, GameState
+from rlgym.utils.reward_functions import RewardFunction
+from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED
+import numpy as np
+class BallTouchCondition(TerminalCondition):
+    
+    def __init__(self):
+        super().__init__()
+        self.last_touch = None
+        
+    def reset(self, initial_state: GameState):
+        self.last_touch = initial_state.last_touch
 
-env = rlgym.make()
+    def is_terminal(self, current_state: GameState) -> bool:
+        return current_state.last_touch != self.last_touch
+
+
+class CustomReward(RewardFunction):
+    def __init__(self):
+        super().__init__()
+        self.last_touch = None
+        self.step_counter = 0  
+
+    def reset(self, initial_state: GameState):
+        self.last_touch = initial_state.last_touch
+        self.step_counter = 0 
+
+    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+        self.step_counter += 1
+        
+        dist_ball = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
+        dist_reward = np.exp(-0.5 * dist_ball / CAR_MAX_SPEED)
+
+        total_reward = dist_reward + player.on_ground + player.match_goals*10
+
+        return total_reward
+
+    def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+        return self.get_reward(player, state, previous_action)
+
+
+
+env = rlgym.make(game_speed=100, terminal_conditions=(common_conditions.TimeoutCondition(225), common_conditions.GoalScoredCondition()), reward_fn=CustomReward())
+
 
 model = PPO("MlpPolicy", env=env, verbose=1)
 
-#Train our agent!
+
 model.learn(total_timesteps=int(1e6))
 
-while True:
-    obs = env.reset()
-    done = False
 
-    while not done:
-      #Here we sample a random action. If you have an agent, you would get an action from it here.
-      action = env.action_space.sample() 
-      
-      next_obs, reward, done, gameinfo = env.step(action)
-      
-      obs = next_obs
+model.save("rl_model")
