@@ -14,18 +14,30 @@ class CustomReward(RewardFunction):
     def __init__(self):
         super().__init__()
         self.last_touch = None
+        self.start_goal = 0
+        self.ticks = 0
+        self.has_touched_ball = False
 
     def reset(self, initial_state: GameState):
         self.last_touch = initial_state.last_touch
+        self.start_goal = initial_state.blue_score
+        self.ticks = 0
+        self.has_touched_ball = False
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         dist_ball = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
         dist_reward = np.exp(-0.5 * dist_ball / CAR_MAX_SPEED)
         ball_speed = norm(state.ball.linear_velocity)
+        car_speed = norm(state.players[0].car_data.linear_velocity)
+        
+        self.ticks += 1
 
-        total_reward = dist_reward + player.on_ground*0.3 + ball_speed/BALL_MAX_SPEED + player.match_goals*10
-
-        return total_reward
+        total_reward = car_speed/1000
+        
+        if(player.ball_touched):
+            self.has_touched_ball = True
+    
+        return total_reward + (state.blue_score - self.start_goal)*5 - (self.ticks * (not self.has_touched_ball) * 0.01)
 
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action)
