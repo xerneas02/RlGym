@@ -17,7 +17,7 @@ from rlgym.utils.reward_functions.combined_reward import CombinedReward
 import os
 
 
-def get_match(game_speed):
+def get_match(game_speed=100):
 
     match = Match(
         game_speed          = game_speed,
@@ -57,17 +57,17 @@ def get_match(game_speed):
                 0.0015     # ForwardVelocityReward
             )
         ),
+        spawn_opponents=True,
         terminal_conditions = (common_conditions.TimeoutCondition(150), 
-                               NoTouchOrGoalTimeoutCondition(50)),
+                               ),
         obs_builder         = DefaultObs(),
-        state_setter        = TrainingStateSetter(),
+        state_setter        = DefaultState(),
         action_parser       = LookupAction(),
-        spawn_opponents     = False
     )
     
     return match
 
-def get_gym(game_speed):
+def get_gym(game_speed=100):
     return Gym(get_match(game_speed), 
                pipe_id=os.getpid(), 
                launch_preference=LaunchPreference.EPIC,
@@ -79,15 +79,15 @@ def get_gym(game_speed):
     
 
 if __name__ == "__main__":
-    #env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
-    env = get_gym(100)
+    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=100, force_paging=True)
+    #env = get_gym(100)
     
-    nbRep = 1
+    nbRep = 10
 
     for i in range(nbRep):
         print(f"{i}/{nbRep}")
         #model = PPO.load("ZZeer/rl_model", env=env, verbose=1)
-        model = PPO("MlpPolicy", env=env, verbose=1)
+        model = PPO("MlpPolicy", env=env, verbose=1, device=torch.device('cuda:0'))
         model.learn(total_timesteps=int(1e5), progress_bar=True)
         model.save("ZZeer/rl_model")
 
