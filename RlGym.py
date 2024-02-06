@@ -36,7 +36,7 @@ class CustomReward(RewardFunction):
         dist_reward = np.exp(-0.5 * dist_ball / CAR_MAX_SPEED)
         ball_speed = norm(state.ball.linear_velocity)
 
-        total_reward = dist_reward + player.on_ground*0.3 + ball_speed/BALL_MAX_SPEED + player.match_goals*10
+        total_reward = dist_reward + player.on_ground*0.3 + 2*ball_speed/BALL_MAX_SPEED + player.match_goals*10
 
         return total_reward
 
@@ -62,8 +62,5 @@ class CustomPolicy(nn.Module):
 
 model = PPO.load("rl_model")
 model.set_env(env)
-
-model.learn(total_timesteps=int(1e4))
-
-
+model.learn(total_timesteps=int(1e6))
 model.save("rl_model")
