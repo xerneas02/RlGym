@@ -38,21 +38,21 @@ def get_match(game_speed):
                 ForwardVelocityReward()
             ),
             (
-                1.0,  # GoalScoredReward
-                0.1,  # BoostDifferenceReward
-                0.3,  # BallTouchReward
-                0.1,  # DemoReward
-                0.2,  # DistancePlayerBallReward
-                0.2,  # DistanceBallGoalReward
-                0.5,  # FacingBallReward
-                0.7,  # AlignBallGoalReward
-                0.5,  # ClosestToBallReward
-                0.1,  # TouchedLastReward
-                0.5,  # BehindBallReward
-                0.3,  # VelocityPlayerBallReward
-                0.4,  # VelocityReward
-                0.3,  # BoostAmountReward
-                0.4   # ForwardVelocityReward
+                1.25    ,  # GoalScoredReward
+                0.1     ,  # BoostDifferenceReward
+                0.1     ,  # BallTouchReward
+                0.3     ,  # DemoReward
+                0.0025  ,  # DistancePlayerBallReward
+                0.0025  ,  # DistanceBallGoalReward
+                0.000625,  # FacingBallReward
+                0.0025  ,  # AlignBallGoalReward
+                0.00125 ,  # ClosestToBallReward
+                0.00125 ,  # TouchedLastReward
+                0.00125 ,  # BehindBallReward
+                0.00125 ,  # VelocityPlayerBallReward
+                0.000625,  # VelocityReward
+                0.00125 ,  # BoostAmountReward
+                0.0015     # ForwardVelocityReward
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(150), NoTouchOrGoalTimeoutCondition(50)),
