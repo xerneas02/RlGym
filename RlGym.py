@@ -17,7 +17,7 @@ from rlgym.utils.reward_functions.combined_reward import CombinedReward
 import os
 
 
-def get_match(game_speed):
+def get_match(game_speed=100):
 
     match = Match(
         game_speed          = game_speed,
@@ -79,15 +79,23 @@ def get_gym(game_speed):
     
 
 if __name__ == "__main__":
-    #env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
-    env = get_gym(100)
+
+    #pip3 install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+    if(torch.cuda.is_available()):
+        print( torch.cuda.current_device())
+        print(torch.cuda.device_count())
+        print(torch.cuda.get_device_name(0))
     
     nbRep = 1
 
+    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=2, wait_time=40, force_paging=True)
+    #env = get_gym(100)
+    
+
     for i in range(nbRep):
         print(f"{i}/{nbRep}")
-        #model = PPO.load("ZZeer/rl_model", env=env, verbose=1)
-        model = PPO("MlpPolicy", env=env, verbose=1)
+        model = PPO.load("ZZeer/rl_model", env=env, verbose=1, device=torch.device("cuda:0") )
+        #model = PPO("MlpPolicy", env=env, verbose=1, device=torch.device("cuda:1"))
         model.learn(total_timesteps=int(1e5), progress_bar=True)
         model.save("ZZeer/rl_model")
 
