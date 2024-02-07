@@ -59,7 +59,7 @@ def get_match(game_speed=100):
                 0.0015     # ForwardVelocityReward
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(150)),
+        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
         obs_builder         = DefaultObs(),
         state_setter        = DefaultState(),#TrainingStateSetter(),
         action_parser       = LookupAction(),
@@ -89,16 +89,22 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    nbRep = 1000
+    frame_skip = 8
+    nbRep = 20
+    
+    A = 120 / frame_skip
+    T = 10
+    gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
 
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
     #env = get_gym(100)
     
-    model = PPO.load("ZZeer/rl_model_multi", env=env, verbose=1, device=torch.device("cuda:0") )
+    
     
     for i in range(nbRep):
         print(f"{i}/{nbRep}")
         
+        model = PPO.load("ZZeer/rl_model_multi", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma(i//(nbRep/10))} )
         model.learn(total_timesteps=int(1e5), progress_bar=True)
         model.save("ZZeer/rl_model_multi")
 
