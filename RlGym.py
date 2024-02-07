@@ -87,16 +87,15 @@ if __name__ == "__main__":
         print(torch.cuda.device_count())
         print(torch.cuda.get_device_name(0))
     
-    nbRep = 10
+    nbRep = 300
 
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=100, force_paging=True)
     #env = get_gym(100)
-    
 
+    model = PPO("MlpPolicy", env=env, verbose=1, device="cpu")
     for i in range(nbRep):
         print(f"{i}/{nbRep}")
-        model = PPO.load("ZZeer/rl_model", env=env, verbose=1, device=torch.device("cuda:0") )
-        #model = PPO("MlpPolicy", env=env, verbose=1, device=torch.device("cuda:1"))
+        #model = PPO.load("ZZeer/rl_model", env=env, verbose=1)
         model.learn(total_timesteps=int(1e5), progress_bar=True)
         model.save("ZZeer/rl_model")
 
