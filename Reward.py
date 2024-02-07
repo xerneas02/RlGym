@@ -1,5 +1,3 @@
-import torch
-import torch.nn as nn
 import numpy as np
 import rlgym
 from stable_baselines3 import PPO
@@ -93,7 +91,7 @@ class BallTouchReward(RewardFunction):
             self.lamb = min(1.0, self.lamb + 0.013)
             
         pos_ball_z = state.ball.position[2]
-        reward = self.lamb * ((pos_ball_z + BALL_RADIUS)/2*BALL_RADIUS) ** 0.2836
+        reward = self.lamb * ((pos_ball_z + BALL_RADIUS)/(2*BALL_RADIUS)) ** 0.2836
         
         return reward
 
