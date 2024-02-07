@@ -17,6 +17,7 @@ from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
 from rlgym.utils.reward_functions.combined_reward import CombinedReward
 import os
 
+FRAME_SKIP = 8
 
 def get_match(game_speed=100):
 
@@ -53,7 +54,7 @@ def get_match(game_speed=100):
                 0.00125 ,  # ClosestToBallReward
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
-                0.00125 ,  # VelocityPlayerBallReward
+                0.02125 ,  # VelocityPlayerBallReward
                 0.1     ,  # RewardFunction
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
@@ -64,7 +65,8 @@ def get_match(game_speed=100):
         obs_builder         = ZeerObservations(),
         state_setter        = TrainingStateSetter(),#DefaultState(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
-        spawn_opponents     = True
+        spawn_opponents     = True,
+        tick_skip          = FRAME_SKIP
     )
     
     return match
@@ -92,14 +94,13 @@ if __name__ == "__main__":
     
     file_model_name = "rl_model_new_obs"
     
-    frame_skip = 8
-    nbRep = 20
+    nbRep = 1000
     
-    A = 120 / frame_skip
+    A = 120 / FRAME_SKIP
     T = 10
     gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
 
-    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
+    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=2, wait_time=40, force_paging=True)
     #env = get_gym(100)
     
     
