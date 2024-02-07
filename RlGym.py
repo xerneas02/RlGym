@@ -15,6 +15,7 @@ from rlgym.gym import Gym
 from rlgym.gamelaunch import LaunchPreference
 from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
 from rlgym.utils.reward_functions.combined_reward import CombinedReward
+from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
 import os
 
 FRAME_SKIP = 8
@@ -54,7 +55,7 @@ def get_match(game_speed=100):
                 0.00125 ,  # ClosestToBallReward
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
-                0.02125 ,  # VelocityPlayerBallReward
+                0.00125 ,  # VelocityPlayerBallReward
                 0.1     ,  # RewardFunction
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
@@ -92,15 +93,19 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "rl_model_new_obs"
+    file_model_name = "rl_model_test"
     
     nbRep = 1000
     
     A = 120 / FRAME_SKIP
     T = 10
-    gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
-
-    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=2, wait_time=40, force_paging=True)
+    #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
+    gamma = np.exp(np.log10(0.5)/((T)*A))
+    
+    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
+    env = VecCheckNan(env) # Checks for nans in tensor
+    env = VecNormalize(env, norm_obs=False, gamma=gamma)  # Normalize rewards
+    env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     #env = get_gym(100)
     
     
@@ -109,9 +114,9 @@ if __name__ == "__main__":
         print(f"{i}/{nbRep}")
         
         try:
-            model = PPO.load(f"models/{file_model_name}", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma(i//(nbRep/10))} )
+            model = PPO.load(f"models/{file_model_name}", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma} ) # gamma(i//(nbRep/10))
         except:
-            model = PPO('MlpPolicy', env, n_epochs=10, learning_rate=5e-5, ent_coef=0.01, vf_coef=1., gamma=gamma(i//(nbRep/10)), clip_range= 0.2, verbose=1, tensorboard_log="logs",  device="cuda" )
+            model = PPO('MlpPolicy', env, n_epochs=10, learning_rate=5e-5, ent_coef=0.01, vf_coef=1., gamma=gamma, clip_range= 0.2, verbose=1, tensorboard_log="logs",  device="cuda" )
         
         model.learn(total_timesteps=int(1e5), progress_bar=True)
         model.save(f"models/{file_model_name}")
