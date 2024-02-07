@@ -17,7 +17,7 @@ from rlgym.utils.reward_functions.combined_reward import CombinedReward
 import os
 
 
-def get_match(game_speed=100):
+def get_match(game_speed=1):
 
     match = Match(
         game_speed          = game_speed,
@@ -35,6 +35,7 @@ def get_match(game_speed=100):
                 TouchedLastReward(),
                 BehindBallReward(),
                 VelocityPlayerBallReward(),
+                KickoffReward(),
                 VelocityReward(),
                 BoostAmountReward(),
                 ForwardVelocityReward()
@@ -52,12 +53,14 @@ def get_match(game_speed=100):
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
+                0.1     ,  # RewardFunction
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
                 0.0015     # ForwardVelocityReward
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(150)),
+        terminal_conditions = (common_conditions.TimeoutCondition(1000),
+                               common_conditions.GoalScoredCondition()),
         obs_builder         = DefaultObs(),
         state_setter        = DefaultState(),#TrainingStateSetter(),
         action_parser       = LookupAction(),
@@ -91,7 +94,7 @@ if __name__ == "__main__":
 
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
     #env = get_gym(100)
-    
+
     model = PPO.load("ZZeer/rl_model_multi", env=env, verbose=1, device=torch.device("cuda:0") )
     
     for i in range(nbRep):
