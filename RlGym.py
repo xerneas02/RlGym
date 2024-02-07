@@ -16,9 +16,12 @@ from rlgym.gamelaunch import LaunchPreference
 from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
 import os
+from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback
+from Callback import HParamCallback
+
 
 FRAME_SKIP = 8
-GAME_SPEED = 1
+GAME_SPEED = 100
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -61,7 +64,7 @@ def get_match(game_speed=GAME_SPEED):
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
                 0.0015  ,  # ForwardVelocityReward
-                #10         # AirPenalityReward
+                #5          # AirPenalityReward
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
@@ -84,6 +87,7 @@ def get_gym(game_speed=GAME_SPEED):
                auto_minimize=False
                )
     
+    
 
 if __name__ == "__main__":
 
@@ -95,9 +99,11 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "rl_model_test"
+    file_model_name = "rl_model"
     
     nbRep = 1000
+    
+    save_periode = 1e5
     
     fps = 120 / FRAME_SKIP
     T = 10
@@ -112,15 +118,37 @@ if __name__ == "__main__":
     
     
     
-    for i in range(nbRep):
-        print(f"{i}/{nbRep}")
-        
-        try:
-            model = PPO.load(f"models/{file_model_name}", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma} ) # gamma(i//(nbRep/10))
-        except:
-            model = PPO('MlpPolicy', env, n_epochs=10, learning_rate=5e-5, ent_coef=0.01, vf_coef=1., gamma=gamma, clip_range= 0.2, verbose=1, tensorboard_log="logs",  device="cuda" )
-        
-        model.learn(total_timesteps=int(1e5), progress_bar=True)
-        model.save(f"models/{file_model_name}")
+    checkpoint_callback = CheckpointCallback(
+        save_freq=save_periode/2,
+        save_path=f"./models/{file_model_name}",
+        name_prefix=file_model_name,
+        save_replay_buffer=True,
+        save_vecnormalize=True,
+    )
+    
+    eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/2)
+    
+    callback = CallbackList([checkpoint_callback, eval_callback, HParamCallback()])
+    
+    try:
+        model = PPO.load(f"models/{file_model_name}/best_model/best_model", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+    except:
+        model = PPO(
+            'MlpPolicy', 
+            env, 
+            n_epochs=10, 
+            learning_rate=5e-5, 
+            ent_coef=0.01, 
+            vf_coef=1., 
+            gamma=gamma, 
+            clip_range= 0.2, 
+            verbose=1, 
+            tensorboard_log="logs",  
+            device="cuda" 
+            )
+    
+
+    model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=True, callback=callback)
+    model.save(f"models/{file_model_name}")
 
         
