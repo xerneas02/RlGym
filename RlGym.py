@@ -35,6 +35,7 @@ def get_match(game_speed=100):
                 TouchedLastReward(),
                 BehindBallReward(),
                 VelocityPlayerBallReward(),
+                KickoffReward(),
                 VelocityReward(),
                 BoostAmountReward(),
                 ForwardVelocityReward()
@@ -52,6 +53,7 @@ def get_match(game_speed=100):
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
+                0.1     ,  # RewardFunction
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
                 0.0015     # ForwardVelocityReward
