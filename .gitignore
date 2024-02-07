@@ -1,5 +1,7 @@
 /.vscode
 /.venv
 *.zip
-*.pyc
-__pycache__/*
+*.cpython-38.pyc
+__pycache__
+logs
+events.*
