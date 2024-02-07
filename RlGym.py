@@ -7,6 +7,7 @@ from Observer import *
 from State import TrainingStateSetter
 from Reward import *
 from Terminal import *
+from Action import ZeerLookupAction
 from rlgym.utils.obs_builders import DefaultObs
 from rlgym.utils.state_setters import DefaultState
 from rlgym.utils.action_parsers import DefaultAction
@@ -42,7 +43,7 @@ def get_match(game_speed=100):
             ),
             (
                 1.45    ,  # GoalScoredReward
-                0.1     ,  # BoostDifferenceReward
+                0.1     ,  # BoostDifferenceReward 
                 0.1     ,  # BallTouchReward
                 0.3     ,  # DemoReward
                 0.0025  ,  # DistancePlayerBallReward
@@ -62,7 +63,7 @@ def get_match(game_speed=100):
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
         obs_builder         = ZeerObservations(),
         state_setter        = TrainingStateSetter(),#DefaultState(),
-        action_parser       = LookupAction(),
+        action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True
     )
     
