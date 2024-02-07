@@ -60,8 +60,8 @@ def get_match(game_speed=100):
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
-        obs_builder         = DefaultObs(),
-        state_setter        = DefaultState(),#TrainingStateSetter(),
+        obs_builder         = ZeerObservations(),
+        state_setter        = TrainingStateSetter(),#DefaultState(),
         action_parser       = LookupAction(),
         spawn_opponents     = True
     )
@@ -89,6 +89,8 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
+    file_model_name = "rl_model_new_obs"
+    
     frame_skip = 8
     nbRep = 20
     
@@ -104,8 +106,12 @@ if __name__ == "__main__":
     for i in range(nbRep):
         print(f"{i}/{nbRep}")
         
-        model = PPO.load("ZZeer/rl_model_multi", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma(i//(nbRep/10))} )
+        try:
+            model = PPO.load(f"models/{file_model_name}", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma(i//(nbRep/10))} )
+        except:
+            model = PPO('MlpPolicy', env, n_epochs=10, learning_rate=5e-5, ent_coef=0.01, vf_coef=1., gamma=gamma(i//(nbRep/10)), clip_range= 0.2, verbose=1, tensorboard_log="logs",  device="cuda" )
+        
         model.learn(total_timesteps=int(1e5), progress_bar=True)
-        model.save("ZZeer/rl_model_multi")
+        model.save(f"models/{file_model_name}")
 
         
