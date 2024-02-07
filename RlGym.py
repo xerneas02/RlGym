@@ -14,13 +14,13 @@ from rlgym.utils.action_parsers import DefaultAction
 from rlgym.gym import Gym
 from rlgym.gamelaunch import LaunchPreference
 from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
-from rlgym.utils.reward_functions.combined_reward import CombinedReward
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
 import os
 
 FRAME_SKIP = 8
+GAME_SPEED = 1
 
-def get_match(game_speed=100):
+def get_match(game_speed=GAME_SPEED):
 
     match = Match(
         game_speed          = game_speed,
@@ -41,7 +41,8 @@ def get_match(game_speed=100):
                 KickoffReward(),
                 VelocityReward(),
                 BoostAmountReward(),
-                ForwardVelocityReward()
+                ForwardVelocityReward(),
+                #AirPenalityReward()
             ),
             (
                 1.45    ,  # GoalScoredReward
@@ -59,12 +60,13 @@ def get_match(game_speed=100):
                 0.1     ,  # RewardFunction
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
-                0.0015     # ForwardVelocityReward
+                0.0015  ,  # ForwardVelocityReward
+                #10         # AirPenalityReward
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
         obs_builder         = ZeerObservations(),
-        state_setter        = TrainingStateSetter(),#DefaultState(),
+        state_setter        = DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
         tick_skip          = FRAME_SKIP
@@ -72,7 +74,7 @@ def get_match(game_speed=100):
     
     return match
 
-def get_gym(game_speed=100):
+def get_gym(game_speed=GAME_SPEED):
     return Gym(get_match(game_speed), 
                pipe_id=os.getpid(), 
                launch_preference=LaunchPreference.EPIC,
@@ -97,10 +99,10 @@ if __name__ == "__main__":
     
     nbRep = 1000
     
-    A = 120 / FRAME_SKIP
+    fps = 120 / FRAME_SKIP
     T = 10
     #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
-    gamma = np.exp(np.log10(0.5)/((T)*A))
+    gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
     env = VecCheckNan(env) # Checks for nans in tensor
