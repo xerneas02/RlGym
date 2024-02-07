@@ -23,6 +23,7 @@ class BallTouchCondition(TerminalCondition):
     def is_terminal(self, current_state: GameState) -> bool:
         return current_state.last_touch != self.last_touch
     
+#TimeOut condition mais reset la première fois qu'il touche la balle et quand un but est marqué
 class NoTouchOrGoalTimeoutCondition(common_conditions.TimeoutCondition):
     def __init__(self, time):
         super().__init__(time)
@@ -41,7 +42,7 @@ class NoTouchOrGoalTimeoutCondition(common_conditions.TimeoutCondition):
         elif any(p.ball_touched for p in current_state.players) and self.first:
             self.first = False
             self.steps = 0
-            self.max_steps = 60
+            self.max_steps = 300
             return False
         else:
             return super(NoTouchOrGoalTimeoutCondition, self).is_terminal(current_state)

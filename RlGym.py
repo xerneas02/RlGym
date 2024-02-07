@@ -66,7 +66,7 @@ def get_match(game_speed=100):
     
     return match
 
-def get_gym(game_speed):
+def get_gym(game_speed=100):
     return Gym(get_match(game_speed), 
                pipe_id=os.getpid(), 
                launch_preference=LaunchPreference.EPIC,
