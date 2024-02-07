@@ -40,7 +40,7 @@ def get_match(game_speed=100):
                 ForwardVelocityReward()
             ),
             (
-                1.25    ,  # GoalScoredReward
+                1.45    ,  # GoalScoredReward
                 0.1     ,  # BoostDifferenceReward
                 0.1     ,  # BallTouchReward
                 0.3     ,  # DemoReward
@@ -57,13 +57,11 @@ def get_match(game_speed=100):
                 0.0015     # ForwardVelocityReward
             )
         ),
-        spawn_opponents=True,
-        terminal_conditions = (common_conditions.TimeoutCondition(150),
-                               NoTouchOrGoalTimeoutCondition(50),
-                               ),
+        terminal_conditions = (common_conditions.TimeoutCondition(150)),
         obs_builder         = DefaultObs(),
-        state_setter        = DefaultState(),
+        state_setter        = DefaultState(),#TrainingStateSetter(),
         action_parser       = LookupAction(),
+        spawn_opponents     = True
     )
     
     return match
@@ -86,17 +84,20 @@ if __name__ == "__main__":
         print( torch.cuda.current_device())
         print(torch.cuda.device_count())
         print(torch.cuda.get_device_name(0))
+    else:
+        print("Not found")
     
-    nbRep = 300
+    nbRep = 1000
 
-    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=100, force_paging=True)
+    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
     #env = get_gym(100)
-
-    model = PPO("MlpPolicy", env=env, verbose=1, device="cpu")
+    
+    model = PPO.load("ZZeer/rl_model_multi", env=env, verbose=1, device=torch.device("cuda:0") )
+    
     for i in range(nbRep):
         print(f"{i}/{nbRep}")
-        #model = PPO.load("ZZeer/rl_model", env=env, verbose=1)
+        
         model.learn(total_timesteps=int(1e5), progress_bar=True)
-        model.save("ZZeer/rl_model")
+        model.save("ZZeer/rl_model_multi")
 
         
