@@ -272,7 +272,7 @@ class VelocityPlayerBallReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
-#Si le bot gagne le reward
+#Si le bot gagne le kickoff
 class KickoffReward(RewardFunction):
     def reset(self, initial_state):
         pass
