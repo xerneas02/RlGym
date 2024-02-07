@@ -55,7 +55,7 @@ class GoalScoredReward(RewardFunction):
         pass
 
     def get_reward(self, player, state, previous_action):
-        ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)
+        ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
         return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
 
     def get_final_reward(self, player, state, previous_action):
@@ -125,7 +125,7 @@ class DistancePlayerBallReward(RewardFunction):
         car_position = player.car_data.position
         ball_position = state.ball.position
         
-        distance = np.linalg.norm(car_position - ball_position, 2) - BALL_RADIUS
+        distance = np.linalg.norm(car_position - ball_position, 2)**2 - BALL_RADIUS
         
         return np.exp(-0.5 * distance / (CAR_MAX_SPEED))
 
@@ -142,7 +142,7 @@ class DistanceBallGoalReward(RewardFunction):
 
         c = net_position[1] - BACK_WALL_Y + BALL_RADIUS
         
-        distance = np.linalg.norm(ball_position - net_position, 2) - c
+        distance = np.linalg.norm(ball_position - net_position, 2)**2 - c
         
         return np.exp(-0.5 * distance / (CAR_MAX_SPEED))
 
@@ -160,7 +160,7 @@ class FacingBallReward(RewardFunction):
         car_position = player.car_data.position
         
         direction_to_ball = ball_position - car_position
-        direction_to_ball /= np.linalg.norm(direction_to_ball, 2)
+        direction_to_ball /= np.linalg.norm(direction_to_ball, 2)**2
         
         reward = np.dot(car_orientation, direction_to_ball)
         
@@ -249,7 +249,7 @@ class VelocityPlayerBallReward(RewardFunction):
         
         car_velocity_direction = np.dot(car_velocity, direction_to_ball)
         
-        return car_velocity_direction / np.linalg.norm(car_velocity, 2)
+        return car_velocity_direction / np.linalg.norm(car_velocity, 2)**2
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
