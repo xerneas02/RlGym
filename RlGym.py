@@ -4,7 +4,7 @@ from rlgym_tools.sb3_utils import SB3MultipleInstanceEnv
 from stable_baselines3 import PPO
 from rlgym.utils.terminal_conditions import common_conditions
 from Observer import *
-from State import TrainingStateSetter
+from State import TrainingStateSetter, DefaultStateClose
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -50,7 +50,7 @@ def get_match(game_speed=GAME_SPEED):
             (
                 1.45    ,  # GoalScoredReward
                 0.1     ,  # BoostDifferenceReward 
-                0.1     ,  # BallTouchReward
+                1       ,  # BallTouchReward
                 0.3     ,  # DemoReward
                 0.0025  ,  # DistancePlayerBallReward
                 0.0025  ,  # DistanceBallGoalReward
@@ -60,19 +60,19 @@ def get_match(game_speed=GAME_SPEED):
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
-                0.1     ,  # RewardFunction
+                0.1     ,  # KickoffReward
                 0.000625,  # VelocityReward
                 0.00125 ,  # BoostAmountReward
                 0.0015  ,  # ForwardVelocityReward
-                #5          # AirPenalityReward
+                #5         # AirPenalityReward
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
         obs_builder         = ZeerObservations(),
-        state_setter        = DefaultState(),#TrainingStateSetter(),
+        state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
-        tick_skip          = FRAME_SKIP
+        tick_skip           = FRAME_SKIP
     )
     
     return match
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "rl_model"
+    file_model_name = "rl_model_kickoff"
     
     nbRep = 1000
     
