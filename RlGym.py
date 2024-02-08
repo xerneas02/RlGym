@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 1
+GAME_SPEED = 100
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -49,7 +49,7 @@ def get_match(game_speed=GAME_SPEED):
                 #AirPenalityReward()
             ),
             (
-                3    ,  # GoalScoredReward
+                3       ,  # GoalScoredReward
                 0.1     ,  # BoostDifferenceReward 
                 1       ,  # BallTouchReward
                 0.3     ,  # DemoReward
@@ -61,15 +61,15 @@ def get_match(game_speed=GAME_SPEED):
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
-                #0.0025  , # KickoffReward (0.1)
-                0.0025  ,  # VelocityReward (0.000625)
+                #0.0025 , # KickoffReward (0.1)
+                0.05    ,  # VelocityReward (0.000625)
                 0.00125 ,  # BoostAmountReward
                 0.0015  ,  # ForwardVelocityReward
                 3       ,  # FirstTouchReward
                 #5         # AirPenality
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition(), NoTouchFirstTimeoutCondition(50), common_conditions.NoTouchTimeoutCondition(60)),
+        terminal_conditions = (common_conditions.TimeoutCondition(500), NoTouchFirstTimeoutCondition(50), NoGoalTimeoutCondition(100)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),

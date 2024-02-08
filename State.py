@@ -143,7 +143,7 @@ class DefaultStateClose(StateSetter):
         :param state_wrapper: StateWrapper object to be modified with desired state values.
         """
         
-        coef = 1/random.randint(1, 4)
+        coef = 1/random.randint(1, 2)
         
         SPAWN_BLUE_POS = [[-2048*coef, -2560*coef, 17], [2048*coef, -2560*coef, 17],
                       [-256*coef, -3840*coef, 17], [256*coef, -3840*coef, 17], [0, -4608*coef, 17]]
