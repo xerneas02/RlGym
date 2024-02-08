@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 100
+GAME_SPEED = 1
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -30,47 +30,50 @@ def get_match(game_speed=GAME_SPEED):
         reward_function = CombinedReward(
             (
                 GoalScoredReward(),
-                BoostDifferenceReward(),
+                # BoostDifferenceReward(),
                 BallTouchReward(),
-                DemoReward(),
-                #DistancePlayerBallReward(),
-                DistanceBallGoalReward(),
+                # DemoReward(),
+                # DistancePlayerBallReward(),
+                # DistanceBallGoalReward(),
                 # FacingBallReward(),
                 # AlignBallGoalReward(),
-                #ClosestToBallReward(),
-                TouchedLastReward(),
-                #BehindBallReward(),
-                VelocityPlayerBallReward(),
+                # ClosestToBallReward(),
+                # TouchedLastReward(),
+                # BehindBallReward(),
+                # VelocityPlayerBallReward(),
                 #KickoffReward(),
-                #VelocityReward(),
-                #BoostAmountReward(),
-                ForwardVelocityReward(),
+                # VelocityReward(),
+                # BoostAmountReward(),
+                # ForwardVelocityReward(),
                 FirstTouchReward(),
                 #AirPenalityReward()
             ),
             (
-                5.0    ,  # GoalScoredReward (Si le bot marque un but)
-                0.1     ,  # BoostDifferenceReward (Si le bot collect ou utilise du boost)
-                1.0     ,  # BallTouchReward (Si le bot touche la balle (reward varie en fonction de la hauteur de la balle))
-                0.5     ,  # DemoReward (Si le bot démo)
-                #0.0025  ,  # DistancePlayerBallReward (Si le bot est proche de la balle)
-                0.01  ,  # DistanceBallGoalReward (Si la balle est proche du but adverse)
-                #0.000625,  # FacingBallReward (Si le bot fait face à la balle)
-                #0.00125  ,  # AlignBallGoalReward (Si le bot est entre ses buts et la balle [mais il y a une ligne qui relie le bot, la balle et le but])
-                #0.0015  ,  # ClosestToBallReward (Si plus proche de la balle par rapport aux adversaires)
-                0.0025 ,  # TouchedLastReward (Si le bot est le dernier à avoir touché la balle)
-                #0.00125 ,  # BehindBallReward (Si le bot est entre la balle et son but)
-                0.00125 ,  # VelocityPlayerBallReward (Si le bot va dans la même direction de la balle)
-                #0.2    ,  # KickoffReward (Si le bot gagne le kickoff)
-                #0.000625,  # VelocityReward (Si le bot bouge)
-                #0.002 ,  # BoostAmountReward (Si le bot à du boost)
-                0.000125  ,  # ForwardVelocityReward (Si le bot bouge dans la direction de la balle (dans la bonne direction), penalise la marche arrière)
-                5       ,  # FirstTouchReward
+                10       ,  # GoalScoredReward
+                #0.1     ,  # BoostDifferenceReward 
+                1       ,  # BallTouchReward
+                # 0.3     ,  # DemoReward
+                # 0.0025  ,  # DistancePlayerBallReward
+                # 0.0025  ,  # DistanceBallGoalReward
+                # 0.000625,  # FacingBallReward
+                # 0.0025  ,  # AlignBallGoalReward
+                # 0.00125 ,  # ClosestToBallReward
+                # 0.00125 ,  # TouchedLastReward
+                # 0.00125 ,  # BehindBallReward
+                # 0.00125 ,  # VelocityPlayerBallReward
+                #0.0025 , # KickoffReward (0.1)
+                # 0.05    ,  # VelocityReward (0.000625)
+                # 0.00125 ,  # BoostAmountReward
+                # 0.0015  ,  # ForwardVelocityReward
+                3       ,  # FirstTouchReward
                 #5         # AirPenality
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(300), 
-                               common_conditions.GoalScoredCondition()),
+        terminal_conditions = (common_conditions.TimeoutCondition(1000), 
+                               NoTouchFirstTimeoutCondition(50), 
+                               NoGoalTimeoutCondition(150), 
+                                #common_conditions.GoalScoredCondition(), 
+                                common_conditions.NoTouchTimeoutCondition(150)),
         obs_builder         = ZeerObservations(),
         state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
@@ -102,7 +105,7 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "kickoff"
+    file_model_name = "followBall"
     
     nbRep = 1000
     
