@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 1
+GAME_SPEED = 100
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -74,16 +74,20 @@ def get_match(game_speed=GAME_SPEED):
         terminal_conditions = (common_conditions.TimeoutCondition(2000), NoTouchFirstTimeoutCondition(50), NoGoalTimeoutCondition(100, 2)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState(    
-                                            (
-                                                DefaultStateClose(),
-                                                TrainingStateSetter(),
-                                                DefaultState()
-                                            ),
-                                            (
-                                                0.8, #DefaultStateClose
-                                                0.2, #TrainingStateSetter
-                                                0    #DefaultState
-                                            )
+                                (
+                                    DefaultStateClose(),
+                                    TrainingStateSetter(),
+                                    DefaultState(),
+                                    RandomState(),
+                                    InvertedState()
+                                ),
+                                (
+                                    0.5, #DefaultStateClose
+                                    0.3, #TrainingStateSetter
+                                    0  , #DefaultState
+                                    0.1, #RandomState
+                                    0.1  #InvertedState
+                                )
                              ),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
