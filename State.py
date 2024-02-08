@@ -4,6 +4,47 @@ from rlgym.utils.common_values import BLUE_TEAM, ORANGE_TEAM, CEILING_Z
 import numpy as np
 import random
 
+from typing import Any, Optional, Tuple, overload, Union
+
+
+class CombinedState(StateSetter):
+    
+    def __init__(
+            self,
+            state_setters: Tuple[StateSetter, ...],
+            state_probas : Optional[Tuple[float, ...]] = None
+    ):
+        super().__init__()
+
+        self.state_setters = state_setters
+        self.state_probas = state_probas or np.ones_like(state_setters)
+
+        if len(self.state_setters) != len(self.state_probas):
+            raise ValueError(
+                ("Reward functions list length ({0}) and reward weights " \
+                 "length ({1}) must be equal").format(
+                    len(self.state_setters), len(self.state_probas)
+                )
+            )
+        
+        if sum(state_probas) != 1:
+            raise ValueError(
+                (
+                    "Probas don't add up to 1"
+                )
+            )
+
+    def reset(self, state_wrapper: StateWrapper) -> None:
+        r = random.random()
+        sum = 0
+        
+        for i in range(len(self.state_setters)):
+            sum += self.state_probas[i]
+            
+            if r < sum:
+                self.state_setters[i].reset(state_wrapper)
+                break        
+
 
 class StateSetterInit(StateSetter):
     def reset(self, state_wrapper: StateWrapper):

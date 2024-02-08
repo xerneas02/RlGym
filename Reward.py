@@ -79,7 +79,7 @@ class CombinedReward(RewardFunction):
         
         total = float(np.dot(self.reward_weights, rewards))
         self.count += 1
-        print(self.count)
+
         if GAME_SPEED == 1:
             for i in range(len(rewards)):
                 if rewards[i] != 0 and player.team_num == 0:

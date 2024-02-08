@@ -4,7 +4,7 @@ from rlgym_tools.sb3_utils import SB3MultipleInstanceEnv
 from stable_baselines3 import PPO
 from rlgym.utils.terminal_conditions import common_conditions
 from Observer import *
-from State import TrainingStateSetter, DefaultStateClose
+from State import *
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -73,7 +73,18 @@ def get_match(game_speed=GAME_SPEED):
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(2000), NoTouchFirstTimeoutCondition(50), NoGoalTimeoutCondition(100, 2)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
-        state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
+        state_setter        = CombinedState(    
+                                            (
+                                                DefaultStateClose(),
+                                                TrainingStateSetter(),
+                                                DefaultState()
+                                            ),
+                                            (
+                                                0.8, #DefaultStateClose
+                                                0.2, #TrainingStateSetter
+                                                0    #DefaultState
+                                            )
+                             ),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
         tick_skip           = FRAME_SKIP
@@ -138,7 +149,7 @@ if __name__ == "__main__":
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     try:
-        model = PPO.load(model_n, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+        model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
         print("Load model")
     except:
         model = PPO(
