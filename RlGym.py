@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 200
+GAME_SPEED = 1
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -30,42 +30,44 @@ def get_match(game_speed=GAME_SPEED):
         reward_function = CombinedReward(
             (
                 GoalScoredReward(),
-                BoostDifferenceReward(),
+                #BoostDifferenceReward(),
                 BallTouchReward(),
-                DemoReward(),
+                #DemoReward(),
                 DistancePlayerBallReward(),
-                DistanceBallGoalReward(),
+                #DistanceBallGoalReward(),
                 FacingBallReward(),
                 AlignBallGoalReward(),
                 ClosestToBallReward(),
-                TouchedLastReward(),
-                BehindBallReward(),
+                #TouchedLastReward(),
+                #BehindBallReward(),
                 VelocityPlayerBallReward(),
                 #KickoffReward(),
                 VelocityReward(),
-                BoostAmountReward(),
+                #BoostAmountReward(),
                 ForwardVelocityReward(),
                 FirstTouchReward(),
+                DontTouchPenalityReward()
                 #AirPenalityReward()
             ),
             (
                 3       ,  # GoalScoredReward
-                0.1     ,  # BoostDifferenceReward 
+                #0.1     ,  # BoostDifferenceReward 
                 1       ,  # BallTouchReward
-                0.3     ,  # DemoReward
-                0.0025  ,  # DistancePlayerBallReward
-                0.0025  ,  # DistanceBallGoalReward
+                #0.3     ,  # DemoReward
+                0.05    ,  # DistancePlayerBallReward
+                #0.0025  ,  # DistanceBallGoalReward
                 0.000625,  # FacingBallReward
                 0.0025  ,  # AlignBallGoalReward
                 0.00125 ,  # ClosestToBallReward
-                0.00125 ,  # TouchedLastReward
-                0.00125 ,  # BehindBallReward
+                #0.00125 ,  # TouchedLastReward
+                #0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
-                #0.0025 , # KickoffReward (0.1)
+                #0.0025 ,  # KickoffReward (0.1)
                 0.05    ,  # VelocityReward (0.000625)
-                0.00125 ,  # BoostAmountReward
-                0.0015  ,  # ForwardVelocityReward
+                #0.00125 ,  # BoostAmountReward
+                0.005  ,  # ForwardVelocityReward
                 3       ,  # FirstTouchReward
+                1       ,  # DontTouchPenalityReward
                 #5         # AirPenality
             )
         ),
@@ -132,11 +134,11 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 7100000
+    n = 1900000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     try:
-        model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+        model = PPO.load(model_n, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
         print("Load model")
     except:
         model = PPO(
