@@ -49,7 +49,7 @@ def get_match(game_speed=GAME_SPEED):
                 #AirPenalityReward()
             ),
             (
-                1.45    ,  # GoalScoredReward
+                3    ,  # GoalScoredReward
                 0.1     ,  # BoostDifferenceReward 
                 1       ,  # BallTouchReward
                 0.3     ,  # DemoReward
@@ -69,7 +69,7 @@ def get_match(game_speed=GAME_SPEED):
                 #5         # AirPenality
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition(), NoTouchFirstTimeoutCondition(50)),
+        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition(), NoTouchFirstTimeoutCondition(50), common_conditions.NoTouchTimeoutCondition(60)),
         obs_builder         = ZeerObservations(),
         state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
@@ -101,9 +101,9 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "kickoff"
+    file_model_name = "rl_model"
     
-    nbRep = 50
+    nbRep = 1000
     
     save_periode = 1e5
     
