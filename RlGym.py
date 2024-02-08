@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 100
+GAME_SPEED = 1
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -69,7 +69,7 @@ def get_match(game_speed=GAME_SPEED):
                 #5         # AirPenality
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(500), NoTouchFirstTimeoutCondition(50), NoGoalTimeoutCondition(100)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(2000), NoTouchFirstTimeoutCondition(50), NoGoalTimeoutCondition(100, 2)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),

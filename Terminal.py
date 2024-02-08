@@ -71,17 +71,21 @@ class NoTouchFirstTimeoutCondition(common_conditions.TimeoutCondition):
             return super(NoTouchFirstTimeoutCondition, self).is_terminal(current_state)
         
 class NoGoalTimeoutCondition(common_conditions.TimeoutCondition):
-    def __init__(self, time):
+    def __init__(self, time, coef = 1):
         super().__init__(time)
+        self.coef = coef
         self.goal_score = 0
+        self.init_max_steps = time
 
     def reset(self, initial_state: GameState):
         super(NoGoalTimeoutCondition, self).reset(initial_state)
         self.goal = initial_state.orange_score + initial_state.blue_score
+        self.max_steps = self.init_max_steps
         
     def is_terminal(self, current_state: GameState):
         if self.goal != current_state.orange_score + current_state.blue_score:
             self.steps = 0
+            self.init_max_steps *= self.coef
             self.goal = current_state.orange_score + current_state.blue_score
             return False
         else:
