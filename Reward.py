@@ -444,6 +444,29 @@ class ForwardVelocityReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
     
+    
+class FirstTouchReward(RewardFunction):
+    def __init__(self):
+        self.kickoff = True
+        
+    def reset(self, initial_state):
+        self.kickoff = True
+
+    def get_reward(self, player, state, previous_action):
+        ball_position = state.ball.position
+        if ball_position[0] != 0 or ball_position[1] != 0 and self.kickoff:
+            self.kickoff = False
+            if player.car_id == state.last_touch : print(f"########################{player.team_num}############################")
+            return player.car_id == state.last_touch
+        
+        return 0
+
+        
+        
+    def get_final_reward(self, player, state, previous_action):
+        return self.get_reward(player, state, previous_action)
+    
+    
 class AirPenalityReward(RewardFunction):
     def reset(self, initial_state):
         pass

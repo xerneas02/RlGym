@@ -41,10 +41,11 @@ def get_match(game_speed=GAME_SPEED):
                 TouchedLastReward(),
                 BehindBallReward(),
                 VelocityPlayerBallReward(),
-                KickoffReward(),
+                #KickoffReward(),
                 VelocityReward(),
                 BoostAmountReward(),
                 ForwardVelocityReward(),
+                FirstTouchReward(),
                 #AirPenalityReward()
             ),
             (
@@ -60,10 +61,11 @@ def get_match(game_speed=GAME_SPEED):
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
-                0.1     ,  # KickoffReward
-                0.000625,  # VelocityReward
+                #0.0025  ,  # KickoffReward (0.1)
+                0.0025  ,  # VelocityReward (0.000625)
                 0.00125 ,  # BoostAmountReward
                 0.0015  ,  # ForwardVelocityReward
+                3       ,  # FirstTouchReward
                 #5         # AirPenalityReward
             )
         ),
@@ -130,8 +132,14 @@ if __name__ == "__main__":
     
     callback = CallbackList([checkpoint_callback, eval_callback, HParamCallback()])
     
+    best_model = f"models/{file_model_name}/best_model/best_model"
+    
+    n = 7100000
+    model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
+    
     try:
-        model = PPO.load(f"models/{file_model_name}/best_model/best_model", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+        model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+        print("Load model")
     except:
         model = PPO(
             'MlpPolicy', 
@@ -146,6 +154,7 @@ if __name__ == "__main__":
             tensorboard_log="logs",  
             device="cuda" 
             )
+        print("Model created")
     
 
     model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=True, callback=callback)
