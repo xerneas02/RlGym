@@ -14,13 +14,16 @@ from rlgym.utils.action_parsers import DefaultAction
 from rlgym.gym import Gym
 from rlgym.gamelaunch import LaunchPreference
 from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
-from rlgym.utils.reward_functions.combined_reward import CombinedReward
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
 import os
+from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback
+from Callback import HParamCallback
+
 
 FRAME_SKIP = 8
+GAME_SPEED = 1
 
-def get_match(game_speed=100):
+def get_match(game_speed=GAME_SPEED):
 
     match = Match(
         game_speed          = game_speed,
@@ -38,10 +41,11 @@ def get_match(game_speed=100):
                 TouchedLastReward(),
                 BehindBallReward(),
                 VelocityPlayerBallReward(),
-                KickoffReward(),
+                #KickoffReward(),
                 VelocityReward(),
                 BoostAmountReward(),
-                ForwardVelocityReward()
+                ForwardVelocityReward(),
+                #AirPenalityReward()
             ),
             (
                 1.50    ,  # GoalScoredReward (Si le bot marque un but)
@@ -56,10 +60,11 @@ def get_match(game_speed=100):
                 0.00125 ,  # TouchedLastReward (Si le bot est le dernier à avoir touché la balle)
                 0.00125 ,  # BehindBallReward (Si le bot est entre la balle et son but)
                 0.00125 ,  # VelocityPlayerBallReward (Si le bot va dans la même direction de la balle)
-                0.2     ,  # KickoffReward (Si le bot gagne le kickoff)
+                #0.2     ,  # KickoffReward (Si le bot gagne le kickoff)
                 0.000625,  # VelocityReward (Si le bot bouge)
                 0.00125 ,  # BoostAmountReward (Si le bot à du boost)
                 0.0015     # ForwardVelocityReward (Si le bot bouge dans la direction de la balle (dans la bonne direction), penalise la marche arrière)
+                #5         # AirPenality
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(150), 
@@ -73,7 +78,7 @@ def get_match(game_speed=100):
     
     return match
 
-def get_gym(game_speed=100):
+def get_gym(game_speed=GAME_SPEED):
     return Gym(get_match(game_speed), 
                pipe_id=os.getpid(), 
                launch_preference=LaunchPreference.EPIC,
@@ -82,6 +87,7 @@ def get_gym(game_speed=100):
                raise_on_crash=False, 
                auto_minimize=False
                )
+    
     
 
 if __name__ == "__main__":
@@ -98,10 +104,12 @@ if __name__ == "__main__":
     
     nbRep = 50
     
-    A = 120 / FRAME_SKIP
+    save_periode = 1e5
+    
+    fps = 120 / FRAME_SKIP
     T = 10
     #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
-    gamma = np.exp(np.log10(0.5)/((T)*A))
+    gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
     env = VecCheckNan(env) # Checks for nans in tensor
@@ -109,15 +117,37 @@ if __name__ == "__main__":
     env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     #env = get_gym(100)
     
-    for i in range(nbRep):
-        print(f"{i}/{nbRep}")
-        
-        try:
-            model = PPO.load(f"models/{file_model_name}", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma} ) # gamma(i//(nbRep/10))
-        except:
-            model = PPO('MlpPolicy', env, n_epochs=10, learning_rate=5e-5, ent_coef=0.01, vf_coef=1., gamma=gamma, clip_range= 0.2, verbose=1, tensorboard_log="logs",  device="cuda" )
-        
-        model.learn(total_timesteps=int(1e5), progress_bar=True)
-        model.save(f"models/{file_model_name}")
+    checkpoint_callback = CheckpointCallback(
+        save_freq=save_periode/2,
+        save_path=f"./models/{file_model_name}",
+        name_prefix=file_model_name,
+        save_replay_buffer=True,
+        save_vecnormalize=True,
+    )
+    
+    eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/2)
+    
+    callback = CallbackList([checkpoint_callback, eval_callback, HParamCallback()])
+    
+    try:
+        model = PPO.load(f"models/{file_model_name}/best_model/best_model", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+    except:
+        model = PPO(
+            'MlpPolicy', 
+            env, 
+            n_epochs=10, 
+            learning_rate=5e-5, 
+            ent_coef=0.01, 
+            vf_coef=1., 
+            gamma=gamma, 
+            clip_range= 0.2, 
+            verbose=1, 
+            tensorboard_log="logs",  
+            device="cuda" 
+            )
+    
+
+    model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=True, callback=callback)
+    model.save(f"models/{file_model_name}")
 
         

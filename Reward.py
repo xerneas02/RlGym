@@ -13,6 +13,96 @@ import numpy as np
 from scipy.spatial.distance import cosine
 
 
+from typing import Any, Optional, Tuple, overload, Union
+
+import numpy as np
+from rlgym.utils.reward_functions import RewardFunction
+from rlgym.utils.gamestates import GameState, PlayerData
+
+from RlGym import GAME_SPEED
+
+
+class CombinedReward(RewardFunction):
+
+    def __init__(
+            self,
+            reward_functions: Tuple[RewardFunction, ...],
+            reward_weights: Optional[Tuple[float, ...]] = None
+    ):
+        super().__init__()
+
+        self.reward_functions = reward_functions
+        self.reward_weights = reward_weights or np.ones_like(reward_functions)
+
+        if len(self.reward_functions) != len(self.reward_weights):
+            raise ValueError(
+                ("Reward functions list length ({0}) and reward weights " \
+                 "length ({1}) must be equal").format(
+                    len(self.reward_functions), len(self.reward_weights)
+                )
+            )
+
+    @classmethod
+    def from_zipped(cls, *rewards_and_weights: Union[RewardFunction, Tuple[RewardFunction, float]]) -> "CombinedReward":
+        """
+        Alternate constructor which takes any number of either rewards, or (reward, weight) tuples.
+
+        :param rewards_and_weights: a sequence of RewardFunction or (RewardFunction, weight) tuples
+        """
+        rewards = []
+        weights = []
+        for value in rewards_and_weights:
+            if isinstance(value, tuple):
+                r, w = value
+            else:
+                r, w = value, 1.
+            rewards.append(r)
+            weights.append(w)
+        return cls(tuple(rewards), tuple(weights))
+
+    def reset(self, initial_state: GameState) -> None:
+        for func in self.reward_functions:
+            func.reset(initial_state)
+
+    def get_reward(
+            self,
+            player: PlayerData,
+            state: GameState,
+            previous_action: np.ndarray
+    ) -> float:
+        rewards = [
+            func.get_reward(player, state, previous_action)
+            for func in self.reward_functions
+        ]
+        
+        total = float(np.dot(self.reward_weights, rewards))
+        
+        if GAME_SPEED == 1:
+            for i in range(len(rewards)):
+                if rewards[i] != 0 and player.team_num == 0:
+                    print(f"reward {str(self.reward_functions[i]).split('.')[1].split(' ')[0]}: {rewards[i]*self.reward_weights[i]}")
+            
+            
+            if total != 0 and player.team_num == 0:
+                print(f"Total : {total}\n-----------------------")
+
+        return total
+
+    def get_final_reward(
+            self,
+            player: PlayerData,
+            state: GameState,
+            previous_action: np.ndarray
+    ) -> float:
+        rewards = [
+            func.get_final_reward(player, state, previous_action)
+            for func in self.reward_functions
+        ]
+
+        return float(np.dot(self.reward_weights, rewards))
+
+
+
 class CustomReward(RewardFunction):
     def __init__(self):
         super().__init__()
@@ -49,10 +139,30 @@ class CustomReward(RewardFunction):
 
 #Si le bot marque un but
 class GoalScoredReward(RewardFunction):
+    def __init__(self):
+        self.previous_blue_score   = 0
+        self.previous_orange_score = 0
+        
     def reset(self, initial_state):
-        pass
+        self.previous_blue_score   = initial_state.blue_score
+        self.previous_orange_score = initial_state.orange_score
 
     def get_reward(self, player, state, previous_action):
+        blue_scored   = False
+        orange_scored = False
+        
+        if self.previous_blue_score != state.blue_score:
+            blue_scored = True
+            self.previous_blue_score = state.blue_score
+        
+        if self.previous_orange_score != state.orange_score:
+            orange_scored = True
+            self.previous_orange_score = state.orange_score
+            
+        if(player.team_num == 0 and not blue_scored  ) : return 0 
+        if(player.team_num == 1 and not orange_scored) : return 0
+        
+        
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
         return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
 
@@ -87,10 +197,17 @@ class BallTouchReward(RewardFunction):
         self.lamb = 0
 
     def get_reward(self, player, state, previous_action):
-        if player.ball_touched:
+        
+        if not player.ball_touched : 
+            self.last_touch = False
+            return 0
+        
+        if self.last_touch:
             self.lamb = max(0.1, self.lamb * 0.95)
         else:
             self.lamb = min(1.0, self.lamb + 0.013)
+            
+        self.last_touch = True
             
         pos_ball_z = state.ball.position[2]
         reward = self.lamb * ((pos_ball_z + BALL_RADIUS)/(2*BALL_RADIUS)) ** 0.2836
@@ -127,7 +244,7 @@ class DistancePlayerBallReward(RewardFunction):
         car_position = player.car_data.position
         ball_position = state.ball.position
         
-        distance = np.linalg.norm(car_position - ball_position, 2)**2 - BALL_RADIUS
+        distance = np.linalg.norm(car_position - ball_position, 2) - BALL_RADIUS
         
         return np.exp(-0.5 * distance / (CAR_MAX_SPEED))
 
@@ -145,7 +262,7 @@ class DistanceBallGoalReward(RewardFunction):
 
         c = net_position[1] - BACK_WALL_Y + BALL_RADIUS
         
-        distance = np.linalg.norm(ball_position - net_position, 2)**2 - c
+        distance = np.linalg.norm(ball_position - net_position, 2) - c
         
         return np.exp(-0.5 * distance / (CAR_MAX_SPEED))
 
@@ -164,7 +281,7 @@ class FacingBallReward(RewardFunction):
         car_position = player.car_data.position
         
         direction_to_ball = ball_position - car_position
-        direction_to_ball /= np.linalg.norm(direction_to_ball, 2)**2
+        direction_to_ball /= np.linalg.norm(direction_to_ball, 2)
         
         reward = np.dot(car_orientation, direction_to_ball)
         
@@ -181,21 +298,22 @@ class AlignBallGoalReward(RewardFunction):
     def get_reward(self, player, state, previous_action):
         car_position  = player.car_data.position
         ball_position = state.ball.position
+        
         opponent_goal_position = ORANGE_GOAL_CENTER
         self_goal_position     = BLUE_GOAL_CENTER
         
-        direction_to_ball         = ball_position          - car_position
-        direction_to_ball_invert  = car_position           - ball_position
-        direction_to_goal_self    = car_position           - self_goal_position
-        direction_to_goal_oponent = opponent_goal_position - car_position
+        direction_car_to_ball         = ball_position          - car_position
+        direction_ball_to_car         = car_position           - ball_position
+        direction_self_goal_to_car    = car_position           - self_goal_position
+        direction_car_to_oponent_goal = opponent_goal_position - car_position
         
-        direction_to_ball        /= np.linalg.norm(direction_to_ball)
-        direction_to_ball_invert /= np.linalg.norm(direction_to_ball_invert)
-        direction_to_goal_self   /= np.linalg.norm(direction_to_goal_self)
-        direction_to_goal_oponent/= np.linalg.norm(direction_to_goal_oponent)
+        direction_car_to_ball        /= np.linalg.norm(direction_car_to_ball)
+        direction_ball_to_car        /= np.linalg.norm(direction_ball_to_car)
+        direction_self_goal_to_car   /= np.linalg.norm(direction_self_goal_to_car)
+        direction_car_to_oponent_goal/= np.linalg.norm(direction_car_to_oponent_goal)
         
         
-        return 0.5 * np.dot(direction_to_ball, direction_to_goal_self) + 0.5 * np.dot(direction_to_ball_invert, direction_to_goal_oponent)
+        return -0.5 * np.dot(direction_ball_to_car, direction_car_to_oponent_goal) + 0.5 * np.dot(direction_car_to_ball, direction_self_goal_to_car) 
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
@@ -267,7 +385,7 @@ class VelocityPlayerBallReward(RewardFunction):
         
         car_velocity_direction = np.dot(car_velocity, direction_to_ball)
         
-        return car_velocity_direction / np.linalg.norm(car_velocity, 2)**2
+        return car_velocity_direction / np.linalg.norm(car_velocity, 2)
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
@@ -280,7 +398,7 @@ class KickoffReward(RewardFunction):
     def get_reward(self, player, state, previous_action):
         ball_position = state.ball.position
         
-        if np.linalg.norm(ball_position) != 0     :
+        if ball_position[0] != 0 or ball_position[1] != 0:
             return 0
         
         car_velocity = player.car_data.linear_velocity
@@ -295,7 +413,7 @@ class KickoffReward(RewardFunction):
         
         car_velocity_direction = np.dot(car_velocity, direction_to_ball)
         
-        return car_velocity_direction / np.linalg.norm(car_velocity, 2)**2
+        return car_velocity_direction / np.linalg.norm(car_velocity, 2)
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
@@ -337,6 +455,16 @@ class ForwardVelocityReward(RewardFunction):
 
         return car_forward_velocity / CAR_MAX_SPEED
 
+    def get_final_reward(self, player, state, previous_action):
+        return self.get_reward(player, state, previous_action)
+    
+class AirPenalityReward(RewardFunction):
+    def reset(self, initial_state):
+        pass
+    
+    def get_reward(self, player, state, previous_action):
+        return (not player.on_ground)*-1
+    
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
