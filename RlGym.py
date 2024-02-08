@@ -157,7 +157,7 @@ if __name__ == "__main__":
     
     while True:
         try:
-            model = PPO.load(model_n, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+            model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
             print("Load model")
         except:
             model = PPO(

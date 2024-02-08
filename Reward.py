@@ -454,6 +454,7 @@ class ForwardVelocityReward(RewardFunction):
         pass
 
     def get_reward(self, player, state, previous_action):
+        
         car_velocity = player.car_data.linear_velocity
         car_orientation = player.car_data.forward()
         
