@@ -456,7 +456,6 @@ class FirstTouchReward(RewardFunction):
         ball_position = state.ball.position
         if ball_position[0] != 0 or ball_position[1] != 0 and self.kickoff:
             self.kickoff = False
-            if player.car_id == state.last_touch : print(f"########################{player.team_num}############################")
             return player.car_id == state.last_touch
         
         return 0
