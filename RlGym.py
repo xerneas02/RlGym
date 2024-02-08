@@ -4,7 +4,7 @@ from rlgym_tools.sb3_utils import SB3MultipleInstanceEnv
 from stable_baselines3 import PPO
 from rlgym.utils.terminal_conditions import common_conditions
 from Observer import *
-from State import TrainingStateSetter
+from State import TrainingStateSetter, DefaultStateClose
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -45,6 +45,7 @@ def get_match(game_speed=GAME_SPEED):
                 VelocityReward(),
                 BoostAmountReward(),
                 ForwardVelocityReward(),
+                FirstTouchReward(),
                 #AirPenalityReward()
             ),
             (
@@ -56,24 +57,25 @@ def get_match(game_speed=GAME_SPEED):
                 0.0080  ,  # DistanceBallGoalReward (Si la balle est proche du but adverse)
                 0.000625,  # FacingBallReward (Si le bot fait face à la balle)
                 0.0025  ,  # AlignBallGoalReward (Si le bot est entre ses buts et la balle [mais il y a une ligne qui relie le bot, la balle et le but])
-                0.0015 ,  # ClosestToBallReward (Si plus proche de la balle par rapport aux adversaires)
+                0.0015  ,  # ClosestToBallReward (Si plus proche de la balle par rapport aux adversaires)
                 0.00125 ,  # TouchedLastReward (Si le bot est le dernier à avoir touché la balle)
                 0.00125 ,  # BehindBallReward (Si le bot est entre la balle et son but)
                 0.00125 ,  # VelocityPlayerBallReward (Si le bot va dans la même direction de la balle)
-                #0.2     ,  # KickoffReward (Si le bot gagne le kickoff)
+                #0.2    ,  # KickoffReward (Si le bot gagne le kickoff)
                 0.000625,  # VelocityReward (Si le bot bouge)
                 0.00125 ,  # BoostAmountReward (Si le bot à du boost)
-                0.0015     # ForwardVelocityReward (Si le bot bouge dans la direction de la balle (dans la bonne direction), penalise la marche arrière)
+                0.0015  ,  # ForwardVelocityReward (Si le bot bouge dans la direction de la balle (dans la bonne direction), penalise la marche arrière)
+                3       ,  # FirstTouchReward
                 #5         # AirPenality
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(150), 
                                common_conditions.GoalScoredCondition()),
         obs_builder         = ZeerObservations(),
-        state_setter        = DefaultState(),#DefaultState(),
+        state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
-        tick_skip          = FRAME_SKIP
+        tick_skip           = FRAME_SKIP
     )
     
     return match
@@ -129,8 +131,14 @@ if __name__ == "__main__":
     
     callback = CallbackList([checkpoint_callback, eval_callback, HParamCallback()])
     
+    best_model = f"models/{file_model_name}/best_model/best_model"
+    
+    n = 7100000
+    model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
+    
     try:
-        model = PPO.load(f"models/{file_model_name}/best_model/best_model", env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+        model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+        print("Load model")
     except:
         model = PPO(
             'MlpPolicy', 
@@ -145,6 +153,7 @@ if __name__ == "__main__":
             tensorboard_log="logs",  
             device="cuda" 
             )
+        print("Model created")
     
 
     model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=True, callback=callback)

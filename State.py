@@ -2,6 +2,8 @@ from rlgym.utils.state_setters import StateSetter
 from rlgym.utils.state_setters import StateWrapper
 from rlgym.utils.common_values import BLUE_TEAM, ORANGE_TEAM, CEILING_Z
 import numpy as np
+import random
+
 
 class StateSetterInit(StateSetter):
     def reset(self, state_wrapper: StateWrapper):
@@ -30,10 +32,7 @@ class StateSetterInit(StateSetter):
         # Now we will spawn the ball in the center of the field, floating in the air.
         state_wrapper.ball.set_pos(x=0, y=0, z=CEILING_Z/2)
         
-from rlgym.utils.state_setters import StateSetter
-from rlgym.utils.state_setters import StateWrapper
-import numpy as np
-import random
+
 
 
 class TrainingStateSetter(StateSetter):
@@ -127,3 +126,55 @@ class TrainingStateSetter(StateSetter):
 
             state_wrapper.ball.set_pos(0.0, -960.0, 70.0)
             state_wrapper.ball.set_lin_vel(0, 0, 0)
+            
+            
+
+
+class DefaultStateClose(StateSetter):
+
+
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+        """
+        Modifies state_wrapper values to emulate a randomly selected default kickoff.
+
+        :param state_wrapper: StateWrapper object to be modified with desired state values.
+        """
+        
+        coef = 1/random.randint(1, 4)
+        
+        SPAWN_BLUE_POS = [[-2048*coef, -2560*coef, 17], [2048*coef, -2560*coef, 17],
+                      [-256*coef, -3840*coef, 17], [256*coef, -3840*coef, 17], [0, -4608*coef, 17]]
+        SPAWN_BLUE_YAW = [0.25 * np.pi, 0.75 * np.pi,
+                        0.5 * np.pi, 0.5 * np.pi, 0.5 * np.pi]
+        SPAWN_ORANGE_POS = [[2048*coef, 2560*coef, 17], [-2048*coef, 2560*coef, 17],
+                            [256*coef, 3840*coef, 17], [-256*coef, 3840*coef, 17], [0, 4608*coef, 17]]
+        SPAWN_ORANGE_YAW = [-0.75 * np.pi, -0.25 *
+                            np.pi, -0.5 * np.pi, -0.5 * np.pi, -0.5 * np.pi]
+        # possible kickoff indices are shuffled
+        spawn_inds = [0, 1, 2, 3, 4]
+        random.shuffle(spawn_inds)
+
+        blue_count = 0
+        orange_count = 0
+        for car in state_wrapper.cars:
+            pos = [0,0,0]
+            yaw = 0
+            # team_num = 0 = blue team
+            if car.team_num == 0:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_BLUE_POS[spawn_inds[blue_count]]
+                yaw = SPAWN_BLUE_YAW[spawn_inds[blue_count]]
+                blue_count += 1
+            # team_num = 1 = orange team
+            elif car.team_num == 1:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_ORANGE_POS[spawn_inds[orange_count]]
+                yaw = SPAWN_ORANGE_YAW[spawn_inds[orange_count]]
+                orange_count += 1
+            # set car state values
+            car.set_pos(*pos)
+            car.set_rot(yaw=yaw)
+            car.boost = 0.33
