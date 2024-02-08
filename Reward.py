@@ -500,19 +500,17 @@ class DontTouchPenalityReward(RewardFunction):
     def __init__(self):
         super().__init__()
         self.ticks = 0
-        self.has_touched_ball = False
 
     def reset(self, initial_state: GameState):
         self.ticks = 0
-        self.has_touched_ball = False
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:    
         self.ticks += 1
         
         if(player.ball_touched):
-            self.has_touched_ball = True
+            self.tick = 0
     
-        return - (self.ticks * (not self.has_touched_ball) * 0.01)
+        return - (self.ticks * 0.001)
 
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action)

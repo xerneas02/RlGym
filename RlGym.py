@@ -16,7 +16,7 @@ from rlgym.gamelaunch import LaunchPreference
 from rlgym_tools.extra_action_parsers.lookup_act import LookupAction
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
 import os
-from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback
+from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 from Callback import HParamCallback
 
 
@@ -32,18 +32,18 @@ def get_match(game_speed=GAME_SPEED):
                 GoalScoredReward(),
                 #BoostDifferenceReward(),
                 BallTouchReward(),
-                #DemoReward(),
+                DemoReward(),
                 DistancePlayerBallReward(),
-                #DistanceBallGoalReward(),
+                DistanceBallGoalReward(),
                 FacingBallReward(),
                 AlignBallGoalReward(),
                 ClosestToBallReward(),
-                #TouchedLastReward(),
-                #BehindBallReward(),
+                TouchedLastReward(),
+                BehindBallReward(),
                 VelocityPlayerBallReward(),
-                #KickoffReward(),
+                KickoffReward(),
                 VelocityReward(),
-                #BoostAmountReward(),
+                BoostAmountReward(),
                 ForwardVelocityReward(),
                 FirstTouchReward(),
                 DontTouchPenalityReward()
@@ -53,25 +53,25 @@ def get_match(game_speed=GAME_SPEED):
                 3       ,  # GoalScoredReward
                 #0.1     ,  # BoostDifferenceReward 
                 1       ,  # BallTouchReward
-                #0.3     ,  # DemoReward
+                0.3     ,  # DemoReward
                 0.05    ,  # DistancePlayerBallReward
-                #0.0025  ,  # DistanceBallGoalReward
+                0.0025  ,  # DistanceBallGoalReward
                 0.000625,  # FacingBallReward
                 0.0025  ,  # AlignBallGoalReward
                 0.00125 ,  # ClosestToBallReward
-                #0.00125 ,  # TouchedLastReward
-                #0.00125 ,  # BehindBallReward
+                0.00125 ,  # TouchedLastReward
+                0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
-                #0.0025 ,  # KickoffReward (0.1)
-                0.05    ,  # VelocityReward (0.000625)
-                #0.00125 ,  # BoostAmountReward
+                0.0025 ,  # KickoffReward (0.1)
+                0.000625    ,  # VelocityReward (0.000625)
+                0.00125 ,  # BoostAmountReward
                 0.005  ,  # ForwardVelocityReward
                 3       ,  # FirstTouchReward
-                1       ,  # DontTouchPenalityReward
+                0.5       ,  # DontTouchPenalityReward
                 #5         # AirPenality
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(2000), NoTouchFirstTimeoutCondition(50), NoGoalTimeoutCondition(100, 2)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(2000), NoGoalTimeoutCondition(300, 1)), #NoTouchFirstTimeoutCondition(50)² #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState(    
                                 (
@@ -125,11 +125,11 @@ if __name__ == "__main__":
     save_periode = 1e5
     
     fps = 120 / FRAME_SKIP
-    T = 10
+    T = 20
     #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
     gamma = np.exp(np.log10(0.5)/(T*fps))
     
-    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=1, wait_time=40, force_paging=True)
+    env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=3, wait_time=40, force_paging=True)
     env = VecCheckNan(env) # Checks for nans in tensor
     env = VecNormalize(env, norm_obs=False, gamma=gamma)  # Normalize rewards
     env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
@@ -143,36 +143,39 @@ if __name__ == "__main__":
         save_vecnormalize=True,
     )
     
-    eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/2)
     
-    callback = CallbackList([checkpoint_callback, eval_callback, HParamCallback()])
+    stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
+    
+    eval_callback = EvalCallback(env, callback_after_eval=stopTraining, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/2)
+    
+    callback = CallbackList([checkpoint_callback, HParamCallback(), ProgressBarCallback(), eval_callback])
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 1900000
+    n = 1800000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
-    try:
-        model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
-        print("Load model")
-    except:
-        model = PPO(
-            'MlpPolicy', 
-            env, 
-            n_epochs=10, 
-            learning_rate=5e-5, 
-            ent_coef=0.01, 
-            vf_coef=1., 
-            gamma=gamma, 
-            clip_range= 0.2, 
-            verbose=1, 
-            tensorboard_log="logs",  
-            device="cuda" 
-            )
-        print("Model created")
-    
+    while True:
+        try:
+            model = PPO.load(model_n, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+            print("Load model")
+        except:
+            model = PPO(
+                'MlpPolicy', 
+                env, 
+                n_epochs=10, 
+                learning_rate=5e-5, 
+                ent_coef=0.01, 
+                vf_coef=1., 
+                gamma=gamma, 
+                clip_range= 0.2, 
+                verbose=1, 
+                tensorboard_log="logs",  
+                device="cuda" 
+                )
+            print("Model created")
+        
 
-    model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=True, callback=callback)
-    model.save(f"models/{file_model_name}")
+        model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
 
         
