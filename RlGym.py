@@ -67,7 +67,7 @@ def get_match(game_speed=GAME_SPEED):
                 0.00125 ,  # BoostAmountReward
                 0.005  ,  # ForwardVelocityReward
                 3       ,  # FirstTouchReward
-                0.5       ,  # DontTouchPenalityReward
+                #0.5       ,  # DontTouchPenalityReward
                 #5         # AirPenality
             )
         ),

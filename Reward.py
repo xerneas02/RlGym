@@ -454,7 +454,6 @@ class ForwardVelocityReward(RewardFunction):
         pass
 
     def get_reward(self, player, state, previous_action):
-        
         car_velocity = player.car_data.linear_velocity
         car_orientation = player.car_data.forward()
         
@@ -501,17 +500,19 @@ class DontTouchPenalityReward(RewardFunction):
     def __init__(self):
         super().__init__()
         self.ticks = 0
+        self.has_touched_ball = False
 
     def reset(self, initial_state: GameState):
         self.ticks = 0
+        self.has_touched_ball = False
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:    
         self.ticks += 1
         
         if(player.ball_touched):
-            self.tick = 0
+            self.has_touched_ball = True
     
-        return - (self.ticks * 0.001)
+        return - (self.ticks * (not self.has_touched_ball) * 0.01)
 
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action)
