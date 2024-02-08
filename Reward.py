@@ -137,7 +137,7 @@ class CustomReward(RewardFunction):
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action) + (not self.has_touched_ball)*-100
 
-
+#Si le bot marque un but
 class GoalScoredReward(RewardFunction):
     def __init__(self):
         self.previous_blue_score   = 0
@@ -169,7 +169,7 @@ class GoalScoredReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
-
+#Si le bot collect ou utilise du boost
 class BoostDifferenceReward(RewardFunction):
     def __init__(self):
         self.previous_boost = None
@@ -185,7 +185,8 @@ class BoostDifferenceReward(RewardFunction):
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
-
+    
+#Si le bot touche la balle (reward varie en fonction de la hauteur de la balle)
 class BallTouchReward(RewardFunction):
     def __init__(self):
         self.last_touch = False
@@ -215,7 +216,8 @@ class BallTouchReward(RewardFunction):
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
-
+    
+#Si le bot démo
 class DemoReward(RewardFunction):
     def __init__(self):
         self.last_demo_count = 0
@@ -233,6 +235,7 @@ class DemoReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot est proche de la balle
 class DistancePlayerBallReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -248,6 +251,7 @@ class DistancePlayerBallReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si la balle est proche du but adverse
 class DistanceBallGoalReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -264,7 +268,8 @@ class DistanceBallGoalReward(RewardFunction):
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
-
+    
+#Si le bot fait face à la balle
 class FacingBallReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -285,6 +290,7 @@ class FacingBallReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot est entre ses buts et la balle [mais il y a une ligne qui relie le bot, la balle et le but]
 class AlignBallGoalReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -312,6 +318,7 @@ class AlignBallGoalReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si plus proche de la balle par rapport aux adversaires
 class ClosestToBallReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -330,6 +337,7 @@ class ClosestToBallReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot est le dernier à avoir touché la balle
 class TouchedLastReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -340,6 +348,7 @@ class TouchedLastReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot est entre la balle et son but
 class BehindBallReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -357,6 +366,7 @@ class BehindBallReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot va dans la même direction de la balle
 class VelocityPlayerBallReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -379,7 +389,8 @@ class VelocityPlayerBallReward(RewardFunction):
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
-    
+
+#Si le bot gagne le kickoff
 class KickoffReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -407,6 +418,7 @@ class KickoffReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot bouge
 class VelocityReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -419,6 +431,7 @@ class VelocityReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot à du boost
 class BoostAmountReward(RewardFunction):
     def reset(self, initial_state):
         pass
@@ -429,6 +442,7 @@ class BoostAmountReward(RewardFunction):
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
 
+#Si le bot bouge dans la direction de la balle (dans la bonne direction), penalise la marche arrière
 class ForwardVelocityReward(RewardFunction):
     def reset(self, initial_state):
         pass

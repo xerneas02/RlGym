@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 100
+GAME_SPEED = 1
 
 def get_match(game_speed=GAME_SPEED):
 
@@ -66,7 +66,7 @@ def get_match(game_speed=GAME_SPEED):
                 0.00125 ,  # BoostAmountReward
                 0.0015  ,  # ForwardVelocityReward
                 3       ,  # FirstTouchReward
-                #5         # AirPenalityReward
+                #5         # AirPenality
             )
         ),
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition(), NoTouchFirstTimeoutCondition(50)),
@@ -101,9 +101,9 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "rl_model_kickoff"
+    file_model_name = "kickoff"
     
-    nbRep = 1000
+    nbRep = 50
     
     save_periode = 1e5
     
@@ -117,8 +117,6 @@ if __name__ == "__main__":
     env = VecNormalize(env, norm_obs=False, gamma=gamma)  # Normalize rewards
     env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     #env = get_gym(100)
-    
-    
     
     checkpoint_callback = CheckpointCallback(
         save_freq=save_periode/2,

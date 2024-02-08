@@ -5,8 +5,6 @@ from rlgym.utils import common_values
 from rlgym.utils.gamestates import PlayerData, GameState, PhysicsObject
 from rlgym.utils.obs_builders import ObsBuilder
 
-
-
 class ZeerObservations(ObsBuilder):
     # Normalization distances
     POS_STD = 2300 
