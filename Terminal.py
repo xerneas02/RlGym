@@ -33,6 +33,7 @@ class NoTouchOrGoalTimeoutCondition(common_conditions.TimeoutCondition):
     def reset(self, initial_state: GameState):
         super(NoTouchOrGoalTimeoutCondition, self).reset(initial_state)
         self.goal = initial_state.orange_score + initial_state.blue_score
+        self.first = True
         
     def is_terminal(self, current_state: GameState):
         if self.goal != current_state.orange_score + current_state.blue_score:
@@ -46,3 +47,21 @@ class NoTouchOrGoalTimeoutCondition(common_conditions.TimeoutCondition):
             return False
         else:
             return super(NoTouchOrGoalTimeoutCondition, self).is_terminal(current_state)
+        
+class NoTouchFirstTimeoutCondition(common_conditions.TimeoutCondition):
+    def __init__(self, time):
+        super().__init__(time)
+        self.first = True
+    
+    def reset(self, initial_state: GameState):
+        super(NoTouchFirstTimeoutCondition, self).reset(initial_state)
+        self.first = True
+        
+    def is_terminal(self, current_state: GameState):
+        if any(p.ball_touched for p in current_state.players) and self.first:
+            self.first = False
+            self.steps = 0
+            self.max_steps = 99999999999999999
+            return False
+        else:
+            return super(NoTouchFirstTimeoutCondition, self).is_terminal(current_state)

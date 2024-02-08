@@ -61,7 +61,7 @@ def get_match(game_speed=GAME_SPEED):
                 0.00125 ,  # TouchedLastReward
                 0.00125 ,  # BehindBallReward
                 0.00125 ,  # VelocityPlayerBallReward
-                #0.0025  ,  # KickoffReward (0.1)
+                #0.0025  , # KickoffReward (0.1)
                 0.0025  ,  # VelocityReward (0.000625)
                 0.00125 ,  # BoostAmountReward
                 0.0015  ,  # ForwardVelocityReward
@@ -69,7 +69,7 @@ def get_match(game_speed=GAME_SPEED):
                 #5         # AirPenalityReward
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),
+        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition(), NoTouchFirstTimeoutCondition(50)),
         obs_builder         = ZeerObservations(),
         state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
         action_parser       = ZeerLookupAction(),#LookupAction(),
