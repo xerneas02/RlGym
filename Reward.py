@@ -19,7 +19,7 @@ import numpy as np
 from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils.gamestates import GameState, PlayerData
 
-from RlGym import GAME_SPEED
+from Constante import *
 
 
 class CombinedReward(RewardFunction):
@@ -27,13 +27,16 @@ class CombinedReward(RewardFunction):
     def __init__(
             self,
             reward_functions: Tuple[RewardFunction, ...],
-            reward_weights: Optional[Tuple[float, ...]] = None
+            reward_weights: Optional[Tuple[float, ...]] = None,
+            verbose = 0
     ):
         super().__init__()
 
         self.count = 0
-        self.reward_functions = reward_functions
-        self.reward_weights = reward_weights or np.ones_like(reward_functions)
+        self.reward_functions       = reward_functions
+        self.reward_weights         = reward_weights or np.ones_like(reward_functions)
+        self.default_reward_weights = reward_weights or np.ones_like(reward_functions)
+        self.verbose = verbose
 
         if len(self.reward_functions) != len(self.reward_weights):
             raise ValueError(
@@ -42,6 +45,15 @@ class CombinedReward(RewardFunction):
                     len(self.reward_functions), len(self.reward_weights)
                 )
             )
+            
+    def get_default_reward_weights(self):
+        return self.default_reward_weights
+    
+    def get_rewards_num(self):
+        return len(self.reward_functions)
+    
+    def set_rewards_weights(self, reward_weights):
+        self.reward_weights = reward_weights
 
     @classmethod
     def from_zipped(cls, *rewards_and_weights: Union[RewardFunction, Tuple[RewardFunction, float]]) -> "CombinedReward":
@@ -76,11 +88,12 @@ class CombinedReward(RewardFunction):
             func.get_reward(player, state, previous_action)
             for func in self.reward_functions
         ]
+    
         
         total = float(np.dot(self.reward_weights, rewards))
         self.count += 1
 
-        if GAME_SPEED == 1:
+        if GAME_SPEED == 1 and self.verbose == 1:
             for i in range(len(rewards)):
                 if rewards[i] != 0 and player.team_num == 0:
                     print(f"reward {str(self.reward_functions[i]).split('.')[1].split(' ')[0]}: {rewards[i]*self.reward_weights[i]}")
@@ -97,7 +110,7 @@ class CombinedReward(RewardFunction):
             state: GameState,
             previous_action: np.ndarray
     ) -> float:
-        if GAME_SPEED == 1 and player.team_num == 0:
+        if GAME_SPEED == 1 and player.team_num == 0 and self.verbose:
             print(f"---  Time = {self.count}  ---")
         
         rewards = [
