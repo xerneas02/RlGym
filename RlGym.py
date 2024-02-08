@@ -21,7 +21,7 @@ from Callback import HParamCallback
 
 
 FRAME_SKIP = 8
-GAME_SPEED = 1
+GAME_SPEED = 200
 
 def get_match(game_speed=GAME_SPEED):
 

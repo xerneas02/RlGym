@@ -85,7 +85,7 @@ class NoGoalTimeoutCondition(common_conditions.TimeoutCondition):
     def is_terminal(self, current_state: GameState):
         if self.goal != current_state.orange_score + current_state.blue_score:
             self.steps = 0
-            self.init_max_steps *= self.coef
+            self.max_steps *= self.coef
             self.goal = current_state.orange_score + current_state.blue_score
             return False
         else:
