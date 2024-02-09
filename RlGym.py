@@ -23,13 +23,13 @@ from State import CombinedState, BetterRandom, StateSetterInit, TrainingStateSet
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
-from Callback import HParamCallback
+from Callback import HParamCallback,LogRewardCallback
 from Constante import *
 
 import os
+import datetime
 
-
-DiffDistanceBallGoalReward = DiffReward(DistanceBallGoalReward())
+DiffDistanceBallGoalReward = DiffReward(DistanceBallGoalReward(z_axe=False))
 
 rewards = CombinedReward(
             (
@@ -55,17 +55,17 @@ rewards = CombinedReward(
                 DiffDistanceBallGoalReward,
             ),
             (
-                10    ,  # GoalScoredReward
-                0.000000  ,  # BoostDifferenceReward 
-                3       ,  # BallTouchReward
-                0.000000     ,  # DemoReward
-                0.05    ,  # DistancePlayerBallReward
+                15    ,  # GoalScoredReward
+                0.0000  ,  # BoostDifferenceReward 
+                4       ,  # BallTouchReward
+                0.3     ,  # DemoReward
+                0.15  ,  # DistancePlayerBallReward
                 0.000000  ,  # DistanceBallGoalReward
                 0.001,  # FacingBallReward
                 0.0025  ,  # AlignBallGoalReward
                 0.00125 ,  # ClosestToBallReward
                 0.000000 ,  # TouchedLastReward
-                0.000000 ,  # BehindBallReward
+                0.0030 ,  # BehindBallReward
                 0.000000 ,  # VelocityPlayerBallReward
                 0.000000  ,  # KickoffReward (0.1)
                 0.000000  ,  # VelocityReward (0.000625)
@@ -74,7 +74,7 @@ rewards = CombinedReward(
                 3       ,  # FirstTouchReward
                 1     ,  # DontTouchPenalityReward
                 0.000000       ,  # AirPenality
-                1  ,  # DistanceBallGoalReward
+                1  ,  # DiffDistanceBallGoalReward
             ),
             verbose=1
         )
@@ -84,7 +84,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(2000),
+        terminal_conditions = (common_conditions.TimeoutCondition(800),
                                NoTouchFirstTimeoutCondition(100),
                                common_conditions.GoalScoredCondition()),
                                #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
@@ -113,7 +113,7 @@ def get_match(game_speed=GAME_SPEED):
                                     0.0, #BetterRandom
                                     0.0, #KickoffLikeSetter
                                     0.0, #WallPracticeState
-                                    1.0 #LineState
+                                    1.0  #LineState
                                 )
                              ),
         action_parser       = ZeerLookupAction(),#LookupAction(),
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     #env = get_gym(100)
     
     checkpoint_callback = CheckpointCallback(
-        save_freq=save_periode/2,
+        save_freq=save_periode/(2),
         save_path=f"./models/{file_model_name}",
         name_prefix=file_model_name,
         save_replay_buffer=True,
@@ -171,18 +171,25 @@ if __name__ == "__main__":
     )
     
     
-    stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
     
-    eval_callback = EvalCallback(env, callback_after_eval=stopTraining, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/2)
-    
-    callback = CallbackList([checkpoint_callback, HParamCallback(), ProgressBarCallback(), eval_callback])
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 1800000
+    n = 1500000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
+    total_steps = 0
+    
+    i = 0
     while True:
+        stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
+    
+        eval_callback = EvalCallback(env, callback_after_eval=stopTraining, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
+        
+        progressBard = ProgressBarCallback()
+        
+        callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback,LogRewardCallback()])
+        
         try:
             model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
             print("Load model")
@@ -197,12 +204,16 @@ if __name__ == "__main__":
                 gamma=gamma, 
                 clip_range= 0.2, 
                 verbose=1, 
-                tensorboard_log="logs",  
+                tensorboard_log=f"{file_model_name}_{i}/logs",  
                 device="cuda:0" 
                 )
             print("Model created")
         
 
         model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
-
+        i += 1
+        
+        total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
+        open("log.txt", "a", f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
+        
         

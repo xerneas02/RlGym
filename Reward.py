@@ -9,13 +9,12 @@ from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED, BALL_MAX_SPEED
 from numpy.linalg import norm
 from abc import ABC, abstractmethod
 import numpy as np
-import numpy as np
+
 from scipy.spatial.distance import cosine
 
 
 from typing import Any, Optional, Tuple, overload, Union
 
-import numpy as np
 from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils.gamestates import GameState, PlayerData
 
@@ -272,6 +271,11 @@ class DistancePlayerBallReward(RewardFunction):
 
 #Si la balle est proche du but adverse
 class DistanceBallGoalReward(RewardFunction):
+    def __init__(self, x_axe=True, y_axe=True, z_axe=True):
+        self.x_axe = x_axe
+        self.y_axe = y_axe
+        self.z_axe = z_axe 
+    
     def reset(self, initial_state):
         pass
 
@@ -281,7 +285,16 @@ class DistanceBallGoalReward(RewardFunction):
 
         c = net_position[1] - BACK_WALL_Y + BALL_RADIUS
         
-        distance = np.linalg.norm(ball_position - net_position, 2) - c
+        distance = 0
+        
+        if self.x_axe:
+            distance += np.abs(ball_position[0] - net_position[0])
+        if self.y_axe:
+            distance += np.abs(ball_position[1] - net_position[1])
+        if self.z_axe:
+            distance += np.abs(ball_position[2] - net_position[2])
+        
+        distance -= c
         
         return np.exp(-0.5 * distance / (CAR_MAX_SPEED))
 
