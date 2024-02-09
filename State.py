@@ -13,7 +13,7 @@ from typing import Any, Optional, Tuple, overload, Union
             
             
 class CombinedState(StateSetter):
-    
+    current_state = 0 #Attribut de classe initialisé à 0
     def __init__(
             self,
             rewards: CombinedReward,
@@ -52,6 +52,7 @@ class CombinedState(StateSetter):
             size_rewards = self.rewards.get_rewards_num()
             
             if r < sum:
+                CombinedState.current_state = i #Permet d'indiquer selon l'état de la simulation quel array il faudra parcourir
                 self.state_setters[i][0].reset(state_wrapper)
                 if self.state_setters[i][1] == None or len(self.state_setters[i][1]) != size_rewards:
                     self.rewards.set_rewards_weights(default_rewards_weights)
@@ -66,6 +67,10 @@ class CombinedState(StateSetter):
             
         self.state_setters[0].reset(state_wrapper)
         self.rewards.set_rewards_weights(default_rewards_weights)
+
+    @staticmethod
+    def get_current_state() -> int :
+        return CombinedState.current_state
                
 
 
