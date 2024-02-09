@@ -24,6 +24,9 @@ class CombinedState(StateSetter):
         self.rewards = rewards
         self.state_setters = state_setters
         self.state_probas = state_probas or np.ones_like(state_setters)
+        
+        
+        
 
         if len(self.state_setters) != len(self.state_probas):
             raise ValueError(
