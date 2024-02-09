@@ -55,7 +55,7 @@ rewards = CombinedReward(
                 DiffDistanceBallGoalReward,
             ),
             (
-                15    ,  # GoalScoredReward
+                30    ,  # GoalScoredReward
                 0.0000  ,  # BoostDifferenceReward 
                 4       ,  # BallTouchReward
                 0.3     ,  # DemoReward
@@ -144,6 +144,15 @@ if __name__ == "__main__":
         print(torch.cuda.get_device_name(0))
     else:
         print("Not found")
+        
+    file = open("log.txt", "w")
+    file.write("")
+    file.close(  )
+    
+    file = open("log_rew.txt", "w")
+    file.write("")
+    file.close(  )
+    
     
     file_model_name = "touchTheBallPlease"
     
@@ -175,7 +184,7 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 1500000
+    n = 3000000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     total_steps = 0
@@ -214,6 +223,7 @@ if __name__ == "__main__":
         i += 1
         
         total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
-        open("log.txt", "a", f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
-        
+        file = open("log.txt", "a")
+        file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
+        file.close()
         
