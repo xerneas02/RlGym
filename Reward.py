@@ -20,6 +20,7 @@ from rlgym.utils.gamestates import GameState, PlayerData
 
 from Constante import *
 
+import datetime
 
 class CombinedReward(RewardFunction):
 
@@ -36,6 +37,9 @@ class CombinedReward(RewardFunction):
         self.reward_weights         = reward_weights or np.ones_like(reward_functions)
         self.default_reward_weights = reward_weights or np.ones_like(reward_functions)
         self.verbose = verbose
+        self.total_per_rew = np.zeros_like(reward_functions)
+        self.period = 500   #50 ~ 10 000 step
+        self.count_period = 0
 
         if len(self.reward_functions) != len(self.reward_weights):
             raise ValueError(
@@ -74,6 +78,11 @@ class CombinedReward(RewardFunction):
 
     def reset(self, initial_state: GameState) -> None:
         self.count = 0
+        
+        if self.count_period >= self.period :
+            self.count_period = 0
+            self.total_per_rew = np.zeros_like(self.reward_functions)
+        
         for func in self.reward_functions:
             func.reset(initial_state)
 
@@ -91,6 +100,9 @@ class CombinedReward(RewardFunction):
         
         total = float(np.dot(self.reward_weights, rewards))
         self.count += 1
+        
+        for i in range(len(rewards)):
+            self.total_per_rew[i] += rewards[i]
 
         if GAME_SPEED == 1 and self.verbose == 1:
             for i in range(len(rewards)):
@@ -111,6 +123,20 @@ class CombinedReward(RewardFunction):
     ) -> float:
         if GAME_SPEED == 1 and player.team_num == 0 and self.verbose:
             print(f"---  Time = {self.count}  ---")
+        
+        self.count_period += 1
+
+        if self.count_period >= self.period:
+            file = open("log_rew.txt", "a")
+            txt = f"{datetime.datetime.now()} :\n"
+            for i in range(len(self.total_per_rew)):
+                txt += f"reward {str(self.reward_functions[i]).split('.')[1].split(' ')[0]}: {(self.total_per_rew[i]*self.reward_weights[i])}\n"
+            
+            txt += "-------------------------------------------------------------------\n\n"
+            
+            file.write(txt)
+            file.close()
+            
         
         rewards = [
             func.get_final_reward(player, state, previous_action)
@@ -238,16 +264,18 @@ class BallTouchReward(RewardFunction):
 #Si le bot démo
 class DemoReward(RewardFunction):
     def __init__(self):
-        self.last_demo_count = 0
+        self.last_state = None
         
     def reset(self, initial_state):
-        self.last_demo_count = 0
+        self.last_state = initial_state
 
     def get_reward(self, player, state, previous_action):
-        if player.match_demolishes != self.last_demo_count:
-            self.last_demo_count = player.match_demolishes
-            return 1
         
+        for p in self.last_state.players:
+            if p.car_id == player.car_id and player.match_demolishes > p.match_demolishes:
+                return 1
+        
+        self.last_state = state
         return 0
 
     def get_final_reward(self, player, state, previous_action):

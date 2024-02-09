@@ -335,7 +335,7 @@ class RandomState(StateSetter):
             ball_x = random.randint(-int(wall_x), int(wall_x))
             ball_y = random.randint(-int(wall_y), int(wall_y))
 
-        print("Position de la balle (x, y):", ball_x, ball_y)        
+        #print("Position de la balle (x, y):", ball_x, ball_y)        
         
         state_wrapper.ball.set_pos(ball_x, ball_y, BALL_RADIUS)
         
