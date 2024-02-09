@@ -31,6 +31,7 @@ class CombinedReward(RewardFunction):
     ):
         super().__init__()
 
+        self.count = 0
         self.reward_functions = reward_functions
         self.reward_weights = reward_weights or np.ones_like(reward_functions)
 
@@ -61,6 +62,7 @@ class CombinedReward(RewardFunction):
         return cls(tuple(rewards), tuple(weights))
 
     def reset(self, initial_state: GameState) -> None:
+        self.count = 0
         for func in self.reward_functions:
             func.reset(initial_state)
 
@@ -76,7 +78,8 @@ class CombinedReward(RewardFunction):
         ]
         
         total = float(np.dot(self.reward_weights, rewards))
-        
+        self.count += 1
+
         if GAME_SPEED == 1:
             for i in range(len(rewards)):
                 if rewards[i] != 0 and player.team_num == 0:
@@ -94,6 +97,9 @@ class CombinedReward(RewardFunction):
             state: GameState,
             previous_action: np.ndarray
     ) -> float:
+        if GAME_SPEED == 1 and player.team_num == 0:
+            print(f"---  Time = {self.count}  ---")
+        
         rewards = [
             func.get_final_reward(player, state, previous_action)
             for func in self.reward_functions
@@ -488,5 +494,26 @@ class AirPenalityReward(RewardFunction):
         return (not player.on_ground)*-1
     
     def get_final_reward(self, player, state, previous_action):
+        return self.get_reward(player, state, previous_action)
+    
+class DontTouchPenalityReward(RewardFunction):
+    def __init__(self):
+        super().__init__()
+        self.ticks = 0
+        self.has_touched_ball = False
+
+    def reset(self, initial_state: GameState):
+        self.ticks = 0
+        self.has_touched_ball = False
+
+    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:    
+        self.ticks += 1
+        
+        if(player.ball_touched):
+            self.has_touched_ball = True
+    
+        return - (self.ticks * (not self.has_touched_ball) * 0.01)
+
+    def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action)
 

@@ -4,7 +4,7 @@ from rlgym_tools.sb3_utils import SB3MultipleInstanceEnv
 from stable_baselines3 import PPO
 from rlgym.utils.terminal_conditions import common_conditions
 from Observer import *
-from State import TrainingStateSetter, DefaultStateClose
+from State import *
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -32,50 +32,71 @@ def get_match(game_speed=GAME_SPEED):
                 GoalScoredReward(),
                 # BoostDifferenceReward(),
                 BallTouchReward(),
-                # DemoReward(),
-                # DistancePlayerBallReward(),
-                # DistanceBallGoalReward(),
-                # FacingBallReward(),
-                # AlignBallGoalReward(),
-                # ClosestToBallReward(),
-                # TouchedLastReward(),
-                # BehindBallReward(),
-                # VelocityPlayerBallReward(),
+                #DemoReward(),
+                DistancePlayerBallReward(),
+                #DistanceBallGoalReward(),
+                FacingBallReward(),
+                AlignBallGoalReward(),
+                ClosestToBallReward(),
+                #TouchedLastReward(),
+                #BehindBallReward(),
+                #VelocityPlayerBallReward(),
                 #KickoffReward(),
                 # VelocityReward(),
                 # BoostAmountReward(),
                 # ForwardVelocityReward(),
+                #VelocityReward(),
+                #BoostAmountReward(),
+                #ForwardVelocityReward(),
                 FirstTouchReward(),
+                DontTouchPenalityReward()
                 #AirPenalityReward()
             ),
             (
                 10       ,  # GoalScoredReward
                 #0.1     ,  # BoostDifferenceReward 
-                1       ,  # BallTouchReward
-                # 0.3     ,  # DemoReward
-                # 0.0025  ,  # DistancePlayerBallReward
-                # 0.0025  ,  # DistanceBallGoalReward
-                # 0.000625,  # FacingBallReward
-                # 0.0025  ,  # AlignBallGoalReward
-                # 0.00125 ,  # ClosestToBallReward
-                # 0.00125 ,  # TouchedLastReward
-                # 0.00125 ,  # BehindBallReward
-                # 0.00125 ,  # VelocityPlayerBallReward
-                #0.0025 , # KickoffReward (0.1)
-                # 0.05    ,  # VelocityReward (0.000625)
-                # 0.00125 ,  # BoostAmountReward
-                # 0.0015  ,  # ForwardVelocityReward
+                3       ,  # BallTouchReward
+                #0.3     ,  # DemoReward
+                0.05    ,  # DistancePlayerBallReward
+                #0.0025  ,  # DistanceBallGoalReward
+                0.001,  # FacingBallReward
+                0.0025  ,  # AlignBallGoalReward
+                0.00125 ,  # ClosestToBallReward
+                #0.00125 ,  # TouchedLastReward
+                #0.00125 ,  # BehindBallReward
+                #0.00125 ,  # VelocityPlayerBallReward
+                #0.0025 ,  # KickoffReward (0.1)
+                #0.05    ,  # VelocityReward (0.000625)
+                #0.00125 ,  # BoostAmountReward
+                #0.005  ,  # ForwardVelocityReward
                 3       ,  # FirstTouchReward
+                1       ,  # DontTouchPenalityReward
                 #5         # AirPenality
             )
         ),
-        terminal_conditions = (common_conditions.TimeoutCondition(1000), 
+
+        terminal_conditions = (common_conditions.TimeoutCondition(2000), 
                                NoTouchFirstTimeoutCondition(50), 
-                               NoGoalTimeoutCondition(150), 
-                                #common_conditions.GoalScoredCondition(), 
-                                common_conditions.NoTouchTimeoutCondition(150)),
+                               NoGoalTimeoutCondition(100, 2)), #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
-        state_setter        = DefaultStateClose(),#DefaultState(),#TrainingStateSetter(),
+        state_setter        = CombinedState(    
+                                (
+                                    DefaultStateClose(),
+                                    TrainingStateSetter(),
+                                    DefaultState(),
+                                    RandomState(),
+                                    InvertedState(),
+                                    LineState()
+                                ),
+                                (
+                                    0.0, #DefaultStateClose
+                                    0.0, #TrainingStateSetter
+                                    0  , #DefaultState
+                                    0.0, #RandomState
+                                    0.0,  #InvertedState
+                                    1  #LineState
+                                )
+                             ),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
         tick_skip           = FRAME_SKIP
@@ -105,7 +126,7 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "followBall"
+    file_model_name = "touchTheBallPlease"
     
     nbRep = 1000
     
@@ -136,8 +157,10 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 7100000
+    n = 1900000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
+    
+    #model_n à la place de best_model si dernier model voulu
     
     try:
         model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
