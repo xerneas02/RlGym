@@ -320,9 +320,22 @@ class RandomState(StateSetter):
         wall_x = SIDE_WALL_X - BALL_RADIUS
         wall_y = BACK_WALL_Y - BALL_RADIUS
         
-        
         ball_x = random.randint(-int(wall_x), int(wall_x))
         ball_y = random.randint(-int(wall_y), int(wall_y))
+        
+        min_distance = 200
+
+        def distance(p1, p2):
+            return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+        ball_x = random.randint(-int(wall_x), int(wall_x))
+        ball_y = random.randint(-int(wall_y), int(wall_y))
+
+        while any(distance([ball_x, ball_y, 0], car_pos) < min_distance for car_pos in SPAWN_BLUE_POS + SPAWN_ORANGE_POS):
+            ball_x = random.randint(-int(wall_x), int(wall_x))
+            ball_y = random.randint(-int(wall_y), int(wall_y))
+
+        print("Position de la balle (x, y):", ball_x, ball_y)        
         
         state_wrapper.ball.set_pos(ball_x, ball_y, BALL_RADIUS)
         
@@ -389,3 +402,34 @@ class InvertedState(StateSetter):
             car.set_pos(*pos)
             car.set_rot(yaw=yaw)
             car.boost = 0.33
+            
+class LineState(StateSetter):
+    
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+        
+        count = 0
+        wall_x = SIDE_WALL_X - BALL_RADIUS
+        #wall_y = BACK_WALL_Y - BALL_RADIUS
+        ceiling = CEILING_Z - BALL_RADIUS
+        #----SPAWN BOUBOULE--------------------------------
+        ball_x = random.randint(-int(wall_x), int(wall_x))
+        #ball_y = random.randint(-int(wall_y), int(wall_y))
+        ball_y = 0
+        ball_z = random.randint(int(BALL_RADIUS)+1, int(ceiling/2))
+        state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        #---------------------------------------------------
+        #----SPAWN CARS-------------------------------------
+        for car in state_wrapper.cars:
+            car_x = random.randint(-int(wall_x), int(wall_x))
+            #ball_y = random.randint(-int(wall_y), int(wall_y))
+            car_y = 3000 if count == 1  else -3000
+            yaw = -0.5 * np.pi if count == 1 else 0.5 * np.pi
+            car_z = 17
+            car.set_pos(car_x, car_y, car_z)
+            car.boost = 0.33
+            car.set_rot(yaw=yaw)
+            count = count + 1
+        #---------------------------------------------------

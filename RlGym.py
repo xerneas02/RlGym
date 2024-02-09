@@ -18,7 +18,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, StateSetterInit, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState 
+from State import CombinedState, BetterRandom, StateSetterInit, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState 
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     else:
         print("Not found")
     
-    file_model_name = "rl_model"
+    file_model_name = "touchTheBallPlease"
     
     nbRep = 1000
     
