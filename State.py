@@ -10,9 +10,6 @@ import math
 from Constante import *
 
 from typing import Any, Optional, Tuple, overload, Union
-
-
-
             
             
 class CombinedState(StateSetter):
