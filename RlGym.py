@@ -12,6 +12,7 @@ from rlgym_tools.extra_state_setters.goalie_state import GoaliePracticeState
 from rlgym_tools.extra_state_setters.hoops_setter import HoopsLikeSetter
 from rlgym_tools.extra_state_setters.symmetric_setter import KickoffLikeSetter
 from rlgym_tools.extra_state_setters.wall_state import WallPracticeState
+from rlgym_tools.extra_rewards.diff_reward import DiffReward
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
@@ -27,6 +28,8 @@ from Constante import *
 
 import os
 
+
+DiffDistanceBallGoalReward = DiffReward(DistanceBallGoalReward())
 
 rewards = CombinedReward(
             (
@@ -49,6 +52,7 @@ rewards = CombinedReward(
                 FirstTouchReward(),
                 DontTouchPenalityReward(),
                 AirPenalityReward(),
+                DiffDistanceBallGoalReward,
             ),
             (
                 10    ,  # GoalScoredReward
@@ -70,8 +74,9 @@ rewards = CombinedReward(
                 3       ,  # FirstTouchReward
                 1     ,  # DontTouchPenalityReward
                 0.000000       ,  # AirPenality
+                1  ,  # DistanceBallGoalReward
             ),
-            verbose=0
+            verbose=1
         )
 
 def get_match(game_speed=GAME_SPEED):
@@ -80,8 +85,8 @@ def get_match(game_speed=GAME_SPEED):
         game_speed          = game_speed,
         reward_function     = rewards,
         terminal_conditions = (common_conditions.TimeoutCondition(2000),
-                               NoTouchFirstTimeoutCondition(50),
-                               NoGoalTimeoutCondition(100, 2)),
+                               NoTouchFirstTimeoutCondition(100),
+                               common_conditions.GoalScoredCondition()),
                                #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
@@ -96,7 +101,7 @@ def get_match(game_speed=GAME_SPEED):
                                     (BetterRandom(),        (42, 3, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)),
                                     (KickoffLikeSetter(),   (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 3, 42, 42)),
                                     (WallPracticeState(),   (42, 3, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)),
-                                    (LineState(), ())
+                                    (LineState(2500), ())
                                 ),
                                 (
                                     0.0, #DefaultStateClose

@@ -406,10 +406,12 @@ class InvertedState(StateSetter):
             car.set_rot(yaw=yaw)
             car.boost = 0.33
             
+# POUR LA FONCTION CI DESSOUS, "LARGEUR" NE DOIT PAS ETRE SUPERIEURE A 2500
 class LineState(StateSetter):
     
-    def __init__(self):
+    def __init__(self, largeur):
         super().__init__()
+        self.largeur = largeur
 
     def reset(self, state_wrapper: StateWrapper):
         
@@ -420,7 +422,7 @@ class LineState(StateSetter):
         #----SPAWN BOUBOULE--------------------------------
         ball_x = random.randint(-int(wall_x), int(wall_x))
         #ball_y = random.randint(-int(wall_y), int(wall_y))
-        ball_y = 0
+        ball_y = 0 + random.randint(-int(self.largeur), int(self.largeur))
         ball_z = random.randint(int(BALL_RADIUS)+1, int(ceiling/2))
         state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
         #---------------------------------------------------
@@ -428,7 +430,7 @@ class LineState(StateSetter):
         for car in state_wrapper.cars:
             car_x = random.randint(-int(wall_x), int(wall_x))
             #ball_y = random.randint(-int(wall_y), int(wall_y))
-            car_y = 3000 if count == 1  else -3000
+            car_y = 2500 + random.randint(-int(self.largeur), int(self.largeur)) if count == 1  else -2500 + random.randint(-int(self.largeur), int(self.largeur))
             yaw = -0.5 * np.pi if count == 1 else 0.5 * np.pi
             car_z = 17
             car.set_pos(car_x, car_y, car_z)
