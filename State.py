@@ -7,9 +7,23 @@ from Reward import CombinedReward
 import numpy as np
 import random
 import math
+
 from Constante import *
 
 from typing import Any, Optional, Tuple, overload, Union
+
+
+            
+            
+def movement_ball(ball, z_axe = True):
+    ball_x_velo = random.randint(-BALL_SPEED, BALL_SPEED)
+    ball_y_velo = random.randint(-BALL_SPEED, BALL_SPEED)
+    
+    ball_z_velo = 0
+    if(z_axe):
+        ball_z_velo = random.randint(0, BALL_SPEED*2)
+    
+    ball.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
             
             
 class CombinedState(StateSetter):
@@ -121,33 +135,6 @@ class BetterRandom(StateSetter):  # Random state with some triangular distributi
             ang_vel = rand_vec3(np.random.triangular(0, 0, CAR_MAX_ANG_VEL))
             car.set_ang_vel(*ang_vel)
             car.boost = np.random.uniform(0, 1)
-
-class StateSetterInit(StateSetter):
-    def reset(self, state_wrapper: StateWrapper):
-    
-        # Set up our desired spawn location and orientation. Here, we will only change the yaw, leaving the remaining orientation values unchanged.
-        desired_car_pos = [100,100,17] #x, y, z
-        desired_yaw = np.pi/2
-        
-        # Loop over every car in the game.
-        for car in state_wrapper.cars:
-            if car.team_num == BLUE_TEAM:
-                pos = desired_car_pos
-                yaw = desired_yaw
-                
-            elif car.team_num == ORANGE_TEAM:
-                # We will invert values for the orange team so our state setter treats both teams in the same way.
-                pos = [-1*coord for coord in desired_car_pos]
-                yaw = -1*desired_yaw
-                
-            # Now we just use the provided setters in the CarWrapper we are manipulating to set its state. Note that here we are unpacking the pos array to set the position of 
-            # the car. This is merely for convenience, and we will set the x,y,z coordinates directly when we set the state of the ball in a moment.
-            car.set_pos(*pos)
-            car.set_rot(yaw=yaw)
-            car.boost = 0.72
-            
-        # Now we will spawn the ball in the center of the field, floating in the air.
-        state_wrapper.ball.set_pos(x=0, y=0, z=CEILING_Z/2)
         
 
 
@@ -278,6 +265,8 @@ class DefaultStateClose(StateSetter):
         blue_count = 0
         orange_count = 0
         
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
+        
         for car in state_wrapper.cars:
             pos = [0,0,0]
             yaw = 0
@@ -322,11 +311,13 @@ class RandomState(StateSetter):
         blue_count = 0
         orange_count = 0
         
-        wall_x = SIDE_WALL_X - BALL_RADIUS
-        wall_y = BACK_WALL_Y - BALL_RADIUS
+        wall_x = SIDE_WALL_X - BALL_RADIUS*2
+        wall_y = BACK_WALL_Y - BALL_RADIUS*2
         
         ball_x = random.randint(-int(wall_x), int(wall_x))
         ball_y = random.randint(-int(wall_y), int(wall_y))
+        
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
         
         min_distance = 200
 
@@ -388,6 +379,8 @@ class InvertedState(StateSetter):
         blue_count = 0
         orange_count = 0
         
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
+        
         for car in state_wrapper.cars:
             pos = [0,0,0]
             yaw = 0
@@ -439,6 +432,8 @@ class DefaultStateCloseOrange(StateSetter):
         blue_count = 0
         orange_count = 0
         
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
+        
         for car in state_wrapper.cars:
             pos = [0,0,0]
             yaw = 0
@@ -483,13 +478,15 @@ class RandomStateOrange(StateSetter):
         blue_count = 0
         orange_count = 0
         
-        wall_x = SIDE_WALL_X - BALL_RADIUS
-        wall_y = BACK_WALL_Y - BALL_RADIUS
+        wall_x = SIDE_WALL_X - BALL_RADIUS*2
+        wall_y = BACK_WALL_Y - BALL_RADIUS*2
         
         ball_x = random.randint(-int(wall_x), int(wall_x))
         ball_y = random.randint(-int(wall_y), int(wall_y))
         
         min_distance = 200
+        
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
 
         def distance(p1, p2):
             return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
@@ -548,6 +545,8 @@ class InvertedStateOrange(StateSetter):
 
         blue_count = 0
         orange_count = 0
+        
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
         
         for car in state_wrapper.cars:
             pos = [0,0,0]
