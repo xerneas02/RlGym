@@ -24,6 +24,7 @@ from Terminal import *
 from Action import ZeerLookupAction
 from Callback import HParamCallback
 from Constante import *
+from CustomTerminal import CustomTerminalCondition
 
 import os
 import datetime
@@ -112,6 +113,19 @@ def get_match(game_speed=GAME_SPEED):
                                     0.3, #WallPracticeState
                                 )
                              ),
+        terminal_conditions = CustomTerminalCondition( #Une liste de conditions par State existant dans state_setter /!\ respectez bien qu'il y ait autant d'array qu'il y a de state dans state_setter
+                                (
+                                    [common_conditions.TimeoutCondition(50), NoGoalTimeoutCondition(300, 1), NoTouchFirstTimeoutCondition(50)],  # liste de terminalcondition pour (DefaultStateClose()
+                                                                                                                                                # liste de terminalcondition pour (TrainingStateSetter(), 
+                                    [common_conditions.TimeoutCondition(500)]                                                                   #liste de terminalcondition pour (RandomState(),         
+                                                                                                                                                # liste de terminalcondition pour (InvertedState(),      
+                                                                                                                                                # liste de terminalcondition pour (GoaliePracticeState(),  
+                                                                                                                                                # liste de terminalcondition pour (HoopsLikeSetter(),   
+                                                                                                                                                # liste de terminalcondition pour (BetterRandom(),    
+                                                                                                                                                # liste de terminalcondition pour (KickoffLikeSetter(),  
+                                                                                                                                                # liste de terminalcondition pour (WallPracticeState(),
+                                )
+                            ),
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
         tick_skip           = FRAME_SKIP
