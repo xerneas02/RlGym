@@ -18,7 +18,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, StateSetterInit, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState 
+from State import CombinedState, BetterRandom, StateSetterInit, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -79,31 +79,37 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(200), AfterTouchTimeoutCondition(10)),#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(200), AfterTouchTimeoutCondition(10)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,   
                                 (                   #42 Garde coef par defaut
-                                    (DefaultStateClose(),   (0, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (DefaultStateClose(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (DefaultStateCloseOrange(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
                                     (TrainingStateSetter(), (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 42)),
-                                    (RandomState(),         (0, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (InvertedState(),       (0, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (GoaliePracticeState(), (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)), 
+                                    (RandomState(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (RandomStateOrange(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (InvertedState(),       (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (InvertedStateOrange(),       (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (GoaliePracticeState(), (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)), 
                                     (HoopsLikeSetter(),     (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)),
                                     (BetterRandom(),        (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)),
-                                    (KickoffLikeSetter(),   (0, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (WallPracticeState(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (KickoffLikeSetter(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
+                                    (WallPracticeState(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 ))
                                 ),
                                 (
-                                    0.2, #DefaultStateClose
+                                    0.05, #DefaultStateClose
+                                    0.15, #DefaultStateCloseOrange
                                     0.0, #TrainingStateSetter
-                                    0.3, #RandomState
-                                    0.3, #InvertedState
+                                    0.1, #RandomState
+                                    0.15, #RandomStateOrange
+                                    0.1, #InvertedState
+                                    0.15, #InvertedStateOrange
                                     0.0, #GoaliePracticeState
                                     0.0, #HoopsLikeSetter
                                     0.0, #BetterRandom
-                                    0.1, #KickoffLikeSetter
-                                    0.1, #WallPracticeState
+                                    0.0, #KickoffLikeSetter
+                                    0.3, #WallPracticeState
                                 )
                              ),
         action_parser       = ZeerLookupAction(),#LookupAction(),
@@ -140,6 +146,10 @@ if __name__ == "__main__":
     file.close(  )
     
     file = open("log_rew.txt", "w")
+    file.write("")
+    file.close(  )
+    
+    file = open("log_error.txt", "w")
     file.write("")
     file.close(  )
     
@@ -208,8 +218,13 @@ if __name__ == "__main__":
                 )
             print("Model created")
         
-
-        model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+        try:
+            model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+        except Exception as e:
+            file = open("log_error.txt", "a")
+            file.write(f"Error {datetime.datetime.now()} :\n{e}")
+            file.close()
+            
         i += 1
         
         total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps

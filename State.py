@@ -403,6 +403,169 @@ class InvertedState(StateSetter):
             car.set_rot(yaw=yaw)
             car.boost = 0.33
             
+            
+class DefaultStateCloseOrange(StateSetter):
+    
+
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+        """
+        Modifies state_wrapper values to emulate a randomly selected default kickoff.
+
+        :param state_wrapper: StateWrapper object to be modified with desired state values.
+        """
+        
+        coef = 1/random.randint(1, 2)
+        
+        SPAWN_ORANGE_POS = [[-2048*coef, -2560*coef, 17], [2048*coef, -2560*coef, 17],
+                      [-256*coef, -3840*coef, 17], [256*coef, -3840*coef, 17], [0, -4608*coef, 17]]
+        SPAWN_ORANGE_YAW = [0.25 * np.pi, 0.75 * np.pi,
+                        0.5 * np.pi, 0.5 * np.pi, 0.5 * np.pi]
+        SPAWN_BLUE_POS = [[2048*coef, 2560*coef, 17], [-2048*coef, 2560*coef, 17],
+                            [256*coef, 3840*coef, 17], [-256*coef, 3840*coef, 17], [0, 4608*coef, 17]]
+        SPAWN_BLUE_YAW = [-0.75 * np.pi, -0.25 *
+                            np.pi, -0.5 * np.pi, -0.5 * np.pi, -0.5 * np.pi]
+        # possible kickoff indices are shuffled
+        spawn_inds = [0, 1, 2, 3, 4]
+        random.shuffle(spawn_inds)
+
+        blue_count = 0
+        orange_count = 0
+        
+        for car in state_wrapper.cars:
+            pos = [0,0,0]
+            yaw = 0
+            # team_num = 0 = blue team
+            if car.team_num == 0:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_BLUE_POS[spawn_inds[blue_count]]
+                yaw = SPAWN_BLUE_YAW[spawn_inds[blue_count]]
+                blue_count += 1
+            # team_num = 1 = orange team
+            elif car.team_num == 1:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_ORANGE_POS[spawn_inds[orange_count]]
+                yaw = SPAWN_ORANGE_YAW[spawn_inds[orange_count]]
+                orange_count += 1
+            # set car state values
+            car.set_pos(*pos)
+            car.set_rot(yaw=yaw)
+            car.boost = 0.33
+            
+
+class RandomStateOrange(StateSetter):
+    
+
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+              
+        SPAWN_ORANGE_POS = [[-2048, -2560, 17], [2048, -2560, 17],
+                      [-256, -3840, 17], [256, -3840, 17], [0, -4608, 17]]
+        SPAWN_ORANGE_YAW = [0.25 * np.pi, 0.75 * np.pi,
+                        0.5 * np.pi, 0.5 * np.pi, 0.5 * np.pi]
+        SPAWN_BLUE_POS = [[2048, 2560, 17], [-2048, 2560, 17],
+                            [256, 3840, 17], [-256, 3840, 17], [0, 4608, 17]]
+        SPAWN_BLUE_YAW = [-0.75 * np.pi, -0.25 *
+                            np.pi, -0.5 * np.pi, -0.5 * np.pi, -0.5 * np.pi]
+        # possible kickoff indices are shuffled
+        spawn_inds = [0, 1, 2, 3, 4]
+        random.shuffle(spawn_inds)
+
+        blue_count = 0
+        orange_count = 0
+        
+        wall_x = SIDE_WALL_X - BALL_RADIUS
+        wall_y = BACK_WALL_Y - BALL_RADIUS
+        
+        ball_x = random.randint(-int(wall_x), int(wall_x))
+        ball_y = random.randint(-int(wall_y), int(wall_y))
+        
+        min_distance = 200
+
+        def distance(p1, p2):
+            return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+        ball_x = random.randint(-int(wall_x), int(wall_x))
+        ball_y = random.randint(-int(wall_y), int(wall_y))
+
+        while any(distance([ball_x, ball_y, 0], car_pos) < min_distance for car_pos in SPAWN_BLUE_POS + SPAWN_ORANGE_POS):
+            ball_x = random.randint(-int(wall_x), int(wall_x))
+            ball_y = random.randint(-int(wall_y), int(wall_y))
+
+        #print("Position de la balle (x, y):", ball_x, ball_y)        
+        
+        state_wrapper.ball.set_pos(ball_x, ball_y, BALL_RADIUS)
+        
+        for car in state_wrapper.cars:
+            pos = [0,0,0]
+            yaw = 0
+            # team_num = 0 = blue team
+            if car.team_num == 0:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_BLUE_POS[spawn_inds[blue_count]]
+                yaw = SPAWN_BLUE_YAW[spawn_inds[blue_count]]
+                blue_count += 1
+            # team_num = 1 = orange team
+            elif car.team_num == 1:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_ORANGE_POS[spawn_inds[orange_count]]
+                yaw = SPAWN_ORANGE_YAW[spawn_inds[orange_count]]
+                orange_count += 1
+            # set car state values
+            car.set_pos(*pos)
+            car.set_rot(yaw=yaw)
+            car.boost = 0.33
+            
+            
+class InvertedStateOrange(StateSetter):
+    
+
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+              
+        SPAWN_ORANGE_POS = [[-2048, -2560, 17], [2048, -2560, 17],
+                      [-256, -3840, 17], [256, -3840, 17], [0, -4608, 17]]
+        SPAWN_ORANGE_YAW = [-0.25 * np.pi, -0.75 * np.pi,
+                        -0.5 * np.pi, -0.5 * np.pi, -0.5 * np.pi]
+        SPAWN_BLUE_POS = [[2048, 2560, 17], [-2048, 2560, 17],
+                            [256, 3840, 17], [-256, 3840, 17], [0, 4608, 17]]
+        SPAWN_BLUE_YAW = [0.75 * np.pi, 0.25 *
+                            np.pi, 0.5 * np.pi, 0.5 * np.pi, 0.5 * np.pi]
+        # possible kickoff indices are shuffled
+        spawn_inds = [0, 1, 2, 3, 4]
+        random.shuffle(spawn_inds)
+
+        blue_count = 0
+        orange_count = 0
+        
+        for car in state_wrapper.cars:
+            pos = [0,0,0]
+            yaw = 0
+            # team_num = 0 = blue team
+            if car.team_num == 0:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_BLUE_POS[spawn_inds[blue_count]]
+                yaw = SPAWN_BLUE_YAW[spawn_inds[blue_count]]
+                blue_count += 1
+            # team_num = 1 = orange team
+            elif car.team_num == 1:
+                # select a unique spawn state from pre-determined values
+                pos = SPAWN_ORANGE_POS[spawn_inds[orange_count]]
+                yaw = SPAWN_ORANGE_YAW[spawn_inds[orange_count]]
+                orange_count += 1
+            # set car state values
+            car.set_pos(*pos)
+            car.set_rot(yaw=yaw)
+            car.boost = 0.33            
+            
+            
+            
 class LineState(StateSetter):
     
     def __init__(self):

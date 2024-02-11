@@ -195,16 +195,17 @@ class GoalScoredReward(RewardFunction):
         blue_scored   = False
         orange_scored = False
         
-        if self.previous_blue_score != state.blue_score:
+        if player.team_num == 0 and self.previous_blue_score != state.blue_score:
             blue_scored = True
             self.previous_blue_score = state.blue_score
         
-        if self.previous_orange_score != state.orange_score:
+        if player.team_num == 1 and self.previous_orange_score != state.orange_score:
             orange_scored = True
             self.previous_orange_score = state.orange_score
             
         if(player.team_num == 0 and not blue_scored  ) : return 0 
         if(player.team_num == 1 and not orange_scored) : return 0
+        
         
         
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
