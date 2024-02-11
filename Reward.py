@@ -228,6 +228,7 @@ class GoalScoredReward(RewardFunction):
         
         
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
+        print(f"################# MARQUER {1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)}#######################")
         return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
 
     def get_final_reward(self, player, state, previous_action):
@@ -262,14 +263,14 @@ class BallTouchReward(RewardFunction):
 
     def get_reward(self, player, state, previous_action):
         
-        if not player.ball_touched : 
-            self.last_touch = False
-            return 0
-        
         if self.last_touch:
             self.lamb = max(0.1, self.lamb * 0.95)
         else:
             self.lamb = min(1.0, self.lamb + 0.013)
+        
+        if not player.ball_touched : 
+            self.last_touch = False
+            return 0
             
         self.last_touch = True
             

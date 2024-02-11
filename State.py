@@ -430,7 +430,7 @@ class LineState(StateSetter):
         for car in state_wrapper.cars:
             car_x = random.randint(-int(wall_x), int(wall_x))
             #ball_y = random.randint(-int(wall_y), int(wall_y))
-            car_y = 2500 + random.randint(-int(self.largeur), int(self.largeur)) if count == 1  else -2500 + random.randint(-int(self.largeur), int(self.largeur))
+            car_y = 2300 + random.randint(-int(self.largeur), int(self.largeur)) if count == 1  else -2300 + random.randint(-int(self.largeur), int(self.largeur))
             yaw = -0.5 * np.pi if count == 1 else 0.5 * np.pi
             car_z = 17
             car.set_pos(car_x, car_y, car_z)

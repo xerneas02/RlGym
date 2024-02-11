@@ -57,15 +57,15 @@ rewards = CombinedReward(
             (
                 30    ,  # GoalScoredReward
                 0.0000  ,  # BoostDifferenceReward 
-                4       ,  # BallTouchReward
+                5       ,  # BallTouchReward
                 0.3     ,  # DemoReward
-                0.15  ,  # DistancePlayerBallReward
+                0.10  ,  # DistancePlayerBallReward
                 0.000000  ,  # DistanceBallGoalReward
                 0.001,  # FacingBallReward
                 0.0025  ,  # AlignBallGoalReward
-                0.00125 ,  # ClosestToBallReward
+                0.002 ,  # ClosestToBallReward
                 0.000000 ,  # TouchedLastReward
-                0.0030 ,  # BehindBallReward
+                0.025 ,  # BehindBallReward
                 0.000000 ,  # VelocityPlayerBallReward
                 0.000000  ,  # KickoffReward (0.1)
                 0.000000  ,  # VelocityReward (0.000625)
@@ -84,7 +84,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(800),
+        terminal_conditions = (common_conditions.TimeoutCondition(600),
                                NoTouchFirstTimeoutCondition(100),
                                common_conditions.GoalScoredCondition()),
                                #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     
     file_model_name = "touchTheBallPlease"
     
-    nbRep = 1000
+    nbRep = 100000
     
     save_periode = 1e5
     
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 3000000
+    n = 10000000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     total_steps = 0
@@ -197,7 +197,7 @@ if __name__ == "__main__":
         
         progressBard = ProgressBarCallback()
         
-        callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback,LogRewardCallback()])
+        callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
             model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
