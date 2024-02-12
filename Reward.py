@@ -42,7 +42,7 @@ class CombinedReward(RewardFunction):
         
         self.verbose = verbose
         self.total_per_rew = np.zeros_like(reward_functions)
-        self.period = 500   #50 ~ 10 000 step
+        self.period = 100_000
         self.count_period = 0
 
         if len(self.reward_functions) != len(self.reward_weights):
@@ -117,6 +117,7 @@ class CombinedReward(RewardFunction):
         
         total = float(np.dot(self.reward_weights, rewards))
         self.count += 1
+        self.count_period += 1
         
         for i in range(len(rewards)):
             self.total_per_rew[i] += rewards[i]

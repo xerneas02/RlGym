@@ -59,10 +59,10 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                5       ,  # GoalScoredReward                    #1
-                5       ,  # SaveReward
+                10      ,  # GoalScoredReward                    #1
+                1       ,  # SaveReward
                 0.0025  ,  # BoostDifferenceReward               #2
-                1       ,  # BallTouchReward                     #3
+                0.5     ,  # BallTouchReward                     #3
                 0.3     ,  # DemoReward                          #4
                 0.0050  ,  # DistancePlayerBallReward            #5
                 0.0050  ,  # DistanceBallGoalReward              #6
@@ -70,17 +70,17 @@ rewards = CombinedReward(
                 0.00200 ,  # AlignBallGoalReward                 #8
                 0.00125 ,  # ClosestToBallReward                 #9
                 0.00125 ,  # TouchedLastReward                   #10
-                0.0400     ,  # BehindBallReward                  #11
+                0.00125 ,  # BehindBallReward                    #11
                 0.00125 ,  # VelocityPlayerBallReward            #12
                 0.0025  ,  # KickoffReward (0.1)                 #13
                 0.0025  ,  # VelocityReward (0.000625)           #14
                 0.00125 ,  # BoostAmountReward                   #15
                 0.005   ,  # ForwardVelocityReward               #16
                 0       ,  # FirstTouchReward                    #17
-                0.003   ,  # DontTouchPenalityReward             #18
-                0.002   ,  # DontGoalPenalityReward              #19   
+                0.00    ,  # DontTouchPenalityReward             #18
+                0.003   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
-                10      ,  # DiffDistanceBallGoalReward          #21
+                0       ,  # DiffDistanceBallGoalReward          #21
                 0.003   ,  # BehindTheBallPenalityReward
              ),
             verbose=1
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "ScoreTheGoalPlease"
+    file_model_name = "rl_model"
     
     nbRep = 1000
     
