@@ -81,7 +81,7 @@ rewards = CombinedReward(
                 0.003   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
                 0       ,  # DiffDistanceBallGoalReward          #21
-                0.003   ,  # BehindTheBallPenalityReward
+                0.00    ,  # BehindTheBallPenalityReward
              ),
             verbose=1
         )

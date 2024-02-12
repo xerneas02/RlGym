@@ -1,6 +1,10 @@
 import numpy as np
 from rlgym_compat import GameState
 
+import numpy as np
+
+
+
 
 class ContinuousAction:
     """
@@ -15,7 +19,9 @@ class ContinuousAction:
         raise NotImplementedError("We don't implement get_action_space to remove the gym dependency")
 
     def parse_actions(self, actions: np.ndarray, state: GameState) -> np.ndarray:
+
         actions = actions.reshape((-1, 8))
+
 
         actions[..., :5] = actions[..., :5].clip(-1, 1)
         # The final 3 actions handle are jump, boost and handbrake. They are inherently discrete so we convert them to either 0 or 1.
