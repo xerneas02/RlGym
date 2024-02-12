@@ -35,6 +35,7 @@ DiffDistanceBallGoalReward = DiffReward(DistanceBallGoalReward(z_axe=False))
 rewards = CombinedReward(
             (
                 GoalScoredReward(),
+                SaveReward(),
                 BoostDifferenceReward(),
                 BallTouchReward(),
                 DemoReward(),
@@ -58,9 +59,10 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                50    ,  # GoalScoredReward                      #1
+                10      ,  # GoalScoredReward                    #1
+                1       ,  # SaveReward
                 0.0025  ,  # BoostDifferenceReward               #2
-                5       ,  # BallTouchReward                     #3
+                0.5     ,  # BallTouchReward                     #3
                 0.3     ,  # DemoReward                          #4
                 0.0050  ,  # DistancePlayerBallReward            #5
                 0.0050  ,  # DistanceBallGoalReward              #6
@@ -68,18 +70,18 @@ rewards = CombinedReward(
                 0.00200 ,  # AlignBallGoalReward                 #8
                 0.00125 ,  # ClosestToBallReward                 #9
                 0.00125 ,  # TouchedLastReward                   #10
-                0.0400     ,  # BehindBallReward                  #11
+                0.00125 ,  # BehindBallReward                    #11
                 0.00125 ,  # VelocityPlayerBallReward            #12
                 0.0025  ,  # KickoffReward (0.1)                 #13
                 0.0025  ,  # VelocityReward (0.000625)           #14
                 0.00125 ,  # BoostAmountReward                   #15
                 0.005   ,  # ForwardVelocityReward               #16
                 0       ,  # FirstTouchReward                    #17
-                0.003   ,  # DontTouchPenalityReward             #18
-                0.002   ,  # DontGoalPenalityReward              #19   
+                0.00    ,  # DontTouchPenalityReward             #18
+                0.003   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
-                10      ,  # DiffDistanceBallGoalReward          #21
-                0.003   ,  # BehindTheBallPenalityReward
+                0       ,  # DiffDistanceBallGoalReward          #21
+                0.00    ,  # BehindTheBallPenalityReward
              ),
             verbose=1
         )
@@ -95,34 +97,32 @@ def get_match(game_speed=GAME_SPEED):
         state_setter        = CombinedState( 
                                 rewards,
                                 (                   #42 Garde coef par defaut
-                                    (DefaultStateClose(), ()),
-                                    (DefaultStateCloseOrange(),()),
-                                    (TrainingStateSetter(), ()),
-                                    (RandomState(), ()),
-                                    (RandomStateOrange(), ()),
-                                    (InvertedState(), ()),
-                                    (InvertedStateOrange(), ()),
-                                    (GoaliePracticeState(), ()), 
-                                    (HoopsLikeSetter(), ()),
-                                    (BetterRandom(), ()),
-                                    (KickoffLikeSetter(), ()),
-                                    (WallPracticeState(), ()),
-                                    (LineState (2300), ())
+                                    (DefaultStateClose(),         ()),
+                                    (DefaultStateCloseOrange(),   ()),
+                                    (TrainingStateSetter(),       ()),
+                                    (RandomState(),               ()),
+                                    (RandomStateOrange(),         ()),
+                                    (InvertedState(),             ()),
+                                    (InvertedStateOrange(),       ()),
+                                    (GoaliePracticeState(),       ()), 
+                                    (HoopsLikeSetter(),           ()),
+                                    (BetterRandom(),              ()),
+                                    (KickoffLikeSetter(),         ()),
+                                    (WallPracticeState(),         ())
                                 ),
                                 (
-                                    0.1, #DefaultStateClose
-                                    0.1, #DefaultStateCloseOrange
-                                    0.1, #TrainingStateSetter
-                                    0.1, #RandomState
+                                    0.15, #DefaultStateClose
+                                    0.05, #DefaultStateCloseOrange
+                                    0.0, #TrainingStateSetter
+                                    0.15, #RandomState
                                     0.1, #RandomStateOrange
-                                    0.1, #InvertedState
+                                    0.15, #InvertedState
                                     0.1, #InvertedStateOrange
-                                    0.00, #GoaliePracticeState
-                                    0.00, #HoopsLikeSetter
-                                    0.00, #BetterRandom
-                                    0.1, #KickoffLikeSetter
-                                    0.1, #WallPracticeState
-                                    0.1,  #LineState
+                                    0.0, #GoaliePracticeState
+                                    0.0, #HoopsLikeSetter
+                                    0.0, #BetterRandom
+                                    0.0, #KickoffLikeSetter
+                                    0.3, #WallPracticeState
                                 )
                              ),
                                 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "ScoreTheGoalPlease"
+    file_model_name = "rl_model"
     
     nbRep = 1000
     
