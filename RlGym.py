@@ -12,6 +12,7 @@ from rlgym_tools.extra_state_setters.goalie_state import GoaliePracticeState
 from rlgym_tools.extra_state_setters.hoops_setter import HoopsLikeSetter
 from rlgym_tools.extra_state_setters.symmetric_setter import KickoffLikeSetter
 from rlgym_tools.extra_state_setters.wall_state import WallPracticeState
+from rlgym_tools.extra_rewards.diff_reward import DiffReward
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckNan
@@ -28,6 +29,8 @@ from CustomTerminal import CustomTerminalCondition
 
 import os
 import datetime
+
+DiffDistanceBallGoalReward = DiffReward(DistanceBallGoalReward(z_axe=False))
 
 rewards = CombinedReward(
             (
@@ -50,7 +53,10 @@ rewards = CombinedReward(
                 ForwardVelocityReward(),
                 FirstTouchReward(),
                 DontTouchPenalityReward(),
+                DontGoalPenalityReward(),
                 AirPenalityReward(),
+                DiffDistanceBallGoalReward,
+                BehindTheBallPenalityReward()
             ),
             (
                 5       ,  # GoalScoredReward                    #1
@@ -58,13 +64,13 @@ rewards = CombinedReward(
                 0.0025  ,  # BoostDifferenceReward               #2
                 1       ,  # BallTouchReward                     #3
                 0.3     ,  # DemoReward                          #4
-                0.0025  ,  # DistancePlayerBallReward            #5
-                0.0025  ,  # DistanceBallGoalReward              #6
+                0.0050  ,  # DistancePlayerBallReward            #5
+                0.0050  ,  # DistanceBallGoalReward              #6
                 0.000625,  # FacingBallReward                    #7
-                0.00125 ,  # AlignBallGoalReward                 #8
+                0.00200 ,  # AlignBallGoalReward                 #8
                 0.00125 ,  # ClosestToBallReward                 #9
                 0.00125 ,  # TouchedLastReward                   #10
-                0.00125 ,  # BehindBallReward                    #11
+                0.0400     ,  # BehindBallReward                  #11
                 0.00125 ,  # VelocityPlayerBallReward            #12
                 0.0025  ,  # KickoffReward (0.1)                 #13
                 0.0025  ,  # VelocityReward (0.000625)           #14
@@ -72,8 +78,11 @@ rewards = CombinedReward(
                 0.005   ,  # ForwardVelocityReward               #16
                 0       ,  # FirstTouchReward                    #17
                 0.003   ,  # DontTouchPenalityReward             #18
-                0       ,  # AirPenality                         #19
-            ),
+                0.002   ,  # DontGoalPenalityReward              #19   
+                0       ,  # AirPenality                         #20
+                10      ,  # DiffDistanceBallGoalReward          #21
+                0.003   ,  # BehindTheBallPenalityReward
+             ),
             verbose=1
         )
 
@@ -85,7 +94,7 @@ def get_match(game_speed=GAME_SPEED):
         terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
-                                rewards,   
+                                rewards,
                                 (                   #42 Garde coef par defaut
                                     (DefaultStateClose(),         ()),
                                     (DefaultStateCloseOrange(),   ()),
@@ -158,7 +167,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "rl_model"
+    file_model_name = "ScoreTheGoalPlease"
     
     nbRep = 1000
     
@@ -235,4 +244,3 @@ if __name__ == "__main__":
         file = open("log.txt", "a")
         file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
         file.close()
-        

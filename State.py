@@ -38,6 +38,9 @@ class CombinedState(StateSetter):
         self.rewards = rewards
         self.state_setters = state_setters
         self.state_probas = state_probas or np.ones_like(state_setters)
+        
+        
+        
 
         if len(self.state_setters) != len(self.state_probas):
             raise ValueError(
@@ -572,8 +575,9 @@ class InvertedStateOrange(StateSetter):
             
 class LineState(StateSetter):
     
-    def __init__(self):
+    def __init__(self, largeur):
         super().__init__()
+        self.largeur = largeur
 
     def reset(self, state_wrapper: StateWrapper):
         
@@ -584,15 +588,16 @@ class LineState(StateSetter):
         #----SPAWN BOUBOULE--------------------------------
         ball_x = random.randint(-int(wall_x), int(wall_x))
         #ball_y = random.randint(-int(wall_y), int(wall_y))
-        ball_y = 0
+        ball_y = 0 + random.randint(-int(self.largeur), int(self.largeur))
         ball_z = random.randint(int(BALL_RADIUS)+1, int(ceiling/2))
         state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
         #---------------------------------------------------
         #----SPAWN CARS-------------------------------------
         for car in state_wrapper.cars:
             car_x = random.randint(-int(wall_x), int(wall_x))
             #ball_y = random.randint(-int(wall_y), int(wall_y))
-            car_y = 3000 if count == 1  else -3000
+            car_y = 2300 + random.randint(-int(self.largeur), int(self.largeur)) if count == 1  else -2300 + random.randint(-int(self.largeur), int(self.largeur))
             yaw = -0.5 * np.pi if count == 1 else 0.5 * np.pi
             car_z = 17
             car.set_pos(car_x, car_y, car_z)

@@ -13,7 +13,7 @@ import numpy as np
 from scipy.spatial.distance import cosine
 
 
-from typing import Any, Optional, Tuple, overload, Union
+from typing import Any, Optional, Tuple, overload, Union,Dict
 
 from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils.gamestates import GameState, PlayerData
@@ -36,6 +36,10 @@ class CombinedReward(RewardFunction):
         self.reward_functions       = reward_functions
         self.reward_weights         = reward_weights or np.ones_like(reward_functions)
         self.default_reward_weights = reward_weights or np.ones_like(reward_functions)
+        
+        self.reward_names = [str(self.reward_functions[i]).split('.')[1].split(' ')[0] for i in range(len(self.reward_functions))]
+        self.track_rewards_on_rollout = {f"{name}":[] for name in self.reward_names}
+        
         self.verbose = verbose
         self.total_per_rew = np.zeros_like(reward_functions)
         self.period = 500   #50 ~ 10 000 step
@@ -58,6 +62,19 @@ class CombinedReward(RewardFunction):
     def set_rewards_weights(self, reward_weights):
         self.reward_weights = reward_weights
 
+
+    def clean_track(self) -> None:
+        for name in self.reward_names:
+            self.track_rewards_on_rollout[name][:] = []
+            
+    def get_mean_rewards(self) -> Dict[str,float]:
+        mean_dict = {}
+        
+        for name in self.reward_names:
+            mean_dict[name] = np.mean(self.track_rewards_on_rollout[name])
+            
+            
+            
     @classmethod
     def from_zipped(cls, *rewards_and_weights: Union[RewardFunction, Tuple[RewardFunction, float]]) -> "CombinedReward":
         """
@@ -106,8 +123,11 @@ class CombinedReward(RewardFunction):
 
         if GAME_SPEED == 1 and self.verbose == 1:
             for i in range(len(rewards)):
+                pondered_reward = rewards[i]*self.reward_weights[i]
+                self.track_rewards_on_rollout[self.reward_names[i]].append(pondered_reward)
+                
                 if rewards[i] != 0 and player.team_num == 0:
-                    print(f"reward {str(self.reward_functions[i]).split('.')[1].split(' ')[0]}: {rewards[i]*self.reward_weights[i]}")
+                    print(f"reward {self.reward_names[i]}: {pondered_reward}")
             
             
             if total != 0 and player.team_num == 0:
@@ -649,3 +669,45 @@ class SaveReward(RewardFunction):
         
         return result * -(ball_velocity_direction)
 
+class DontGoalPenalityReward(RewardFunction):
+    def __init__(self):
+        super().__init__()
+        self.ticks = 0
+        self.has_goaled = False
+        self.previous_blue_score   = 0
+        self.previous_orange_score = 0
+        
+    def reset(self, initial_state: GameState):
+        self.ticks = 0
+        self.has_goaled = False
+        self.previous_blue_score   = initial_state.blue_score
+        self.previous_orange_score = initial_state.orange_score
+
+    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float: 
+        if self.previous_blue_score != state.blue_score or self.previous_orange_score != state.orange_score:
+            self.has_goaled = True
+        
+        self.ticks += 1
+    
+        return - (self.ticks * (not self.has_goaled) * 0.01)
+    
+class BehindTheBallPenalityReward(RewardFunction):
+    def __init__(self):
+        super().__init__()
+        self.ticks = 0
+        self.is_behind = False
+
+    def reset(self, initial_state: GameState):
+        self.ticks = 0
+        self.has_goaled = False
+
+
+    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float: 
+        self.is_behind = player.car_data.position[1] < state.ball.position[1]
+        
+        self.ticks += 1
+    
+        return - (self.ticks * (not self.is_behind) * 0.01)
+
+    def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+        return self.get_reward(player, state, previous_action)
