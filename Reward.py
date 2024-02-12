@@ -145,6 +145,14 @@ class CombinedReward(RewardFunction):
             print(f"---  Time = {self.count}  ---")
         
         self.count_period += 1
+        
+        rewards = [
+            func.get_final_reward(player, state, previous_action)
+            for func in self.reward_functions
+        ]
+        
+        for i in range(len(rewards)):
+            self.total_per_rew[i] += rewards[i]
 
         if self.count_period >= self.period:
             file = open("log_rew.txt", "a")
@@ -156,12 +164,6 @@ class CombinedReward(RewardFunction):
             
             file.write(txt)
             file.close()
-            
-        
-        rewards = [
-            func.get_final_reward(player, state, previous_action)
-            for func in self.reward_functions
-        ]
 
         return float(np.dot(self.reward_weights, rewards))
 
@@ -215,11 +217,11 @@ class GoalScoredReward(RewardFunction):
         blue_scored   = False
         orange_scored = False
         
-        if self.previous_blue_score != state.blue_score:
+        if player.team_num == 0 and self.previous_blue_score != state.blue_score:
             blue_scored = True
             self.previous_blue_score = state.blue_score
         
-        if self.previous_orange_score != state.orange_score:
+        if player.team_num == 1 and self.previous_orange_score != state.orange_score:
             orange_scored = True
             self.previous_orange_score = state.orange_score
             
@@ -227,8 +229,8 @@ class GoalScoredReward(RewardFunction):
         if(player.team_num == 1 and not orange_scored) : return 0
         
         
+        
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
-        print(f"################# MARQUER {1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)}#######################")
         return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
 
     def get_final_reward(self, player, state, previous_action):
@@ -592,3 +594,45 @@ class DontTouchPenalityReward(RewardFunction):
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action)
 
+class DontGoalPenalityReward(RewardFunction):
+    def __init__(self):
+        super().__init__()
+        self.ticks = 0
+        self.has_goaled = False
+        self.previous_blue_score   = 0
+        self.previous_orange_score = 0
+        
+    def reset(self, initial_state: GameState):
+        self.ticks = 0
+        self.has_goaled = False
+        self.previous_blue_score   = initial_state.blue_score
+        self.previous_orange_score = initial_state.orange_score
+
+    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float: 
+        if self.previous_blue_score != state.blue_score or self.previous_orange_score != state.orange_score:
+            self.has_goaled = True
+        
+        self.ticks += 1
+    
+        return - (self.ticks * (not self.has_goaled) * 0.01)
+    
+class BehindTheBallPenalityReward(RewardFunction):
+    def __init__(self):
+        super().__init__()
+        self.ticks = 0
+        self.is_behind = False
+
+    def reset(self, initial_state: GameState):
+        self.ticks = 0
+        self.has_goaled = False
+
+
+    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float: 
+        self.is_behind = player.car_data.position[1] < state.ball.position[1]
+        
+        self.ticks += 1
+    
+        return - (self.ticks * (not self.is_behind) * 0.01)
+
+    def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+        return self.get_reward(player, state, previous_action)

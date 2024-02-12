@@ -19,12 +19,13 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, StateSetterInit, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState 
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
-from Callback import HParamCallback,LogRewardCallback
+from Callback import HParamCallback
 from Constante import *
+from CustomTerminal import CustomTerminalCondition
 
 import os
 import datetime
@@ -51,31 +52,35 @@ rewards = CombinedReward(
                 ForwardVelocityReward(),
                 FirstTouchReward(),
                 DontTouchPenalityReward(),
+                DontGoalPenalityReward(),
                 AirPenalityReward(),
                 DiffDistanceBallGoalReward,
+                BehindTheBallPenalityReward()
             ),
             (
-                30    ,  # GoalScoredReward
-                0.0000  ,  # BoostDifferenceReward 
-                5       ,  # BallTouchReward
-                0.3     ,  # DemoReward
-                0.10  ,  # DistancePlayerBallReward
-                0.000000  ,  # DistanceBallGoalReward
-                0.001,  # FacingBallReward
-                0.0025  ,  # AlignBallGoalReward
-                0.002 ,  # ClosestToBallReward
-                0.000000 ,  # TouchedLastReward
-                0.025 ,  # BehindBallReward
-                0.000000 ,  # VelocityPlayerBallReward
-                0.000000  ,  # KickoffReward (0.1)
-                0.000000  ,  # VelocityReward (0.000625)
-                0.000000 ,  # BoostAmountReward
-                0.000000   ,  # ForwardVelocityReward
-                3       ,  # FirstTouchReward
-                1     ,  # DontTouchPenalityReward
-                0.000000       ,  # AirPenality
-                1  ,  # DiffDistanceBallGoalReward
-            ),
+                50    ,  # GoalScoredReward                      #1
+                0.0025  ,  # BoostDifferenceReward               #2
+                5       ,  # BallTouchReward                     #3
+                0.3     ,  # DemoReward                          #4
+                0.0050  ,  # DistancePlayerBallReward            #5
+                0.0050  ,  # DistanceBallGoalReward              #6
+                0.000625,  # FacingBallReward                    #7
+                0.00200 ,  # AlignBallGoalReward                 #8
+                0.00125 ,  # ClosestToBallReward                 #9
+                0.00125 ,  # TouchedLastReward                   #10
+                0.0400     ,  # BehindBallReward                  #11
+                0.00125 ,  # VelocityPlayerBallReward            #12
+                0.0025  ,  # KickoffReward (0.1)                 #13
+                0.0025  ,  # VelocityReward (0.000625)           #14
+                0.00125 ,  # BoostAmountReward                   #15
+                0.005   ,  # ForwardVelocityReward               #16
+                0       ,  # FirstTouchReward                    #17
+                0.003   ,  # DontTouchPenalityReward             #18
+                0.002   ,  # DontGoalPenalityReward              #19   
+                0       ,  # AirPenality                         #20
+                10      ,  # DiffDistanceBallGoalReward          #21
+                0.003   ,  # BehindTheBallPenalityReward
+             ),
             verbose=1
         )
 
@@ -84,38 +89,43 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(600),
-                               NoTouchFirstTimeoutCondition(100),
-                               common_conditions.GoalScoredCondition()),
-                               #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(300), 
+                               common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
-                                rewards,   
+                                rewards,
                                 (                   #42 Garde coef par defaut
-                                    (DefaultStateClose(),   (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 3, 42, 42)),
-                                    (TrainingStateSetter(), (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)),
-                                    (RandomState(),         (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 42)),
-                                    (InvertedState(),       (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 3, 42, 42)),
-                                    (GoaliePracticeState(), (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)), 
-                                    (HoopsLikeSetter(),     (42, 3, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)),
-                                    (BetterRandom(),        (42, 3, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)),
-                                    (KickoffLikeSetter(),   (0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 3, 42, 42)),
-                                    (WallPracticeState(),   (42, 3, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 0, 42)),
-                                    (LineState(2500), ())
+                                    (DefaultStateClose(), ()),
+                                    (DefaultStateCloseOrange(),()),
+                                    (TrainingStateSetter(), ()),
+                                    (RandomState(), ()),
+                                    (RandomStateOrange(), ()),
+                                    (InvertedState(), ()),
+                                    (InvertedStateOrange(), ()),
+                                    (GoaliePracticeState(), ()), 
+                                    (HoopsLikeSetter(), ()),
+                                    (BetterRandom(), ()),
+                                    (KickoffLikeSetter(), ()),
+                                    (WallPracticeState(), ()),
+                                    (LineState (2300), ())
                                 ),
                                 (
-                                    0.0, #DefaultStateClose
-                                    0.0, #TrainingStateSetter
-                                    0.0, #RandomState
-                                    0.0, #InvertedState
-                                    0.0, #GoaliePracticeState
-                                    0.0, #HoopsLikeSetter
-                                    0.0, #BetterRandom
-                                    0.0, #KickoffLikeSetter
-                                    0.0, #WallPracticeState
-                                    1.0  #LineState
+                                    0.1, #DefaultStateClose
+                                    0.1, #DefaultStateCloseOrange
+                                    0.1, #TrainingStateSetter
+                                    0.1, #RandomState
+                                    0.1, #RandomStateOrange
+                                    0.1, #InvertedState
+                                    0.1, #InvertedStateOrange
+                                    0.00, #GoaliePracticeState
+                                    0.00, #HoopsLikeSetter
+                                    0.00, #BetterRandom
+                                    0.1, #KickoffLikeSetter
+                                    0.1, #WallPracticeState
+                                    0.1,  #LineState
                                 )
                              ),
+                                
         action_parser       = ZeerLookupAction(),#LookupAction(),
         spawn_opponents     = True,
         tick_skip           = FRAME_SKIP
@@ -153,10 +163,14 @@ if __name__ == "__main__":
     file.write("")
     file.close(  )
     
+    file = open("log_error.txt", "w")
+    file.write("")
+    file.close(  )
     
-    file_model_name = "touchTheBallPlease"
     
-    nbRep = 100000
+    file_model_name = "ScoreTheGoalPlease"
+    
+    nbRep = 1000
     
     save_periode = 1e5
     
@@ -184,7 +198,7 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 10000000
+    n = 3000000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     total_steps = 0
@@ -218,12 +232,16 @@ if __name__ == "__main__":
                 )
             print("Model created")
         
-
-        model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+        try:
+            model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+        except Exception as e:
+            file = open("log_error.txt", "a")
+            file.write(f"Error {datetime.datetime.now()} :\n{e}")
+            file.close()
+            
         i += 1
         
         total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
         file = open("log.txt", "a")
         file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
         file.close()
-        

@@ -2,8 +2,11 @@ from rlgym.utils.common_values import CAR_MAX_SPEED, SIDE_WALL_X, BACK_WALL_Y, C
 import numpy as np
 
 FRAME_SKIP = 8
-GAME_SPEED = 1
-NUM_INSTANCE = 1
+GAME_SPEED = 100
+NUM_INSTANCE = 3
+
+MOVE_BALL      = True
+BALL_SPEED     = 1500
 
 LIM_X = SIDE_WALL_X - 1152 / 2 - BALL_RADIUS * 2 ** 0.5
 LIM_Y = BACK_WALL_Y - 1152 / 2 - BALL_RADIUS * 2 ** 0.5
