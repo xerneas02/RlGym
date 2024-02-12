@@ -125,6 +125,14 @@ class CombinedReward(RewardFunction):
             print(f"---  Time = {self.count}  ---")
         
         self.count_period += 1
+        
+        rewards = [
+            func.get_final_reward(player, state, previous_action)
+            for func in self.reward_functions
+        ]
+        
+        for i in range(len(rewards)):
+            self.total_per_rew[i] += rewards[i]
 
         if self.count_period >= self.period:
             file = open("log_rew.txt", "a")
@@ -136,12 +144,6 @@ class CombinedReward(RewardFunction):
             
             file.write(txt)
             file.close()
-            
-        
-        rewards = [
-            func.get_final_reward(player, state, previous_action)
-            for func in self.reward_functions
-        ]
 
         return float(np.dot(self.reward_weights, rewards))
 
