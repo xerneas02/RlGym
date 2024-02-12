@@ -573,4 +573,79 @@ class DontTouchPenalityReward(RewardFunction):
 
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         return self.get_reward(player, state, previous_action)
+    
+class VelocityBallOwnGoalReward(RewardFunction):
+    def reset(self, initial_state):
+        pass
+
+    def get_reward(self, player, state, previous_action):
+        ball_velocity = state.ball.linear_velocity
+        
+        if np.linalg.norm(ball_velocity, 2) < 0.01 :
+            return 0
+        
+        ball_position = state.ball.position
+        
+        
+        direction_to_goal = ORANGE_GOAL_CENTER - ball_position
+        direction_to_goal /= np.linalg.norm(direction_to_goal)
+        
+        ball_velocity_direction = np.dot(ball_velocity, direction_to_goal)
+        
+        return ball_velocity_direction / np.linalg.norm(ball_velocity, 2)
+
+    def get_final_reward(self, player, state, previous_action):
+        return self.get_reward(player, state, previous_action)
+    
+class VelocityBallOpponentGoalReward(RewardFunction):
+    def reset(self, initial_state):
+        pass
+
+    def get_reward(self, player, state, previous_action):
+        ball_velocity = state.ball.linear_velocity
+        
+        if np.linalg.norm(ball_velocity, 2) < 0.01 :
+            return 0
+        
+        ball_position = state.ball.position
+        
+        
+        direction_to_goal = BLUE_GOAL_CENTER - ball_position
+        direction_to_goal /= np.linalg.norm(direction_to_goal)
+        
+        ball_velocity_direction = np.dot(ball_velocity, direction_to_goal)
+        
+        return ball_velocity_direction / np.linalg.norm(ball_velocity, 2)
+
+    def get_final_reward(self, player, state, previous_action):
+        return self.get_reward(player, state, previous_action)
+    
+class SaveReward(RewardFunction):
+    def __init__(self):
+        self.past_ball_velocity = 0
+    
+    def reset(self, initial_state):
+        self.past_ball_velocity = 0
+
+    def get_reward(self, player, state, previous_action):
+        ball_velocity = state.ball.linear_velocity
+        
+        if np.linalg.norm(ball_velocity, 2) < 0.01 :
+            return 0
+        
+        ball_position = state.ball.position
+        
+        
+        direction_to_goal = BLUE_GOAL_CENTER - ball_position
+        direction_to_goal /= np.linalg.norm(direction_to_goal)
+        
+        ball_velocity_direction = np.dot(ball_velocity, direction_to_goal)
+        ball_velocity_direction/= np.linalg.norm(ball_velocity, 2)
+        
+        
+        result = ball_velocity_direction < 0 and self.past_ball_velocity > 0 and player.ball_touched
+        
+        self.past_ball_velocity = ball_velocity_direction
+        
+        return result * -(ball_velocity_direction)
 

@@ -32,6 +32,7 @@ import datetime
 rewards = CombinedReward(
             (
                 GoalScoredReward(),
+                SaveReward(),
                 BoostDifferenceReward(),
                 BallTouchReward(),
                 DemoReward(),
@@ -52,9 +53,10 @@ rewards = CombinedReward(
                 AirPenalityReward(),
             ),
             (
-                1.45    ,  # GoalScoredReward                    #1
+                5       ,  # GoalScoredReward                    #1
+                5       ,  # SaveReward
                 0.0025  ,  # BoostDifferenceReward               #2
-                5       ,  # BallTouchReward                     #3
+                1       ,  # BallTouchReward                     #3
                 0.3     ,  # DemoReward                          #4
                 0.0025  ,  # DistancePlayerBallReward            #5
                 0.0025  ,  # DistanceBallGoalReward              #6
@@ -80,32 +82,32 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(200), AfterTouchTimeoutCondition(10)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,   
                                 (                   #42 Garde coef par defaut
-                                    (DefaultStateClose(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (DefaultStateCloseOrange(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (TrainingStateSetter(), (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0, 42)),
-                                    (RandomState(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (RandomStateOrange(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (InvertedState(),       (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (InvertedStateOrange(),       (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (GoaliePracticeState(), (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)), 
-                                    (HoopsLikeSetter(),     (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)),
-                                    (BetterRandom(),        (42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 0,  42)),
-                                    (KickoffLikeSetter(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 )),
-                                    (WallPracticeState(),   (42, 42, 42, 42, 0.005, 0, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42 ))
+                                    (DefaultStateClose(),         ()),
+                                    (DefaultStateCloseOrange(),   ()),
+                                    (TrainingStateSetter(),       ()),
+                                    (RandomState(),               ()),
+                                    (RandomStateOrange(),         ()),
+                                    (InvertedState(),             ()),
+                                    (InvertedStateOrange(),       ()),
+                                    (GoaliePracticeState(),       ()), 
+                                    (HoopsLikeSetter(),           ()),
+                                    (BetterRandom(),              ()),
+                                    (KickoffLikeSetter(),         ()),
+                                    (WallPracticeState(),         ())
                                 ),
                                 (
-                                    0.05, #DefaultStateClose
-                                    0.15, #DefaultStateCloseOrange
+                                    0.15, #DefaultStateClose
+                                    0.05, #DefaultStateCloseOrange
                                     0.0, #TrainingStateSetter
-                                    0.1, #RandomState
-                                    0.15, #RandomStateOrange
-                                    0.1, #InvertedState
-                                    0.15, #InvertedStateOrange
+                                    0.15, #RandomState
+                                    0.1, #RandomStateOrange
+                                    0.15, #InvertedState
+                                    0.1, #InvertedStateOrange
                                     0.0, #GoaliePracticeState
                                     0.0, #HoopsLikeSetter
                                     0.0, #BetterRandom

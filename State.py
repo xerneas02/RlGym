@@ -15,7 +15,7 @@ from typing import Any, Optional, Tuple, overload, Union
 
             
             
-def movement_ball(ball, z_axe = True):
+def movement_ball(ball, z_axe = False):
     ball_x_velo = random.randint(-BALL_SPEED, BALL_SPEED)
     ball_y_velo = random.randint(-BALL_SPEED, BALL_SPEED)
     
