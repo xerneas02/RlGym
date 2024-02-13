@@ -156,13 +156,17 @@ This state setter is a variation of the default state setter where the initial p
 
 
 ### RandomState
-This state setter randomly distributes ball on the field while keeping the car on the default kickoff positions.
+This state setter randomly distributes the ball on the field while keeping the cars in their default kickoff positions.
 
 ### InvertedState
-This is a normal kickoff state but the car are facing away from the ball.
+This is a normal kickoff state, but the cars are facing away from the ball.
 
 ### DefaultStateCloseOrange / RandomStateOrange / InvertedStateOrange
-Samething as **DefaultStateClose / RandomState / InvertedState** but the orange car are on the blue side and the blue are on the orange side.
+Similar to **DefaultStateClose / RandomState / InvertedState**, but the orange cars are positioned on the blue side, and the blue cars are on the orange side.
+
+### LineState
+This state setter randomly places the ball and the cars in their respective zones on the field.
+
 
 
 
