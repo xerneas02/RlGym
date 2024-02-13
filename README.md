@@ -167,6 +167,24 @@ Similar to **DefaultStateClose / RandomState / InvertedState**, but the orange c
 ### LineState
 This state setter randomly places the ball and the cars in their respective zones on the field.
 
+## Terminal Conditions
+Terminal conditions are events that signal the end of an episode. They need to implement both a `reset` method and an `is_terminal` method.
+
+#### BallTouchCondition
+This terminal condition checks if there has been a touch on the ball since the last reset. It resets its state whenever the game state is reset.
+
+#### NoTouchOrGoalTimeoutCondition
+This terminal condition acts as a timeout condition but resets the timeout timer when the ball is touched for the first time or when a goal is scored. It initializes with a specified timeout duration.
+
+#### NoTouchFirstTimeoutCondition
+Similar to `NoTouchOrGoalTimeoutCondition`, this terminal condition resets the timeout timer when the ball is touched for the first time. It initializes with a specified timeout duration.
+
+#### NoGoalTimeoutCondition
+This terminal condition resets the timeout timer when a goal is scored. It initializes with a specified timeout duration and can be further modified by a coefficient.
+
+#### AfterTouchTimeoutCondition
+This terminal condition starts a timeout timer when the ball is touched for the first time by any player.
+
 
 
 
