@@ -185,6 +185,39 @@ This terminal condition resets the timeout timer when a goal is scored. It initi
 #### AfterTouchTimeoutCondition
 This terminal condition starts a timeout timer when the ball is touched for the first time by any player.
 
+## ActionParser
+
+An ActionParser is a component responsible for parsing action indices into concrete actions suitable for the environment. It defines how the action space is represented and how actions are translated from indices to their corresponding values.
+
+### Description
+- **Initialization**: Upon initialization, an ActionParser typically defines the bins or discrete values for each action dimension.
+- **Action Space**: Provides a method to obtain the action space representation.
+- **Action Parsing**: Parses action indices into concrete action values.
+
+### ZeerLookupAction
+
+This ActionParser implementation generates a lookup table for Rocket League actions based on predefined bins or discrete values for each action dimension (throttle, steer, pitch, yaw, roll). The lookup table covers both ground and aerial actions.
+
+#### Behavior
+- **Initialization**: Initializes with predefined bins for each action dimension.
+- **Lookup Table Generation**: Generates a lookup table mapping action indices to concrete action values based on the defined bins. The lookup table includes actions for both ground and aerial maneuvers.
+- **Action Space**: Defines the action space as a discrete space with the size equal to the number of entries in the lookup table.
+- **Action Parsing**: Parses action indices into concrete action values using the generated lookup table.
+
+## Observer
+
+An Observation Builder, is responsible for constructing the observation vector provided to an agent at each timestep in a reinforcement learning environment. It determines what information the agent can perceive from the environment.
+
+### ZeerObservations
+
+This Observation Builder constructs observation vectors for Rocket League agents. It includes information about the ball, player's car, teammates, and opponents.
+
+#### Behavior
+- **Observation Construction**: Constructs the observation vector based on the state of the environment and the player's perspective. It includes information such as the position, velocity, and orientation of the ball and player's car, relative positions to the goal, boost amount, and other status indicators.
+- **Player Perspective**: Considers the perspective of the player, determining whether to use regular or inverted data for the ball, boost pads, and player's car. The inverted perspective is used if the player is on the orange team to be sure that the perspective of the field is the same for the bot no matter what it's team is.
+- **Normalization**: Normalizes position and velocity information based on predefined standard deviations.
+- **Additional Information**: Includes additional information such as the relative position of teammates and opponents, relative positions to the attacking and defending goals, and various status indicators for the player.
+
 
 
 
