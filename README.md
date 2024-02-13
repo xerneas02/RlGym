@@ -21,6 +21,26 @@ For RlBot you only need the ZZeer folder and there should be an rl_model.zip in 
 If you want to launch a training you should first check **Constante.py** the useful constants are **GAME_SPEED** set to 1 for real-time and 100 for accelerated time, and **NUM_INSTANCE** which dictates the number of instances that will run simultaneously.
 To launch the training run **RlGym.py**.
 
+## Log
+
+During training, ZZeer generates log files to track the progress of the simulation and provide insights into the bot's performance.
+
+### Tensorboard Logs
+
+Tensorboard log files are generated during training and stored in the `logs` folder. These logs are organized into folders named `PPO_...`, corresponding to the specific training session. Tensorboard logs provide visualizations and metrics for monitoring the training process, including rewards, policy loss, value loss, and more.
+
+### Reward Log
+
+Every approximately 100,000 steps, the `log_rew.txt` file records the total amount of each reward gained by the bot during that period. This log provides a detailed breakdown of the rewards accumulated by the bot, helping to analyze its behavior and performance over time.
+
+### Error Log
+
+The `log_error.txt` file indicates if there was a crash during the training process. If a crash occurs, this log file will contain the crash message, enabling developers to diagnose and address any issues that may have occurred.
+
+### Bot Restart Log
+
+The `log.txt` file records each time the bot restarts during training. Bot restarts may occur if the bot fails to make significant progress over time or if the simulation finishes. This log provides information on the total number of steps performed by the bot, giving insights into its training progress and performance.
+
 ## Reward
 
 All reward classes need to implement at least the methods **get_reward** and **get_final_reward**. The **get_reward** method is called at each step to get the reward of the bot and the **get_final_reward** method is called once at the end of the episode.
