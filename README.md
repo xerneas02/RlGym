@@ -23,7 +23,8 @@ To launch the training run **RlGym.py**.
 
 ## Reward
 
-All reward classes need to implement at least the methods **get_reward** and **get_final_reward**.
+All reward classes need to implement at least the methods **get_reward** and **get_final_reward**. The **get_reward** method is called at each step to get the reward of the bot and the **get_final_reward** method is called once at the end of the episode.
+Some of this reward functions come from [Seer: Reinforcement Learning in Rocket League pdf](https://nevillewalo.ch/assets/docs/MA_Neville_Walo_Seer_RLRL.pdf)
 
 ### CombinedReward
 This reward is a bit special; it's a reward that already exists in **rlgym.utils.reward_functions**. This version just adds some log messages when the game speed is at 1 to help debug the code.
@@ -101,6 +102,12 @@ Penalizes the bot for conceding a goal.
 ### BehindTheBallPenalityReward
 Penalizes the bot for being behind the ball.
 
+## StateSetter
+
+State setters allow setting starting states with different car positions, car velocities, ball positions, ball velocities, boost amounts, etc. A StateSetter needs to implement the **reset** method.
+
+### CombinedState
+This state setter is inspired by the **CombinedReward** class. It allows combining multiple other state setters and assigning them different probabilities of appearing, as well as different weights for the rewards. The way it works is by providing it a tuple of tuples, with each inner tuple containing a StateSetter class and another tuple. If this inner tuple is left empty, it will keep the default weights of the rewards. If you fill it with as many floats as there are rewards, it will override the default reward weights. For example, if you put 42 as a reward weight, it will keep the default value.
 
 
 
