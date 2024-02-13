@@ -162,7 +162,7 @@ This state setter randomly distributes ball on the field while keeping the car o
 This is a normal kickoff state but the car are facing away from the ball.
 
 ### DefaultStateCloseOrange / RandomStateOrange / InvertedStateOrange
-Samething as **DefaultStateClose** but the orange car are on the blue side and the blue are on the orange side.
+Samething as **DefaultStateClose / RandomState / InvertedState** but the orange car are on the blue side and the blue are on the orange side.
 
 
 
