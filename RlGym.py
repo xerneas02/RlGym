@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -59,7 +59,7 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                10      ,  # GoalScoredReward                    #1
+                7      ,  # GoalScoredReward                    #1
                 1       ,  # SaveReward
                 0.0025  ,  # BoostDifferenceReward               #2
                 0.5     ,  # BallTouchReward                     #3
@@ -70,18 +70,18 @@ rewards = CombinedReward(
                 0.00200 ,  # AlignBallGoalReward                 #8
                 0.00125 ,  # ClosestToBallReward                 #9
                 0.00125 ,  # TouchedLastReward                   #10
-                0.00125 ,  # BehindBallReward                    #11
-                0.00125 ,  # VelocityPlayerBallReward            #12
+                0.00300 ,  # BehindBallReward                    #11
+                0.00300 ,  # VelocityPlayerBallReward            #12
                 0.0025  ,  # KickoffReward (0.1)                 #13
                 0.0025  ,  # VelocityReward (0.000625)           #14
                 0.00125 ,  # BoostAmountReward                   #15
                 0.005   ,  # ForwardVelocityReward               #16
                 0       ,  # FirstTouchReward                    #17
-                0.00    ,  # DontTouchPenalityReward             #18
+                0.001    ,  # DontTouchPenalityReward             #18
                 0.003   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
-                0       ,  # DiffDistanceBallGoalReward          #21
-                0.00    ,  # BehindTheBallPenalityReward
+                5       ,  # DiffDistanceBallGoalReward          #21
+                0.001    ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -91,7 +91,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(1500), 
+        terminal_conditions = (common_conditions.TimeoutCondition(100), 
                                common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
@@ -108,21 +108,29 @@ def get_match(game_speed=GAME_SPEED):
                                     (HoopsLikeSetter(),           ()),
                                     (BetterRandom(),              ()),
                                     (KickoffLikeSetter(),         ()),
-                                    (WallPracticeState(),         ())
+                                    (WallPracticeState(),         ()),
+                                    (LineState(2300),             ()),
+                                    (DefaultState(),              ()),
+                                    (Attaque(),                   ()),
+                                    (Defense(),                   ())
                                 ),
                                 (
-                                    0.15, #DefaultStateClose
-                                    0.05, #DefaultStateCloseOrange
+                                    0.0, #DefaultStateClose
+                                    0.0, #DefaultStateCloseOrange
                                     0.0, #TrainingStateSetter
-                                    0.15, #RandomState
-                                    0.1, #RandomStateOrange
-                                    0.15, #InvertedState
-                                    0.1, #InvertedStateOrange
+                                    0.0, #RandomState
+                                    0.0, #RandomStateOrange
+                                    0.0, #InvertedState
+                                    0.0, #InvertedStateOrange
                                     0.0, #GoaliePracticeState
                                     0.0, #HoopsLikeSetter
                                     0.0, #BetterRandom
                                     0.0, #KickoffLikeSetter
-                                    0.3, #WallPracticeState
+                                    0.0, #WallPracticeState
+                                    0.0,#LineState
+                                    0.0, #Default state
+                                    0.0, #attaque
+                                    1.0 #defense
                                 )
                              ),
                                 
@@ -168,7 +176,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "rl_model"
+    file_model_name = "ScoreTheGoalPlease"
     
     nbRep = 1000
     
@@ -214,7 +222,7 @@ if __name__ == "__main__":
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
-            model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+            model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cpu"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
             print("Load model")
         except:
             model = PPO(
