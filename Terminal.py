@@ -45,7 +45,6 @@ class NoTouchOrGoalTimeoutCondition(common_conditions.TimeoutCondition):
         elif any(p.ball_touched for p in current_state.players) and self.first:
             self.first = False
             self.steps = 0
-            self.max_steps = 300
             return False
         else:
             return super(NoTouchOrGoalTimeoutCondition, self).is_terminal(current_state)

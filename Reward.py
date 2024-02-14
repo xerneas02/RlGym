@@ -169,41 +169,6 @@ class CombinedReward(RewardFunction):
         return float(np.dot(self.reward_weights, rewards))
 
 
-
-class CustomReward(RewardFunction):
-    def __init__(self):
-        super().__init__()
-        self.last_touch = None
-        self.start_goal_blue = 0
-        self.start_goal_orange = 0
-        self.ticks = 0
-        self.has_touched_ball = False
-
-    def reset(self, initial_state: GameState):
-        self.last_touch = initial_state.last_touch
-        self.start_goal_blue = initial_state.blue_score
-        self.start_goal_orange = initial_state.orange_score
-        self.ticks = 0
-        self.has_touched_ball = False
-
-    def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
-        dist_ball = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
-        dist_reward = np.exp(-0.5 * dist_ball / CAR_MAX_SPEED)
-        ball_speed = norm(state.ball.linear_velocity)
-        car_speed = norm(state.players[0].car_data.linear_velocity)
-        
-        self.ticks += 1
-
-        total_reward = car_speed/500 + ((state.blue_score - self.start_goal_blue)*5 - (state.orange_score - self.start_goal_orange))*5 - (self.ticks * (not self.has_touched_ball) * 0.01) + (self.ticks * (self.has_touched_ball) * 0.01)
-        
-        if(player.ball_touched):
-            self.has_touched_ball = True
-    
-        return total_reward
-
-    def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
-        return self.get_reward(player, state, previous_action) + (not self.has_touched_ball)*-100
-
 #Si le bot marque un but
 class GoalScoredReward(RewardFunction):
     def __init__(self):

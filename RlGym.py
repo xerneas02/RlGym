@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, ChaosState
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -59,29 +59,29 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                10      ,  # GoalScoredReward                    #1
-                1       ,  # SaveReward
-                0.0025  ,  # BoostDifferenceReward               #2
-                0.5     ,  # BallTouchReward                     #3
-                0.3     ,  # DemoReward                          #4
-                0.0050  ,  # DistancePlayerBallReward            #5
-                0.0050  ,  # DistanceBallGoalReward              #6
-                0.000625,  # FacingBallReward                    #7
-                0.00200 ,  # AlignBallGoalReward                 #8
-                0.00125 ,  # ClosestToBallReward                 #9
-                0.00125 ,  # TouchedLastReward                   #10
-                0.00125 ,  # BehindBallReward                    #11
-                0.00125 ,  # VelocityPlayerBallReward            #12
-                0.0025  ,  # KickoffReward (0.1)                 #13
-                0.0025  ,  # VelocityReward (0.000625)           #14
-                0.00125 ,  # BoostAmountReward                   #15
-                0.005   ,  # ForwardVelocityReward               #16
-                0       ,  # FirstTouchReward                    #17
-                0.00    ,  # DontTouchPenalityReward             #18
-                0.003   ,  # DontGoalPenalityReward              #19   
-                0       ,  # AirPenality                         #20
-                0       ,  # DiffDistanceBallGoalReward          #21
-                0.00    ,  # BehindTheBallPenalityReward
+                0         ,  # GoalScoredReward                    #1
+                0         ,  # SaveReward                          #2
+                0.1       ,  # BoostDifferenceReward               #3
+                5         ,  # BallTouchReward                     #4
+                0.3       ,  # DemoReward                          #5
+                0.01      ,  # DistancePlayerBallReward            #6
+                0.0025    ,  # DistanceBallGoalReward              #7
+                0.000625  ,  # FacingBallReward                    #8
+                0.0025    ,  # AlignBallGoalReward                 #9
+                0.00125   ,  # ClosestToBallReward                 #10
+                0.00125   ,  # TouchedLastReward                   #11
+                0.00125   ,  # BehindBallReward                    #12
+                0.005     ,  # VelocityPlayerBallReward            #13
+                0.1       ,  # KickoffReward (0.1)                 #14
+                0.005     ,  # VelocityReward (0.000625)           #15
+                0.05      ,  # BoostAmountReward                   #16
+                0.005     ,  # ForwardVelocityReward               #17
+                1         ,  # FirstTouchReward                    #18
+                0.003     ,  # DontTouchPenalityReward             #19
+                0.00      ,  # DontGoalPenalityReward              #20   
+                0         ,  # AirPenality                         #21
+                0.00      ,  # DiffDistanceBallGoalReward          #22
+                0.00      ,  # BehindTheBallPenalityReward
              ),
             verbose=1
         )
@@ -91,11 +91,12 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(500), common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(250), AfterTouchTimeoutCondition(10)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
                                 (                   #42 Garde coef par defaut
+                                    (DefaultState(),              ()),
                                     (DefaultStateClose(),         ()),
                                     (DefaultStateCloseOrange(),   ()),
                                     (TrainingStateSetter(),       ()),
@@ -107,21 +108,26 @@ def get_match(game_speed=GAME_SPEED):
                                     (HoopsLikeSetter(),           ()),
                                     (BetterRandom(),              ()),
                                     (KickoffLikeSetter(),         ()),
-                                    (WallPracticeState(),         ())
+                                    (WallPracticeState(),         ()),
+                                    (Attaque(),                   ()),
+                                    (ChaosState(),                ()),
                                 ),
                                 (
-                                    0.15, #DefaultStateClose
-                                    0.05, #DefaultStateCloseOrange
-                                    0.0, #TrainingStateSetter
-                                    0.15, #RandomState
-                                    0.1, #RandomStateOrange
-                                    0.15, #InvertedState
-                                    0.1, #InvertedStateOrange
-                                    0.0, #GoaliePracticeState
-                                    0.0, #HoopsLikeSetter
-                                    0.0, #BetterRandom
-                                    0.0, #KickoffLikeSetter
-                                    0.3, #WallPracticeState
+                                    0.00, #DefaultState
+                                    0.50, #DefaultStateClose
+                                    0.00, #DefaultStateCloseOrange
+                                    0.00, #TrainingStateSetter
+                                    0.00, #RandomState
+                                    0.00, #RandomStateOrange
+                                    0.00, #InvertedState
+                                    0.00, #InvertedStateOrange
+                                    0.00, #GoaliePracticeState
+                                    0.00, #HoopsLikeSetter
+                                    0.00, #BetterRandom
+                                    0.25, #KickoffLikeSetter
+                                    0.00, #WallPracticeState
+                                    0.00, #Attaque
+                                    0.25, #ChaosState
                                 )
                              ),
                                 
@@ -167,7 +173,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "rl_model"
+    file_model_name = "model_ZZeerV1"
     
     nbRep = 1000
     
@@ -175,12 +181,10 @@ if __name__ == "__main__":
     
     fps = 120 / FRAME_SKIP
     T = 20
-    #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
-    gamma = np.exp(np.log10(0.5)/(T*fps))
+    gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*fps))
+    #gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=NUM_INSTANCE, wait_time=40, force_paging=True)
-    env = VecCheckNan(env) # Checks for nans in tensor
-    env = VecNormalize(env, norm_obs=False, gamma=gamma)  # Normalize rewards
     env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     #env = get_gym(100)
     
@@ -213,19 +217,27 @@ if __name__ == "__main__":
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
-            model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cuda:0"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+            model = PPO.load(
+                best_model, 
+                env=env, 
+                verbose=1, 
+                device=torch.device("cuda:0"), 
+                custom_objects={"gamma": gamma(i//(nbRep/10))}
+                ) # gamma(i//(nbRep/10))
             print("Load model")
         except:
             model = PPO(
                 'MlpPolicy', 
                 env, 
-                n_epochs=10, 
+                n_epochs=32, 
+                batch_size=64,
                 learning_rate=5e-5, 
                 ent_coef=0.01, 
                 vf_coef=1., 
-                gamma=gamma, 
+                gamma=gamma(i//(nbRep/10)), 
                 clip_range= 0.2, 
                 verbose=1, 
+                #policy_kwargs={"optimizer_class" : 0},
                 tensorboard_log=f"{file_model_name}_{i}/logs",  
                 device="cuda:0" 
                 )
@@ -233,14 +245,15 @@ if __name__ == "__main__":
         
         try:
             model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+            total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
+            file = open("log.txt", "a")
+            file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
+            file.close()
         except Exception as e:
             file = open("log_error.txt", "a")
-            file.write(f"Error {datetime.datetime.now()} :\n{e}")
+            file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
             file.close()
             
         i += 1
         
-        total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
-        file = open("log.txt", "a")
-        file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
-        file.close()
+        

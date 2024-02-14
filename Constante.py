@@ -1,9 +1,9 @@
 from rlgym.utils.common_values import CAR_MAX_SPEED, SIDE_WALL_X, BACK_WALL_Y, CEILING_Z, BALL_RADIUS, CAR_MAX_ANG_VEL, BALL_MAX_SPEED
 import numpy as np
 
-FRAME_SKIP = 8
-GAME_SPEED = 1
-NUM_INSTANCE = 1
+FRAME_SKIP   = 8
+GAME_SPEED   = 100
+NUM_INSTANCE = 3
 
 MOVE_BALL      = True
 BALL_SPEED     = 1500
