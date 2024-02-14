@@ -78,7 +78,7 @@ class ZeerObservations(ObsBuilder):
         rel_attack = attack_goal - player_car.position
         defend_goal = common_values.BLUE_GOAL_BACK
         rel_defend = defend_goal - player_car.position
-        super_sonic = common_values.SUPERSONIC_THRESHOLD
+        super_sonic = np.linalg.norm(player_car.linear_velocity) >= common_values.SUPERSONIC_THRESHOLD
 
         obs.extend([
             rel_pos / self.POS_STD,
@@ -90,7 +90,7 @@ class ZeerObservations(ObsBuilder):
             player_car.up(),
             player_car.linear_velocity / self.POS_STD,
             player_car.angular_velocity / self.ANG_STD,
-            (np.linalg(player_car.linear_velocity / self.POS_STD) >= super_sonic),
+            super_sonic,
             [player.boost_amount,
              int(player.on_ground),
              int(player.has_flip),
