@@ -185,8 +185,9 @@ if __name__ == "__main__":
     #gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=NUM_INSTANCE, wait_time=40, force_paging=True)
-    env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     #env = get_gym(100)
+    env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
+    
     
     checkpoint_callback = CheckpointCallback(
         save_freq=save_periode/(2),
