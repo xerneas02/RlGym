@@ -671,7 +671,7 @@ class ChaosState(StateSetter):
             car_x = random.randint(-int(wall_x), int(wall_x))
             car_y = random.randint(-int(wall_y), int(wall_y))
             
-            while any(distance([car_x, car_y, 0], car_pos) < min_distance for car_pos in objPos):
+            while any(distance([car_x, car_y, 0], obj_pos) < min_distance for obj_pos in objPos):
                 car_x = random.randint(-int(wall_x), int(wall_x))
                 car_y = random.randint(-int(wall_y), int(wall_y))
                 
