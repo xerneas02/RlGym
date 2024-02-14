@@ -30,7 +30,6 @@ class ZeerObservations(ObsBuilder):
 
         obs = [ball.position / self.POS_STD,
                ball.linear_velocity / self.POS_STD,
-               np.linalg.norm(ball.linear_velocity / self.POS_STD),
                ball.angular_velocity / self.ANG_STD,
                previous_action,
                pads]
@@ -54,13 +53,19 @@ class ZeerObservations(ObsBuilder):
             # Extra info
             team_obs.extend([
                 (other_car.position - player_car.position) / self.POS_STD,
-                np.linalg.norm((other_car.position - player_car.position) / self.POS_STD),
+                
                 (other_car.linear_velocity - player_car.linear_velocity) / self.POS_STD,
-                np.linalg.norm((other_car.linear_velocity - player_car.linear_velocity) / self.POS_STD),
+                [
+                    np.linalg.norm((other_car.position - player_car.position) / self.POS_STD),
+                    np.linalg.norm((other_car.linear_velocity - player_car.linear_velocity) / self.POS_STD),
+                    np.linalg.norm(ball.linear_velocity / self.POS_STD)
+                ]
+                
             ])
 
         obs.extend(allies)
         obs.extend(enemies)
+        
         return np.concatenate(obs)
 
     def _add_player_to_obs(self, obs: List, player: PlayerData, ball: PhysicsObject, inverted: bool):
@@ -90,8 +95,8 @@ class ZeerObservations(ObsBuilder):
             player_car.up(),
             player_car.linear_velocity / self.POS_STD,
             player_car.angular_velocity / self.ANG_STD,
-            super_sonic,
             [player.boost_amount,
+             super_sonic,
              int(player.on_ground),
              int(player.has_flip),
              int(player.is_demoed)]])
