@@ -5,7 +5,7 @@ FRAME_SKIP   = 8
 GAME_SPEED   = 1
 NUM_INSTANCE = 1
 
-MOVE_BALL      = True
+MOVE_BALL      = False
 BALL_SPEED     = 1500
 
 LIM_X = SIDE_WALL_X - 1152 / 2 - BALL_RADIUS * 2 ** 0.5

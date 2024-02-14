@@ -644,7 +644,8 @@ class ChaosState(StateSetter):
     def __init__(self):
         super().__init__()
 
-    def reset(self, state_wrapper: StateWrapper):        
+    def reset(self, state_wrapper: StateWrapper): 
+        print("Chaos")       
         min_distance = 400
         
         wall_x = SIDE_WALL_X - min_distance
@@ -667,7 +668,10 @@ class ChaosState(StateSetter):
         objPos = [state_wrapper.ball.position]
         
         for car in state_wrapper.cars:
-            while any(distance([ball_x, ball_y, 0], car_pos) < min_distance for car_pos in objPos):
+            car_x = random.randint(-int(wall_x), int(wall_x))
+            car_y = random.randint(-int(wall_y), int(wall_y))
+            
+            while any(distance([car_x, car_y, 0], car_pos) < min_distance for car_pos in objPos):
                 car_x = random.randint(-int(wall_x), int(wall_x))
                 car_y = random.randint(-int(wall_y), int(wall_y))
                 
