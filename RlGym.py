@@ -27,6 +27,7 @@ from Callback import HParamCallback
 from Constante import *
 from CustomTerminal import CustomTerminalCondition
 from Extracor import CustomFeatureExtractor
+from CustomPolicy import CustomActorCriticPolicy
 
 import os
 import datetime
@@ -230,7 +231,7 @@ if __name__ == "__main__":
             print("Load model")
         except:
             model = PPO(
-                'MlpPolicy', 
+                CustomActorCriticPolicy, 
                 env, 
                 n_epochs=32, 
                 batch_size=64,
