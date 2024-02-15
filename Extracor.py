@@ -12,10 +12,10 @@ from stable_baselines3.common.utils import get_device
 
 class CustomFeatureExtractor(BaseFeaturesExtractor):
     def __init__(self, observation_space: gym.Space, features_dim : int = 256) -> None:
-        super().__init__(observation_space, get_flattened_obs_dim(observation_space))
+        super().__init__(observation_space, features_dim)
         self.extractor = nn.Sequential(
                 nn.Flatten(),
-                nn.Linear(self.features_dim,features_dim),
+                nn.Linear(get_flattened_obs_dim(observation_space),features_dim),
                 nn.LeakyReLU()
         )
     def forward(self, observations: th.Tensor) -> th.Tensor:

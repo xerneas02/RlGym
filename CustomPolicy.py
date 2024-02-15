@@ -4,8 +4,7 @@ from gymnasium import spaces
 import torch as th
 from torch import nn
 
-from stable_baselines3.common.policies import ActorCriticPolicy
-
+from sb3_contrib.common.recurrent.policies import RecurrentActorCriticCnnPolicy
 
 class CustomNetwork(nn.Module):
     """
@@ -32,8 +31,6 @@ class CustomNetwork(nn.Module):
         self.latent_dim_vf = last_layer_dim_vf
 
 
-        # LSTM network
-        self.lstm = nn.LSTM(feature_dim,lstm_output_dim,num_layers=1)
         # Policy network
         self.policy_net = nn.Sequential(
             nn.Linear(lstm_output_dim, 256), 
@@ -67,7 +64,7 @@ class CustomNetwork(nn.Module):
         return self.value_net(features)
 
 
-class CustomActorCriticPolicy(ActorCriticPolicy):
+class CustomActorCriticPolicy(RecurrentActorCriticCnnPolicy):
     def __init__(
         self,
         observation_space: spaces.Space,
