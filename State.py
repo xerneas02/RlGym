@@ -69,7 +69,8 @@ class CombinedState(StateSetter):
             size_rewards = self.rewards.get_rewards_num()
             
             if r < sum:
-                CombinedState.current_state = i #Permet d'indiquer selon l'état de la simulation quel array il faudra parcourir
+                #print(self.state_setters[i][0])
+                CombinedState.current_state = i
                 self.state_setters[i][0].reset(state_wrapper)
                 if self.state_setters[i][1] == None or len(self.state_setters[i][1]) != size_rewards:
                     self.rewards.set_rewards_weights(default_rewards_weights)
@@ -81,7 +82,7 @@ class CombinedState(StateSetter):
                         ]
                     )    
                 return 
-            
+        
         self.state_setters[0].reset(state_wrapper)
         self.rewards.set_rewards_weights(default_rewards_weights)
 
@@ -241,17 +242,13 @@ class TrainingStateSetter(StateSetter):
 class DefaultStateClose(StateSetter):
 
 
-    def __init__(self):
+    def __init__(self, number_of_state = 2):
         super().__init__()
+        self.number_of_state = number_of_state
 
     def reset(self, state_wrapper: StateWrapper):
-        """
-        Modifies state_wrapper values to emulate a randomly selected default kickoff.
-
-        :param state_wrapper: StateWrapper object to be modified with desired state values.
-        """
         
-        coef = 1/random.randint(1, 2)
+        coef = 1/random.randint(1, self.number_of_state)
         
         SPAWN_BLUE_POS = [[-2048*coef, -2560*coef, 17], [2048*coef, -2560*coef, 17],
                       [-256*coef, -3840*coef, 17], [256*coef, -3840*coef, 17], [0, -4608*coef, 17]]
@@ -570,9 +567,7 @@ class InvertedStateOrange(StateSetter):
             car.set_pos(*pos)
             car.set_rot(yaw=yaw)
             car.boost = 0.33            
-            
-            
-            
+        
 class LineState(StateSetter):
     
     def __init__(self, largeur):
@@ -604,6 +599,42 @@ class LineState(StateSetter):
             car.boost = 0.33
             car.set_rot(yaw=yaw)
             count = count + 1
+        #---------------------------------------------------    
+            
+            
+class Alea(StateSetter):
+    
+    def __init__(self, ball_moove, z_axis):
+        super().__init__()
+        self.ball_moove = ball_moove
+        self.z_axis = z_axis
+
+    def reset(self, state_wrapper: StateWrapper):
+        
+        #----SPAWN BOUBOULE--------------------------------
+        ball_x = random.randint(int(-3200), int(3200))
+        ball_y = random.randint(int(-4250), int(4250))
+        ball_z = random.randint(int(BALL_RADIUS)+1, int(LIM_Z / 2))
+        state_wrapper.ball.set_pos(ball_x, ball_y, 17)
+        x_velo = 0
+        y_velo = 0
+        z_velo = 0
+        if self.ball_moove:
+            x_velo = random.randint(-2000, 2000)
+            y_velo = random.randint(-2000, 2000)
+            if self.z_axis:
+                z_velo = random.randint(0, 2000)
+        state_wrapper.ball.set_lin_vel(x_velo, y_velo, z_velo)
+        #---------------------------------------------------
+        #----SPAWN CARS-------------------------------------
+        for car in state_wrapper.cars:
+            car_x = random.randint(int(-3200), int(3200))
+            car_y = random.randint(int(-4250), int(4250))
+            yaw = random.random() * 2 * np.pi
+            car_z = 17
+            car.set_pos(car_x, car_y, car_z)
+            car.boost = random.random()
+            car.set_rot(yaw=yaw)
         #---------------------------------------------------
         
 class Attaque(StateSetter):
@@ -640,7 +671,6 @@ class Attaque(StateSetter):
             count = count + 1
         #---------------------------------------------------
         
-        
 class Defense(StateSetter):
     
     def __init__(self):
@@ -648,9 +678,13 @@ class Defense(StateSetter):
 
     def reset(self, state_wrapper: StateWrapper):
         count = 0
-        inverse = -1#random.choice([-1, 1])
-        inverse2 = 1#random.choice([-1, 1])
-        angle = 0 if inverse == 1 else np.pi
+        inverse = random.choice([-1, 1])
+        inverse2 = random.choice([-1, 1])
+        angle = 0 if inverse2 == 1 else np.pi
+        position1x = 851 if inverse2 == 1 else -278
+        position1y = -4346 if inverse2 == 1 else -241
+        position2x = -278 if inverse2 == 1 else 851
+        position2y = -241 if inverse2 == 1 else -4346
         #----SPAWN BOUBOULE--------------------------------
         ball_x = -284 * inverse
         ball_y = -1115 * inverse2
@@ -663,20 +697,193 @@ class Defense(StateSetter):
         #---------------------------------------------------
         #----SPAWN CARS-------------------------------------
         for car in state_wrapper.cars:
-            car_x = -278 * inverse if count == 1 else 851 * inverse
-            car_y = -241 * inverse2 if count == 1 else -4346* inverse2
+            car_x = position2x * inverse if count == 1 else position1x * inverse
+            car_y = position2y * inverse2 if count == 1 else position1y* inverse2
             if count == 1 and inverse == 1:
-                yaw = 0.0
+                yaw = (3*np.pi)/2 if inverse2 == 1 else (5*np.pi)/4
             elif count == 1 and inverse == -1: 
-                yaw = 0.0
+                yaw = (3*np.pi)/2 if inverse2 == 1 else (7*np.pi)/4
             elif count == 0 and inverse == 1:
-                yaw = (3*np.pi)/4
+                yaw = (3*np.pi)/4 if inverse2 == 1 else (3*np.pi)/2 + angle
             elif count == 0 and inverse == -1:
-                yaw = (np.pi)/4
+                yaw = (np.pi)/4 if inverse2 == 1 else (3*np.pi)/2 + angle
             #print(f"--->{count} {(-np.pi * inverse)}")
             car_z = 17
             car.set_pos(car_x, car_y, car_z)
-            car.boost = 0.33
+            car.boost = 0.40
+            car.set_rot(yaw=yaw)
+            if count == 1 and inverse2 == 1:
+                car.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
+            elif count == 0 and inverse2 == -1:
+                car.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
+            
+            count = count + 1
+        #---------------------------------------------------
+        
+        
+class AirBallAD(StateSetter):
+    
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+        count = 0
+        inverse = random.choice([-1, 1])
+        position1x = -5.71 if inverse == 1 else 7.13
+        position1y = -4676 if inverse == 1 else 3718
+        position2x = -7.13 if inverse == 1 else 5.71
+        position2y = -3718 if inverse == 1 else 4676
+        
+        #----SPAWN BOUBOULE--------------------------------
+        ball_x = -7.13 * inverse
+        ball_y = -4211 * inverse
+        ball_z = int(BALL_RADIUS)+1
+        ball_x_velo = 0
+        ball_y_velo = 0
+        ball_z_velo = random.randint(500, 1000)
+        state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        state_wrapper.ball.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
+        #---------------------------------------------------
+        #----SPAWN CARS-------------------------------------
+        for car in state_wrapper.cars:
+            car_x = position2x  if count == 1 else position1x 
+            car_y = position2y  if count == 1 else position1y
+            yaw = (3*np.pi) / 2  if count == 1 else np.pi/2 
+            car_z = 17
+            car.set_pos(car_x, car_y, car_z)
+            car.boost = 1.0
             car.set_rot(yaw=yaw)
             count = count + 1
         #---------------------------------------------------
+        
+class DefenseRapide(StateSetter):
+    
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+        count = 0
+        inverse = random.choice([-1, 1])
+        inverse2 = random.choice([-1, 1])
+        position1x = -848 * inverse2 if inverse == 1 else 0
+        position1y = 36 if inverse == 1 else -670
+        position2x = 0 if inverse == 1 else -848 * inverse2
+        position2y = 670 if inverse == 1 else -36
+        angle = np.pi if inverse == -1 else 0
+        #----SPAWN BOUBOULE--------------------------------
+        ball_x = 0 * inverse
+        ball_y = -483 * inverse
+        ball_z = int(BALL_RADIUS)+1
+        ball_x_velo = 0
+        ball_y_velo = random.randint(int(800), int(1050))
+        ball_y_velo = ball_y_velo * inverse * -1
+        ball_z_velo = 0
+        state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        state_wrapper.ball.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
+        #---------------------------------------------------
+        #----SPAWN CARS-------------------------------------
+        for car in state_wrapper.cars:
+            car_x = position2x  if count == 1 else position1x 
+            car_y = position2y  if count == 1 else position1y
+            yaw = (3*np.pi) / 2 + angle if count == 1 else (3*np.pi) / 2 + angle
+            car_z = 17
+            car.set_pos(car_x, car_y, car_z)
+            car.boost = 1.0
+            car.set_rot(yaw=yaw)
+            car.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
+            count = count + 1
+        #---------------------------------------------------
+        
+class Mur(StateSetter):
+    
+    def __init__(self, angles):
+        super().__init__()
+        self.angles = angles
+
+    def reset(self, state_wrapper: StateWrapper):
+        count = 0
+        inverse = random.choice([-1, 1])
+        position1x = -4078.99 * inverse
+        position1y = -1990
+        position2x = -1360 * inverse
+        position2y = 3477 if inverse == 1 else 3477
+        angle = (5 * np.pi) / 3 if inverse == 1 else (4 * np.pi) / 3
+        #----SPAWN BOUBOULE--------------------------------
+        ball_x = -3590 * inverse
+        ball_y = 0
+        ball_z = int(BALL_RADIUS)+1
+        ball_x_velo = random.randint(int(1800), int(3500)) * -1 * inverse
+        ball_y_velo = random.randint(int(-self.angles), int(self.angles))
+        ball_z_velo = 0
+        state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        state_wrapper.ball.set_lin_vel(ball_x_velo, ball_y_velo, ball_z_velo)
+        #---------------------------------------------------
+        #----SPAWN CARS-------------------------------------
+        for car in state_wrapper.cars:
+            car_x = position2x  if count == 1 else position1x 
+            car_y = position2y  if count == 1 else position1y
+            yaw = angle if count == 1 else np.pi / 2
+            roll = 0 if count == 1 else 1884 * inverse
+            car_z = 650 if count == 0 else 17.1
+            car.set_pos(car_x, car_y, car_z)
+            car.boost = 0.70
+            car.set_rot(0, yaw=yaw, roll=roll)
+            if count == 0:
+                car.set_lin_vel(0, 300, 0)
+            count = count + 1
+        #---------------------------------------------------
+
+class ChaosState(StateSetter):
+    
+
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper): 
+        print("Chaos")       
+        min_distance = 400
+        
+        wall_x = SIDE_WALL_X - min_distance
+        wall_y = BACK_WALL_Y - min_distance
+        
+        ball_x = random.randint(-int(wall_x), int(wall_x))
+        ball_y = random.randint(-int(wall_y), int(wall_y))
+        
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
+        
+        
+
+        def distance(p1, p2):
+            return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+        ball_x = random.randint(-int(wall_x), int(wall_x))
+        ball_y = random.randint(-int(wall_y), int(wall_y))     
+        
+        state_wrapper.ball.set_pos(ball_x, ball_y, BALL_RADIUS)
+        objPos = [state_wrapper.ball.position]
+        
+        for car in state_wrapper.cars:
+            car_x = random.randint(-int(wall_x), int(wall_x))
+            car_y = random.randint(-int(wall_y), int(wall_y))
+            
+            while any(distance([car_x, car_y, 0], obj_pos) < min_distance for obj_pos in objPos):
+                car_x = random.randint(-int(wall_x), int(wall_x))
+                car_y = random.randint(-int(wall_y), int(wall_y))
+                
+            
+            velocity = np.random.uniform(-1, 1, 2)
+    
+            velocity_magnitude = np.linalg.norm(velocity)
+            normalized_velocity = velocity / velocity_magnitude if velocity_magnitude > 0 else velocity
+            
+            scaled_velocity = normalized_velocity * CAR_MAX_SPEED
+                
+            yaw = random.random()*2*np.pi
+            
+            car.set_pos(car_x, car_y, 0)
+            car.set_rot(yaw=yaw)
+            car.boost = random.random()
+            car.set_lin_vel(scaled_velocity[0], scaled_velocity[1], 0)
+            
+            objPos.append(car.position)
+

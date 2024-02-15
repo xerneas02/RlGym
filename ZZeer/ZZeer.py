@@ -17,7 +17,7 @@ class TrainedAgent:
         self.parser = ZeerLookupAction()
 
     def act(self, state):
-        action = self.actor.predict(state, deterministic=True)
+        action = self.actor.predict(state)
         
         #print("Type of action:", type(action))
         #print("Shape of action:", action)

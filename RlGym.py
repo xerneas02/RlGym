@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -59,8 +59,8 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                7      ,  # GoalScoredReward                    #1
-                1       ,  # SaveReward
+                10      ,  # GoalScoredReward                    #1
+                5      ,    # SaveReward
                 0.0025  ,  # BoostDifferenceReward               #2
                 0.5     ,  # BallTouchReward                     #3
                 0.3     ,  # DemoReward                          #4
@@ -97,6 +97,7 @@ def get_match(game_speed=GAME_SPEED):
         state_setter        = CombinedState( 
                                 rewards,
                                 (                   #42 Garde coef par defaut
+                                    (DefaultState(),              ()),
                                     (DefaultStateClose(),         ()),
                                     (DefaultStateCloseOrange(),   ()),
                                     (TrainingStateSetter(),       ()),
@@ -110,11 +111,16 @@ def get_match(game_speed=GAME_SPEED):
                                     (KickoffLikeSetter(),         ()),
                                     (WallPracticeState(),         ()),
                                     (LineState(2300),             ()),
-                                    (DefaultState(),              ()),
                                     (Attaque(),                   ()),
-                                    (Defense(),                   ())
+                                    (Defense(),                   ()),
+                                    (AirBallAD(),                 ()),
+                                    (DefenseRapide(),             ()),
+                                    (Mur(500),                    ()),
+                                    (Alea (True, True),         ()),
+                                    (ChaosState(),                ())
                                 ),
                                 (
+                                    0.0, #Default state
                                     0.0, #DefaultStateClose
                                     0.0, #DefaultStateCloseOrange
                                     0.0, #TrainingStateSetter
@@ -128,9 +134,13 @@ def get_match(game_speed=GAME_SPEED):
                                     0.0, #KickoffLikeSetter
                                     0.0, #WallPracticeState
                                     0.0,#LineState
-                                    0.0, #Default state
                                     0.0, #attaque
-                                    1.0 #defense
+                                    0.0, #defense
+                                    0.0, #AirBallAD
+                                    0.0, #DefenseRapide
+                                    0.0, #Mur
+                                    1.0, #Alea
+                                    0.0  #ChaosState
                                 )
                              ),
                                 
@@ -176,7 +186,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "ScoreTheGoalPlease"
+    file_model_name = "BecomeBetterPlease"
     
     nbRep = 1000
     
@@ -184,14 +194,13 @@ if __name__ == "__main__":
     
     fps = 120 / FRAME_SKIP
     T = 20
-    #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*A))
-    gamma = np.exp(np.log10(0.5)/(T*fps))
+    gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*fps))
+    #gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=NUM_INSTANCE, wait_time=40, force_paging=True)
-    env = VecCheckNan(env) # Checks for nans in tensor
-    env = VecNormalize(env, norm_obs=False, gamma=gamma)  # Normalize rewards
-    env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     #env = get_gym(100)
+    env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
+    
     
     checkpoint_callback = CheckpointCallback(
         save_freq=save_periode/(2),
@@ -222,19 +231,27 @@ if __name__ == "__main__":
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
-            model = PPO.load(best_model, env=env, verbose=1, device=torch.device("cpu"), custom_objects={"gamma": gamma}) # gamma(i//(nbRep/10))
+            model = PPO.load(
+                best_model, 
+                env=env, 
+                verbose=1, 
+                device=torch.device("cpu"), 
+                custom_objects={"gamma": gamma(i//(nbRep/10))}
+                ) # gamma(i//(nbRep/10))
             print("Load model")
         except:
             model = PPO(
                 'MlpPolicy', 
                 env, 
-                n_epochs=10, 
+                n_epochs=32, 
+                batch_size=64,
                 learning_rate=5e-5, 
                 ent_coef=0.01, 
                 vf_coef=1., 
-                gamma=gamma, 
+                gamma=gamma(i//(nbRep/10)), 
                 clip_range= 0.2, 
                 verbose=1, 
+                #policy_kwargs={"optimizer_class" : 0},
                 tensorboard_log=f"{file_model_name}_{i}/logs",  
                 device="cuda:0" 
                 )
@@ -242,14 +259,16 @@ if __name__ == "__main__":
         
         try:
             model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+            total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
+            file = open("log.txt", "a")
+            file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
+            file.close()
         except Exception as e:
+            raise e
             file = open("log_error.txt", "a")
-            file.write(f"Error {datetime.datetime.now()} :\n{e}")
+            file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
             file.close()
             
         i += 1
         
-        total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
-        file = open("log.txt", "a")
-        file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
-        file.close()
+        
