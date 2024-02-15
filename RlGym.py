@@ -222,50 +222,50 @@ if __name__ == "__main__":
         
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
-        # try:
-        #     model = RecurrentPPO.load(
-        #         best_model, 
-        #         env=env, 
-        #         verbose=1, 
-        #         device=torch.device("cuda:0"), 
-        #         custom_objects={"gamma": gamma(i//(nbRep/10))}
-        #         ) # gamma(i//(nbRep/10))
-        #     print("Load model")
-        # except:
-        model = RecurrentPPO(
-                policy=CustomActorCriticPolicy, 
-                env=env, 
-                n_epochs=32, 
-                batch_size=64,
-                learning_rate=5e-5, 
-                ent_coef=0.01, 
-                vf_coef=1., 
-                gamma=gamma(i//(nbRep/10)), 
-                clip_range= 0.2, 
-                verbose=1, 
-                policy_kwargs=dict(
-                    features_extractor_class=CustomFeatureExtractor,
-                    features_extractor_kwargs=dict(features_dim=256),
-                    lstm_hidden_size=512,
-                    n_lstm_layers=1,
-                    shared_lstm=True,
-                    enable_critic_lstm=False
-                ),
-                tensorboard_log=f"{file_model_name}_{i}/logs",  
-                device="cuda:0" 
-                )
-        print("Model created")
+        try:
+             model = RecurrentPPO.load(
+                 best_model, 
+                 env=env, 
+                 verbose=1, 
+                 device=torch.device("cuda:0"), 
+                 custom_objects={"gamma": gamma(i//(nbRep/10))}
+                 ) # gamma(i//(nbRep/10))
+             print("Load model")
+        except:
+            model = RecurrentPPO(
+                    policy=CustomActorCriticPolicy, 
+                    env=env, 
+                    n_epochs=32, 
+                    batch_size=64,
+                    learning_rate=5e-5, 
+                    ent_coef=0.01, 
+                    vf_coef=1., 
+                    gamma=gamma(i//(nbRep/10)), 
+                    clip_range= 0.2, 
+                    verbose=1, 
+                    policy_kwargs=dict(
+                        features_extractor_class=CustomFeatureExtractor,
+                        features_extractor_kwargs=dict(features_dim=256),
+                        lstm_hidden_size=512,
+                        n_lstm_layers=1,
+                        shared_lstm=True,
+                        enable_critic_lstm=False
+                    ),
+                    tensorboard_log=f"{file_model_name}_{i}/logs",  
+                    device="cuda:0" 
+                    )
+            print("Model created")
         
-        # try:
-        model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
-        total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
-        file = open("log.txt", "a")
-        file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
-        file.close()
-        # except Exception as e:
-        #     file = open("log_error.txt", "a")
-        #     file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
-        #     file.close()
+        try:
+            model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+            total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
+            file = open("log.txt", "a")
+            file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
+            file.close()
+        except Exception as e:
+             file = open("log_error.txt", "a")
+             file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
+             file.close()
             
         i += 1
         
