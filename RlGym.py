@@ -26,6 +26,7 @@ from Action import ZeerLookupAction
 from Callback import HParamCallback
 from Constante import *
 from CustomTerminal import CustomTerminalCondition
+from Extracor import CustomFeatureExtractor
 
 import os
 import datetime
@@ -64,7 +65,7 @@ rewards = CombinedReward(
                 0.1       ,  # BoostDifferenceReward               #3
                 5         ,  # BallTouchReward                     #4
                 0.3       ,  # DemoReward                          #5
-                0.01      ,  # DistancePlayerBallReward            #6
+                0.001     ,  # DistancePlayerBallReward            #6
                 0.0025    ,  # DistanceBallGoalReward              #7
                 0.000625  ,  # FacingBallReward                    #8
                 0.0025    ,  # AlignBallGoalReward                 #9
@@ -72,16 +73,16 @@ rewards = CombinedReward(
                 0.00125   ,  # TouchedLastReward                   #11
                 0.00125   ,  # BehindBallReward                    #12
                 0.005     ,  # VelocityPlayerBallReward            #13
-                0.1       ,  # KickoffReward (0.1)                 #14
+                0.0       ,  # KickoffReward (0.1)                 #14
                 0.005     ,  # VelocityReward (0.000625)           #15
                 0.05      ,  # BoostAmountReward                   #16
                 0.005     ,  # ForwardVelocityReward               #17
                 1         ,  # FirstTouchReward                    #18
-                0.003     ,  # DontTouchPenalityReward             #19
+                0.01      ,  # DontTouchPenalityReward             #19
                 0.00      ,  # DontGoalPenalityReward              #20   
                 0         ,  # AirPenality                         #21
                 0.00      ,  # DiffDistanceBallGoalReward          #22
-                0.00      ,  # BehindTheBallPenalityReward
+                0.01      ,  # BehindTheBallPenalityReward
              ),
             verbose=1
         )
@@ -91,7 +92,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(250), AfterTouchTimeoutCondition(10)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(200)),# AfterTouchTimeoutCondition(10)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -114,20 +115,20 @@ def get_match(game_speed=GAME_SPEED):
                                 ),
                                 (
                                     0.00, #DefaultState
-                                    0.50, #DefaultStateClose
-                                    0.00, #DefaultStateCloseOrange
+                                    0.12, #DefaultStateClose
+                                    0.13, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.00, #RandomState
-                                    0.00, #RandomStateOrange
-                                    0.00, #InvertedState
-                                    0.00, #InvertedStateOrange
+                                    0.12, #RandomState
+                                    0.13, #RandomStateOrange
+                                    0.12, #InvertedState
+                                    0.13, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.25, #KickoffLikeSetter
+                                    0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.00, #Attaque
-                                    0.25, #ChaosState
+                                    0.12, #Attaque
+                                    0.13, #ChaosState
                                 )
                              ),
                                 
@@ -175,7 +176,7 @@ if __name__ == "__main__":
     
     file_model_name = "model_ZZeerV1"
     
-    nbRep = 1000
+    nbRep = 1000000
     
     save_periode = 1e5
     
@@ -202,7 +203,7 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 3000000
+    n = 1500000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     total_steps = 0
@@ -210,8 +211,9 @@ if __name__ == "__main__":
     i = 0
     while True:
         stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
-    
-        eval_callback = EvalCallback(env, callback_after_eval=stopTraining, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
+
+        #                                 , callback_after_eval=stopTraining
+        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
         
         progressBard = ProgressBarCallback()
         
@@ -238,7 +240,10 @@ if __name__ == "__main__":
                 gamma=gamma(i//(nbRep/10)), 
                 clip_range= 0.2, 
                 verbose=1, 
-                #policy_kwargs={"optimizer_class" : 0},
+                policy_kwargs=dict(
+                    features_extractor_class=CustomFeatureExtractor,
+                    features_extractor_kwargs=dict(features_dim=256),
+                ),
                 tensorboard_log=f"{file_model_name}_{i}/logs",  
                 device="cuda:0" 
                 )

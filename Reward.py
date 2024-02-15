@@ -42,7 +42,7 @@ class CombinedReward(RewardFunction):
         
         self.verbose = verbose
         self.total_per_rew = np.zeros_like(reward_functions)
-        self.period = 100_000
+        self.period = 50_000
         self.count_period = 0
 
         if len(self.reward_functions) != len(self.reward_weights):
