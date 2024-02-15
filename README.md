@@ -9,7 +9,7 @@ This project aims to develop a bot for Rocket League utilizing the capabilities 
 Python version 3.8.10
 
 ```bash
-pip install rlgym stable-baselines3==1.7.0 torch sb3-contrib rlgym_tools scipy shimmy>=0.2.1 stable-baselines3[extra]
+pip install rlgym stable-baselines3==1.7.0 torch sb3-contrib==1.7.0 rlgym_tools scipy shimmy>=0.2.1 stable-baselines3[extra]
 ```
 
 ## RlBot
