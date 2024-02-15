@@ -2,7 +2,7 @@ from typing import Any
 
 import gym
 import numpy as np
-from gym.spaces import Discrete
+from gym.spaces import MultiDiscrete
 from rlgym.utils.action_parsers import ActionParser
 from rlgym.utils.gamestates import GameState
 
@@ -49,7 +49,7 @@ class ZeerLookupAction(ActionParser):
         return actions
 
     def get_action_space(self) -> gym.spaces.Space:
-        return Discrete(len(self._lookup_table))
+        return MultiDiscrete(len(self._lookup_table))
 
     def parse_actions(self, actions: Any, state: GameState) -> np.ndarray:
         return self._lookup_table[actions]
