@@ -9,7 +9,6 @@ from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED, BALL_MAX_SPEED, ORANGE_GOAL_CENTER, BACK_WALL_Y, BLUE_GOAL_CENTER
 from numpy.linalg import norm
 from abc import ABC, abstractmethod
-import numpy as np
 
 from scipy.spatial.distance import cosine
 
@@ -210,7 +209,7 @@ class CombinedReward(RewardFunction):
         TOUCH_VERIF = False
         NUMBER_SIMULATION = NUMBER_SIMULATION +1
         #print(NUMBER_SIMULATION)
-        if NUMBER_SIMULATION % 20 == 0:
+        if NUMBER_SIMULATION % SIMULATION_PER_STATS == 0:
             SaveStatFile()
             NUMBER_GOAL = 0
             NUMBER_TOUCH = 0
