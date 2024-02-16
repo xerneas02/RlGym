@@ -81,11 +81,11 @@ rewards = CombinedReward(
                 0.00125 ,  # BoostAmountReward                   #15
                 0.005   ,  # ForwardVelocityReward               #16
                 0       ,  # FirstTouchReward                    #17
-                0.001    ,  # DontTouchPenalityReward             #18
-                0.003   ,  # DontGoalPenalityReward              #19   
+                0.003    ,  # DontTouchPenalityReward             #18
+                0.002   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
                 5       ,  # DiffDistanceBallGoalReward          #21
-                0.001    ,  # BehindTheBallPenalityReward         #22
+                0.003    ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -95,7 +95,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(100), 
+        terminal_conditions = (common_conditions.TimeoutCondition(150), 
                                common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
@@ -120,30 +120,30 @@ def get_match(game_speed=GAME_SPEED):
                                     (AirBallAD(),                 ()),
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
-                                    (Alea (True, True),         ()),
+                                    (Alea (True, False),         ()),
                                     (ChaosState(),                ())
                                 ),
                                 (
-                                    0.0, #Default state
+                                    0.05, #Default state
                                     0.0, #DefaultStateClose
                                     0.0, #DefaultStateCloseOrange
                                     0.0, #TrainingStateSetter
                                     0.0, #RandomState
                                     0.0, #RandomStateOrange
                                     0.0, #InvertedState
-                                    0.0, #InvertedStateOrange
+                                    0.05, #InvertedStateOrange
                                     0.0, #GoaliePracticeState
                                     0.0, #HoopsLikeSetter
                                     0.0, #BetterRandom
                                     0.0, #KickoffLikeSetter
                                     0.0, #WallPracticeState
-                                    0.0,#LineState
-                                    0.0, #attaque
-                                    0.0, #defense
+                                    0.05,#LineState
+                                    0.05, #attaque
+                                    0.05, #defense
                                     0.0, #AirBallAD
-                                    0.0, #DefenseRapide
+                                    0.05, #DefenseRapide
                                     0.0, #Mur
-                                    1.0, #Alea
+                                    0.7, #Alea
                                     0.0  #ChaosState
                                 )
                              ),
@@ -169,7 +169,7 @@ def get_gym(game_speed=GAME_SPEED):
 
 if __name__ == "__main__":
 
-    #pip3 install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
     if(torch.cuda.is_available()):
         print( torch.cuda.current_device())
         print(torch.cuda.device_count())
@@ -177,6 +177,7 @@ if __name__ == "__main__":
     else:
         print("Not found")
         
+    
     file = open("log.txt", "w")
     file.write("")
     file.close(  )
@@ -194,7 +195,7 @@ if __name__ == "__main__":
     
     nbRep = 1000000
     
-    save_periode = 1e5
+    save_periode = 1e6
     
     fps = 120 / FRAME_SKIP
     T = 20
@@ -202,7 +203,6 @@ if __name__ == "__main__":
     #gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=NUM_INSTANCE, wait_time=40, force_paging=True)
-    #env = get_gym(100)
     env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
     
     
@@ -242,14 +242,15 @@ if __name__ == "__main__":
                  verbose=1, 
                  device=torch.device("cuda:0"), 
                  custom_objects={"gamma": gamma(i//(nbRep/10))}
-                 ) # gamma(i//(nbRep/10))
+                 )
              print("Load model")
         except:
             model = RecurrentPPO(
                     policy=CustomActorCriticPolicy, 
                     env=env, 
                     n_epochs=32, 
-                    batch_size=64,
+                    n_steps=27648,
+                    batch_size=1728,
                     learning_rate=5e-5, 
                     ent_coef=0.01, 
                     vf_coef=1., 
@@ -269,16 +270,16 @@ if __name__ == "__main__":
                     )
             print("Model created")
         
-        try:
-            model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
-            total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
-            file = open("log.txt", "a")
-            file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
-            file.close()
-        except Exception as e:
-             file = open("log_error.txt", "a")
-             file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
-             file.close()
+        #try:
+        model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+        total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
+        file = open("log.txt", "a")
+        file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
+        file.close()
+        #except Exception as e:
+        #     file = open("log_error.txt", "a")
+        #     file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
+        #     file.close()
             
         i += 1
         
