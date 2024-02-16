@@ -118,20 +118,20 @@ def get_match(game_speed=GAME_SPEED):
                                 ),
                                 (
                                     0.00, #DefaultState
-                                    0.12, #DefaultStateClose
-                                    0.13, #DefaultStateCloseOrange
+                                    0.70, #DefaultStateClose
+                                    0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.12, #RandomState
-                                    0.13, #RandomStateOrange
-                                    0.12, #InvertedState
-                                    0.13, #InvertedStateOrange
+                                    0.15, #RandomState
+                                    0.15, #RandomStateOrange
+                                    0.00, #InvertedState
+                                    0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.12, #Attaque
-                                    0.13, #ChaosState
+                                    0.00, #Attaque
+                                    0.00, #ChaosState
                                 )
                              ),
                                 
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     
     nbRep = 1000000
     
-    save_periode = 1e6
+    save_periode = 1e5
     
     fps = 120 / FRAME_SKIP
     T = 20
@@ -228,14 +228,19 @@ if __name__ == "__main__":
                  env=env, 
                  verbose=1, 
                  device=torch.device("cuda:0"), 
-                 custom_objects={"gamma": gamma(i//(nbRep/10))}
+                 custom_objects={  
+                                 "gamma": gamma(i//(nbRep/10)),
+                                 "n_epochs": 10, 
+                                "n_steps": 27648,
+                                "batch_size": 1728,
+                                }
                  )
              print("Load model")
         except:
             model = RecurrentPPO(
                     policy=CustomActorCriticPolicy, 
                     env=env, 
-                    n_epochs=32, 
+                    n_epochs=10, 
                     n_steps=27648,
                     batch_size=1728,
                     learning_rate=5e-5, 
@@ -247,7 +252,7 @@ if __name__ == "__main__":
                     policy_kwargs=dict(
                         features_extractor_class=CustomFeatureExtractor,
                         features_extractor_kwargs=dict(features_dim=256),
-                        lstm_hidden_size=512,
+                        lstm_hidden_size=256,
                         n_lstm_layers=1,
                         shared_lstm=True,
                         enable_critic_lstm=False
