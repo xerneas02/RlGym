@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea, ReplayState
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -121,14 +121,15 @@ def get_match(game_speed=GAME_SPEED):
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
                                     (Alea (True, False),          ()),
-                                    (ChaosState(),                ())
+                                    (ChaosState(),                ()),
+                                    (ReplayState(),               ())
                                 ),
                                 (
-                                    0.70, #DefaultState
+                                    0.10, #DefaultState
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.05, #RandomState
+                                    0.00, #RandomState
                                     0.00, #RandomStateOrange
                                     0.00, #InvertedState
                                     0.00, #InvertedStateOrange
@@ -138,13 +139,14 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
                                     0.00, #LineState
-                                    0.05, #Attaque
-                                    0.04, #Defense
-                                    0.04, #AirBallAD
-                                    0.04, #DefenseRapide
-                                    0.04, #Mur
-                                    0.04, #Alea
+                                    0.07, #Attaque
+                                    0.07, #Defense
+                                    0.00, #AirBallAD
+                                    0.00, #DefenseRapide
+                                    0.00, #Mur
+                                    0.06, #Alea
                                     0.00, #ChaosState
+                                    0.70, #ReplayState
                                 )
                              ),
                                 

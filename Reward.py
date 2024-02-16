@@ -8,7 +8,6 @@ from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED, BALL_MAX_SPEED, ORANGE_GOAL_CENTER, BACK_WALL_Y, BLUE_GOAL_CENTER
 from numpy.linalg import norm
 from abc import ABC, abstractmethod
-import numpy as np
 
 from scipy.spatial.distance import cosine
 

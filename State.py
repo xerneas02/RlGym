@@ -8,6 +8,9 @@ import numpy as np
 import random
 import math
 
+import re
+import os
+
 from Constante import *
 
 from typing import Any, Optional, Tuple, overload, Union
@@ -886,3 +889,79 @@ class ChaosState(StateSetter):
             
             objPos.append(car.position)
 
+class ReplayState(StateSetter):
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):     
+        error = True
+        while(error):
+            try:
+                error = False
+                data_directory = 'DataState'
+                random_csv_file = random.choice(os.listdir(data_directory))
+                random_csv_path = os.path.join(data_directory, random_csv_file)
+
+                random_data_file = open(random_csv_path, 'r')
+                random_data      = random_data_file.read()
+                random_data_file.close()
+
+                random_data = random_data.split("\n")
+                for i in range(len(random_data)):
+                    random_data[i] = random_data[i].split(",")
+
+
+                random_data[0] = [re.sub(r'^(?<=\.)\.|\.(\d+)$', '', s) for s in random_data[0]]
+
+                column = [(random_data[0][i], random_data[1][i]) for i in range(len(random_data[1]))]
+
+
+                player1 = None
+                player2 = None
+                for name, _ in column:
+                    if name != "ball" and name != "game":
+                        if player1 == None:
+                            player1 = name
+                        elif name != player1:
+                            player2 = name 
+
+
+                row = random.randint(2, len(random_data))
+
+                info_player1 = {}
+                info_player2 = {}
+                info_ball    = {}
+
+                for i in range(len(random_data[row])):
+                    if   column[i][0] == player1:
+                        info_player1[column[i][1]] = random_data[row][i]
+                    elif column[i][0] == player2:
+                        info_player2[column[i][1]] = random_data[row][i]
+                    elif column[i][0] == 'ball' :
+                        info_ball[column[i][1]]    = random_data[row][i]  
+                        
+                state_wrapper.cars[0].set_pos(float(info_player1['pos_x']), float(info_player1['pos_y']), float(info_player1['pos_z']))
+                state_wrapper.cars[1].set_pos(float(info_player2['pos_x']), float(info_player2['pos_y']), float(info_player2['pos_z']))
+                state_wrapper.ball.set_pos(float(info_ball['pos_x']), float(info_ball['pos_y']), float(info_ball['pos_z']))
+                
+                state_wrapper.cars[0].set_lin_vel(float(info_player1['vel_x']), float(info_player1['vel_y']), float(info_player1['vel_z']))
+                state_wrapper.cars[1].set_lin_vel(float(info_player2['vel_x']), float(info_player2['vel_y']), float(info_player2['vel_z']))
+                state_wrapper.ball.set_lin_vel(float(info_ball['vel_x']), float(info_ball['vel_y']), float(info_ball['vel_z']))
+                
+                state_wrapper.cars[0].set_ang_vel(float(info_player1['ang_vel_x']), float(info_player1['ang_vel_y']), float(info_player1['ang_vel_z']))
+                state_wrapper.cars[1].set_ang_vel(float(info_player2['ang_vel_x']), float(info_player2['ang_vel_y']), float(info_player2['ang_vel_z']))
+                state_wrapper.ball.set_ang_vel(float(info_ball['ang_vel_x']), float(info_ball['ang_vel_y']), float(info_ball['ang_vel_z']))
+                
+                state_wrapper.cars[0].set_rot(float(info_player1['rot_x']), float(info_player1['rot_y']), float(info_player1['rot_z']))
+                state_wrapper.cars[1].set_rot(float(info_player2['rot_x']), float(info_player2['rot_y']), float(info_player2['rot_z']))
+                
+                state_wrapper.cars[0].boost = float(info_player1['boost'])/255
+                state_wrapper.cars[1].boost = float(info_player2['boost'])/255
+                
+            except Exception as e:
+                print(e)
+                error = True
+        
+        
+
+    
