@@ -26,6 +26,10 @@ from Action import ZeerLookupAction
 from Callback import HParamCallback
 from Constante import *
 from CustomTerminal import CustomTerminalCondition
+from Extracor import CustomFeatureExtractor
+from CustomPolicy import CustomActorCriticPolicy
+
+from sb3_contrib import RecurrentPPO
 
 import os
 import datetime
@@ -188,7 +192,7 @@ if __name__ == "__main__":
     
     file_model_name = "BecomeBetterPlease"
     
-    nbRep = 1000
+    nbRep = 1000000
     
     save_periode = 1e5
     
@@ -215,7 +219,7 @@ if __name__ == "__main__":
     
     best_model = f"models/{file_model_name}/best_model/best_model"
     
-    n = 3000000
+    n = 1500000
     model_n = f"models/{file_model_name}/{file_model_name}_{n}_steps"
     
     total_steps = 0
@@ -223,38 +227,46 @@ if __name__ == "__main__":
     i = 0
     while True:
         stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
-    
-        eval_callback = EvalCallback(env, callback_after_eval=stopTraining, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
+
+        #                                 , callback_after_eval=stopTraining
+        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
         
         progressBard = ProgressBarCallback()
         
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
-            model = PPO.load(
-                best_model, 
-                env=env, 
-                verbose=1, 
-                device=torch.device("cpu"), 
-                custom_objects={"gamma": gamma(i//(nbRep/10))}
-                ) # gamma(i//(nbRep/10))
-            print("Load model")
+             model = RecurrentPPO.load(
+                 best_model, 
+                 env=env, 
+                 verbose=1, 
+                 device=torch.device("cuda:0"), 
+                 custom_objects={"gamma": gamma(i//(nbRep/10))}
+                 ) # gamma(i//(nbRep/10))
+             print("Load model")
         except:
-            model = PPO(
-                'MlpPolicy', 
-                env, 
-                n_epochs=32, 
-                batch_size=64,
-                learning_rate=5e-5, 
-                ent_coef=0.01, 
-                vf_coef=1., 
-                gamma=gamma(i//(nbRep/10)), 
-                clip_range= 0.2, 
-                verbose=1, 
-                #policy_kwargs={"optimizer_class" : 0},
-                tensorboard_log=f"{file_model_name}_{i}/logs",  
-                device="cuda:0" 
-                )
+            model = RecurrentPPO(
+                    policy=CustomActorCriticPolicy, 
+                    env=env, 
+                    n_epochs=32, 
+                    batch_size=64,
+                    learning_rate=5e-5, 
+                    ent_coef=0.01, 
+                    vf_coef=1., 
+                    gamma=gamma(i//(nbRep/10)), 
+                    clip_range= 0.2, 
+                    verbose=1, 
+                    policy_kwargs=dict(
+                        features_extractor_class=CustomFeatureExtractor,
+                        features_extractor_kwargs=dict(features_dim=256),
+                        lstm_hidden_size=512,
+                        n_lstm_layers=1,
+                        shared_lstm=True,
+                        enable_critic_lstm=False
+                    ),
+                    tensorboard_log=f"{file_model_name}_{i}/logs",  
+                    device="cuda:0" 
+                    )
             print("Model created")
         
         try:
@@ -264,10 +276,9 @@ if __name__ == "__main__":
             file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
             file.close()
         except Exception as e:
-            raise e
-            file = open("log_error.txt", "a")
-            file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
-            file.close()
+             file = open("log_error.txt", "a")
+             file.write(f"Error {datetime.datetime.now()} :\n{e}\n")
+             file.close()
             
         i += 1
         
