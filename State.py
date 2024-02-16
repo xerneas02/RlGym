@@ -44,7 +44,7 @@ class CombinedState(StateSetter):
 
         if len(self.state_setters) != len(self.state_probas):
             raise ValueError(
-                ("Reward functions list length ({0}) and reward weights " \
+                ("Terminal conditions list length ({0}) and condition probabilities " \
                  "length ({1}) must be equal").format(
                     len(self.state_setters), len(self.state_probas)
                 )

@@ -85,7 +85,7 @@ rewards = CombinedReward(
                 0.002   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
                 5       ,  # DiffDistanceBallGoalReward          #21
-                0.003    ,  # BehindTheBallPenalityReward         #22
+                0.003   ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -120,16 +120,16 @@ def get_match(game_speed=GAME_SPEED):
                                     (AirBallAD(),                 ()),
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
-                                    (Alea (True, False),         ()),
+                                    (Alea (True, False),          ()),
                                     (ChaosState(),                ())
                                 ),
                                 (
-                                    0.00, #DefaultState
-                                    0.70, #DefaultStateClose
+                                    0.70, #DefaultState
+                                    0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.15, #RandomState
-                                    0.15, #RandomStateOrange
+                                    0.05, #RandomState
+                                    0.00, #RandomStateOrange
                                     0.00, #InvertedState
                                     0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
@@ -137,12 +137,13 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.00, #Attaque
-                                    0.00, #Defense
-                                    0.00, #AirBallAD
-                                    0.00, #DefenseRapide
-                                    0.00, #Mur
-                                    0.00, #Alea
+                                    0.00, #LineState
+                                    0.05, #Attaque
+                                    0.04, #Defense
+                                    0.04, #AirBallAD
+                                    0.04, #DefenseRapide
+                                    0.04, #Mur
+                                    0.04, #Alea
                                     0.00, #ChaosState
                                 )
                              ),
@@ -154,6 +155,7 @@ def get_match(game_speed=GAME_SPEED):
     
     return match
 
+
 def get_gym(game_speed=GAME_SPEED):
     return Gym(get_match(game_speed), 
                pipe_id=os.getpid(), 
@@ -164,7 +166,26 @@ def get_gym(game_speed=GAME_SPEED):
                auto_minimize=False
                )
     
-    
+
+def linear_schedule(initial_value,final_value):
+    """
+    Linear learning rate schedule.
+
+    :param initial_value: Initial learning rate.
+    :return: schedule that computes
+      current learning rate depending on remaining progress
+    """
+    def func(progress_remaining):
+        """
+        Progress will decrease from 1 (beginning) to 0.
+
+        :param progress_remaining:
+        :return: current learning rate
+        """
+        return progress_remaining * (initial_value - final_value) + final_value 
+
+    return func
+
 
 if __name__ == "__main__":
 
@@ -192,7 +213,7 @@ if __name__ == "__main__":
     
     file_model_name = "BecomeBetterPlease"
     
-    nbRep = 1000000
+    nbRep = 100
     
     save_periode = 1e5
     
@@ -255,7 +276,7 @@ if __name__ == "__main__":
                     n_epochs=10, 
                     n_steps=27648,
                     batch_size=1728,
-                    learning_rate=5e-5, 
+                    learning_rate=linear_schedule(1e-4, 1e-6), 
                     ent_coef=0.01, 
                     vf_coef=1., 
                     gamma=gamma(i//(nbRep/10)), 
