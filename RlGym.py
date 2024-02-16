@@ -86,7 +86,7 @@ rewards = CombinedReward(
                 0.002   ,  # DontGoalPenalityReward              #19   
                 0       ,  # AirPenality                         #20
                 5       ,  # DiffDistanceBallGoalReward          #21
-                0.003    ,  # BehindTheBallPenalityReward         #22
+                0.003   ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -121,31 +121,31 @@ def get_match(game_speed=GAME_SPEED):
                                     (AirBallAD(),                 ()),
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
-                                    (Alea (True, False),         ()),
+                                    (Alea (True, False),          ()),
                                     (ChaosState(),                ())
                                 ),
                                 (
-                                    0.05, #Default state
-                                    0.0, #DefaultStateClose
-                                    0.0, #DefaultStateCloseOrange
-                                    0.0, #TrainingStateSetter
-                                    0.0, #RandomState
-                                    0.0, #RandomStateOrange
-                                    0.0, #InvertedState
-                                    0.05, #InvertedStateOrange
-                                    0.0, #GoaliePracticeState
-                                    0.0, #HoopsLikeSetter
-                                    0.0, #BetterRandom
-                                    0.0, #KickoffLikeSetter
-                                    0.0, #WallPracticeState
-                                    0.05,#LineState
-                                    0.05, #attaque
-                                    0.05, #defense
-                                    0.0, #AirBallAD
-                                    0.05, #DefenseRapide
-                                    0.0, #Mur
-                                    0.7, #Alea
-                                    0.0  #ChaosState
+                                    0.70, #DefaultState
+                                    0.00, #DefaultStateClose
+                                    0.00, #DefaultStateCloseOrange
+                                    0.00, #TrainingStateSetter
+                                    0.05, #RandomState
+                                    0.00, #RandomStateOrange
+                                    0.00, #InvertedState
+                                    0.00, #InvertedStateOrange
+                                    0.00, #GoaliePracticeState
+                                    0.00, #HoopsLikeSetter
+                                    0.00, #BetterRandom
+                                    0.00, #KickoffLikeSetter
+                                    0.00, #WallPracticeState
+                                    0.00, #LineState
+                                    0.05, #Attaque
+                                    0.04, #Defense
+                                    0.04, #AirBallAD
+                                    0.04, #DefenseRapide
+                                    0.04, #Mur
+                                    0.04, #Alea
+                                    0.00, #ChaosState
                                 )
                              ),
                                 
@@ -155,6 +155,7 @@ def get_match(game_speed=GAME_SPEED):
     )
     
     return match
+
 
 def get_gym(game_speed=GAME_SPEED):
     return Gym(get_match(game_speed), 
@@ -166,7 +167,26 @@ def get_gym(game_speed=GAME_SPEED):
                auto_minimize=False
                )
     
-    
+
+def linear_schedule(initial_value,final_value):
+    """
+    Linear learning rate schedule.
+
+    :param initial_value: Initial learning rate.
+    :return: schedule that computes
+      current learning rate depending on remaining progress
+    """
+    def func(progress_remaining):
+        """
+        Progress will decrease from 1 (beginning) to 0.
+
+        :param progress_remaining:
+        :return: current learning rate
+        """
+        return progress_remaining * (initial_value - final_value) + final_value 
+
+    return func
+
 
 if __name__ == "__main__":
 
@@ -198,7 +218,7 @@ if __name__ == "__main__":
     
     file_model_name = "BecomeBetterPlease"
     
-    nbRep = 1000000
+    nbRep = 100
     
     save_periode = 1e5
     
@@ -246,7 +266,12 @@ if __name__ == "__main__":
                  env=env, 
                  verbose=1, 
                  device=torch.device("cuda:0"), 
-                 custom_objects={"gamma": gamma(i//(nbRep/10))}
+                 custom_objects={  
+                                 "gamma": gamma(i//(nbRep/10)),
+                                 "n_epochs": 10, 
+                                "n_steps": 27648,
+                                "batch_size": 1728,
+                                }
                  )
              print("Load model")
         except:
