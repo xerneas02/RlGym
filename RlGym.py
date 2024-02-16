@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, ChaosState
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -63,29 +63,29 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                10        ,  # GoalScoredReward                    #1
-                5         ,  # SaveReward                          #2
-                0.1       ,  # BoostDifferenceReward               #3
-                5         ,  # BallTouchReward                     #4
-                0.3       ,  # DemoReward                          #5
-                0.001     ,  # DistancePlayerBallReward            #6
-                0.0025    ,  # DistanceBallGoalReward              #7
-                0.000625  ,  # FacingBallReward                    #8
-                0.0025    ,  # AlignBallGoalReward                 #9
-                0.00125   ,  # ClosestToBallReward                 #10
-                0.00125   ,  # TouchedLastReward                   #11
-                0.00125   ,  # BehindBallReward                    #12
-                0.005     ,  # VelocityPlayerBallReward            #13
-                0.0       ,  # KickoffReward (0.1)                 #14
-                0.005     ,  # VelocityReward (0.000625)           #15
-                0.05      ,  # BoostAmountReward                   #16
-                0.005     ,  # ForwardVelocityReward               #17
-                1         ,  # FirstTouchReward                    #18
-                0.01      ,  # DontTouchPenalityReward             #19
-                0.00      ,  # DontGoalPenalityReward              #20   
-                0         ,  # AirPenality                         #21
-                0.1       ,  # DiffDistanceBallGoalReward          #22
-                0.01      ,  # BehindTheBallPenalityReward
+                10      ,  # GoalScoredReward                    #1
+                5      ,    # SaveReward
+                0.0025  ,  # BoostDifferenceReward               #2
+                0.5     ,  # BallTouchReward                     #3
+                0.3     ,  # DemoReward                          #4
+                0.0050  ,  # DistancePlayerBallReward            #5
+                0.0050  ,  # DistanceBallGoalReward              #6
+                0.000625,  # FacingBallReward                    #7
+                0.00200 ,  # AlignBallGoalReward                 #8
+                0.00125 ,  # ClosestToBallReward                 #9
+                0.00125 ,  # TouchedLastReward                   #10
+                0.00300 ,  # BehindBallReward                    #11
+                0.00300 ,  # VelocityPlayerBallReward            #12
+                0.0025  ,  # KickoffReward (0.1)                 #13
+                0.0025  ,  # VelocityReward (0.000625)           #14
+                0.00125 ,  # BoostAmountReward                   #15
+                0.005   ,  # ForwardVelocityReward               #16
+                0       ,  # FirstTouchReward                    #17
+                0.003    ,  # DontTouchPenalityReward             #18
+                0.002   ,  # DontGoalPenalityReward              #19   
+                0       ,  # AirPenality                         #20
+                5       ,  # DiffDistanceBallGoalReward          #21
+                0.003    ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -95,7 +95,8 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(200), AfterTouchTimeoutCondition(10)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(150), 
+                               common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -113,8 +114,14 @@ def get_match(game_speed=GAME_SPEED):
                                     (BetterRandom(),              ()),
                                     (KickoffLikeSetter(),         ()),
                                     (WallPracticeState(),         ()),
+                                    (LineState(2300),             ()),
                                     (Attaque(),                   ()),
-                                    (ChaosState(),                ()),
+                                    (Defense(),                   ()),
+                                    (AirBallAD(),                 ()),
+                                    (DefenseRapide(),             ()),
+                                    (Mur(500),                    ()),
+                                    (Alea (True, False),         ()),
+                                    (ChaosState(),                ())
                                 ),
                                 (
                                     0.00, #DefaultState
@@ -131,6 +138,11 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
                                     0.00, #Attaque
+                                    0.00, #Defense
+                                    0.00, #AirBallAD
+                                    0.00, #DefenseRapide
+                                    0.00, #Mur
+                                    0.00, #Alea
                                     0.00, #ChaosState
                                 )
                              ),
@@ -178,7 +190,7 @@ if __name__ == "__main__":
     file.close(  )
     
     
-    file_model_name = "model_ZZeerV1"
+    file_model_name = "BecomeBetterPlease"
     
     nbRep = 1000000
     

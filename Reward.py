@@ -22,6 +22,8 @@ from Constante import *
 
 import datetime
 
+TOUCH_VERIF = False
+
 class CombinedReward(RewardFunction):
 
     def __init__(
@@ -95,6 +97,7 @@ class CombinedReward(RewardFunction):
 
     def reset(self, initial_state: GameState) -> None:
         self.count = 0
+        TOUCH_VERIF = False
         
         if self.count_period >= self.period :
             self.count_period = 0
@@ -197,7 +200,10 @@ class GoalScoredReward(RewardFunction):
         
         
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
-        return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
+        if (TOUCH_VERIF):
+            return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
+        else:
+            return 0
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
@@ -230,6 +236,8 @@ class BallTouchReward(RewardFunction):
         self.lamb = 0
 
     def get_reward(self, player, state, previous_action):
+        
+        TOUCH_VERIF = True
         
         if self.last_touch:
             self.lamb = max(0.1, self.lamb * 0.95)
