@@ -959,7 +959,6 @@ class ReplayState(StateSetter):
                 state_wrapper.cars[1].boost = float(info_player2['boost'])/255
                 
             except Exception as e:
-                print(e)
                 error = True
         
         

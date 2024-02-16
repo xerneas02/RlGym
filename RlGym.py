@@ -125,7 +125,7 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-                                    0.10, #DefaultState
+                                    0.70, #DefaultState
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
@@ -146,7 +146,7 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #Mur
                                     0.06, #Alea
                                     0.00, #ChaosState
-                                    0.70, #ReplayState
+                                    0.10, #ReplayState
                                 )
                              ),
                                 
