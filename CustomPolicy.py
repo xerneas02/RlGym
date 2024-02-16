@@ -19,7 +19,7 @@ class CustomNetwork(nn.Module):
     def __init__(
         self,
         feature_dim: int,
-        lstm_output_dim:int = 512,
+        lstm_output_dim:int = 256,
         last_layer_dim_pi: int = 128,
         last_layer_dim_vf: int = 128,
     ):

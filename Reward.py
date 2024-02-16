@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import rlgym
 from stable_baselines3 import PPO
 from rlgym.utils.terminal_conditions import TerminalCondition
@@ -23,7 +24,115 @@ from Constante import *
 import datetime
 
 TOUCH_VERIF = False
+NUMBER_SIMULATION = 0
+NUMBER_GOAL = 0
+NUMBER_TOUCH = 0
+BEHIND_BALL_TIME = 0
+NUMBER_TICK = 0
 
+def lire_fichier(nom_fichier):
+    simulations = []
+    buts_marques = []
+    balles_touchees = []
+    pourcentage_temps_bot = []
+
+    with open(nom_fichier, 'r') as fichier:
+        lignes = fichier.readlines()
+        for i in range(0, len(lignes), 5):  # Incrément de 5 pour chaque bloc de données
+            simulations.append(int(lignes[i].strip()))
+            buts_marques.append(int(lignes[i+1].strip()))
+            balles_touchees.append(int(lignes[i+2].strip()))
+            pourcentage_temps_bot.append(float(lignes[i+3].strip()))
+
+    return simulations, buts_marques, balles_touchees, pourcentage_temps_bot
+
+def plot_courbe(nom_fichier):
+    simulations, buts_marques, balles_touchees, pourcentage_temps_bot = lire_fichier(nom_fichier)
+
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(simulations, buts_marques, marker='o', color='b', label='Buts marqués')
+    plt.plot(simulations, balles_touchees, marker='o', color='r', label='Balles touchées')
+    plt.plot(simulations, pourcentage_temps_bot, marker='o', color='g', label='% Temps du bot')
+    plt.title('Comparaison des paramètres')
+    plt.xlabel('Nombre de simulations')
+    plt.ylabel('Valeurs')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show(block=False)
+    plt.pause(0.01)  # Permet à la fenêtre de répondre
+
+def plot_statistics():
+    # Fermer toutes les fenêtres existantes
+    plt.close('all')
+
+    # Lecture des données depuis le fichier stats_bot.txt
+    with open("stats_bot.txt", "r") as file:
+        lines = file.readlines()
+
+    # Extraction des données en groupes de 5 lignes (4 paramètres + "ff")
+    data_groups = [list(map(float, lines[i:i+4])) for i in range(0, len(lines), 5)]
+    num_simulations = len(data_groups)
+
+    # Dernier ensemble de données
+    last_data = data_groups[-1]
+
+    # Calcul de la moyenne des données
+    num_groups = len(data_groups)
+    avg_data = [sum(x) / num_groups for x in zip(*data_groups)]
+
+    # Création des histogrammes
+    fig, axs = plt.subplots(2, 1, figsize=(10, 8))  # Taille en pouces pour une résolution de 1920x1080
+
+    # Histogramme pour les dernières valeurs
+    labels = ['NUMBER_GOAL', 'NUMBER_TOUCH', 'BEHIND_BALL_TIME']
+    bars = axs[0].bar(labels, last_data[1:], color='skyblue')
+
+    # Affichage des valeurs sur les barres
+    for bar, value in zip(bars, last_data[1:]):
+        height = bar.get_height()
+        axs[0].text(bar.get_x() + bar.get_width() / 2, height, round(value, 2), ha='center', va='bottom')
+
+    axs[0].set_title('Dernières valeurs des paramètres')
+    axs[0].set_ylabel('Valeur')
+
+    # Histogramme pour les moyennes
+    bars = axs[1].bar(labels, avg_data[1:], color='lightgreen')
+
+    # Affichage des valeurs sur les barres
+    for bar, value in zip(bars, avg_data[1:]):
+        height = bar.get_height()
+        axs[1].text(bar.get_x() + bar.get_width() / 2, height, round(value, 2), ha='center', va='bottom')
+
+    axs[1].set_title('Moyenne des paramètres')
+    axs[1].set_ylabel('Moyenne')
+
+    # Affichage du nombre de simulations
+    plt.figtext(0.5, 0.002, f"Nombre de simulations : {num_simulations}", ha='center', fontsize=12)
+
+    # Affichage des graphiques sans bloquer l'exécution
+    plt.tight_layout()
+    plt.show(block=False)
+    plt.pause(0.01)  # Permet à la fenêtre de répondre
+
+
+def SaveStatFile():
+    global NUMBER_TOUCH, NUMBER_GOAL, BEHIND_BALL_TIME, NUMBER_SIMULATION, NUMBER_TICK
+    try:
+        with open("stats_bot.txt", "a") as file:
+            file.write(str(NUMBER_SIMULATION) + "\n")
+            file.write(str(NUMBER_GOAL) + "\n")
+            file.write(str(NUMBER_TOUCH) + "\n")
+            file.write(str((BEHIND_BALL_TIME / NUMBER_TICK ) * 100) + "\n")
+            file.write("ff\n")
+        if AFFICHE_SCREEN:
+            plot_statistics()
+            plot_courbe("stats_bot.txt")
+    except Exception as e:
+        print("An error occurred while writing to file:", e)
+    return 0
+    
 class CombinedReward(RewardFunction):
 
     def __init__(
@@ -97,7 +206,16 @@ class CombinedReward(RewardFunction):
 
     def reset(self, initial_state: GameState) -> None:
         self.count = 0
+        global TOUCH_VERIF, NUMBER_SIMULATION, NUMBER_GOAL, NUMBER_TOUCH, BEHIND_BALL_TIME, NUMBER_TICK
         TOUCH_VERIF = False
+        NUMBER_SIMULATION = NUMBER_SIMULATION +1
+        #print(NUMBER_SIMULATION)
+        if NUMBER_SIMULATION % 20 == 0:
+            SaveStatFile()
+            NUMBER_GOAL = 0
+            NUMBER_TOUCH = 0
+            BEHIND_BALL_TIME = 0
+            NUMBER_TICK = 0
         
         if self.count_period >= self.period :
             self.count_period = 0
@@ -185,6 +303,7 @@ class GoalScoredReward(RewardFunction):
     def get_reward(self, player, state, previous_action):
         blue_scored   = False
         orange_scored = False
+        global TOUCH_VERIF, NUMBER_GOAL
         
         if player.team_num == 0 and self.previous_blue_score != state.blue_score:
             blue_scored = True
@@ -197,10 +316,9 @@ class GoalScoredReward(RewardFunction):
         if(player.team_num == 0 and not blue_scored  ) : return 0 
         if(player.team_num == 1 and not orange_scored) : return 0
         
-        
-        
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
         if (TOUCH_VERIF):
+            NUMBER_GOAL = NUMBER_GOAL + 1
             return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
         else:
             return 0
@@ -236,8 +354,7 @@ class BallTouchReward(RewardFunction):
         self.lamb = 0
 
     def get_reward(self, player, state, previous_action):
-        
-        TOUCH_VERIF = True
+        global TOUCH_VERIF, NUMBER_TOUCH
         
         if self.last_touch:
             self.lamb = max(0.1, self.lamb * 0.95)
@@ -252,7 +369,8 @@ class BallTouchReward(RewardFunction):
             
         pos_ball_z = state.ball.position[2]
         reward = self.lamb * ((pos_ball_z + BALL_RADIUS)/(2*BALL_RADIUS)) ** 0.2836
-        
+        TOUCH_VERIF = True
+        NUMBER_TOUCH = NUMBER_TOUCH + 1
         return reward
 
     def get_final_reward(self, player, state, previous_action):
@@ -678,8 +796,12 @@ class BehindTheBallPenalityReward(RewardFunction):
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float: 
         self.is_behind = player.car_data.position[1] < state.ball.position[1]
+        global BEHIND_BALL_TIME, NUMBER_TICK
+        NUMBER_TICK = NUMBER_TICK + 1
         
         self.ticks += 1
+        if (self.is_behind):
+            BEHIND_BALL_TIME = BEHIND_BALL_TIME + 1
     
         return - (self.ticks * (not self.is_behind) * 0.01)
 

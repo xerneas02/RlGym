@@ -30,6 +30,7 @@ from Extracor import CustomFeatureExtractor
 from CustomPolicy import CustomActorCriticPolicy
 
 from sb3_contrib import RecurrentPPO
+from schedule import linear_schedule
 
 import os
 import datetime
@@ -182,6 +183,10 @@ if __name__ == "__main__":
     file.write("")
     file.close(  )
     
+    file = open("stats_bot.txt", "w")
+    file.write("")
+    file.close(  )
+    
     file = open("log_rew.txt", "w")
     file.write("")
     file.close(  )
@@ -195,7 +200,7 @@ if __name__ == "__main__":
     
     nbRep = 1000000
     
-    save_periode = 1e6
+    save_periode = 1e5
     
     fps = 120 / FRAME_SKIP
     T = 20
@@ -248,10 +253,10 @@ if __name__ == "__main__":
             model = RecurrentPPO(
                     policy=CustomActorCriticPolicy, 
                     env=env, 
-                    n_epochs=32, 
+                    n_epochs=10, 
                     n_steps=27648,
                     batch_size=1728,
-                    learning_rate=5e-5, 
+                    learning_rate=linear_schedule(1e-4, 5e-5), 
                     ent_coef=0.01, 
                     vf_coef=1., 
                     gamma=gamma(i//(nbRep/10)), 
@@ -260,7 +265,7 @@ if __name__ == "__main__":
                     policy_kwargs=dict(
                         features_extractor_class=CustomFeatureExtractor,
                         features_extractor_kwargs=dict(features_dim=256),
-                        lstm_hidden_size=512,
+                        lstm_hidden_size=256,
                         n_lstm_layers=1,
                         shared_lstm=True,
                         enable_critic_lstm=False

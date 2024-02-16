@@ -12,7 +12,7 @@ class HParamCallback(BaseCallback):
     def _on_training_start(self) -> None:
         hparam_dict = {
             "algorithm": self.model.__class__.__name__,
-            "learning rate": self.model.learning_rate,
+            "learning rate": self.model.learning_rate(self.model._current_progress_remaining),
             "gamma": self.model.gamma,
         }
         # define the metrics that will appear in the `HPARAMS` Tensorboard tab by referencing their tag
