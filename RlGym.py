@@ -126,7 +126,7 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-                                    0.70, #DefaultState
+                                    0.06, #DefaultState
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
@@ -139,15 +139,15 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.05, #LineState
-                                    0.05, #Attaque
-                                    0.05, #Defense
+                                    0.00, #LineState
+                                    0.07, #Attaque
+                                    0.07, #Defense
                                     0.00, #AirBallAD
-                                    0.05, #DefenseRapide
+                                    0.00, #DefenseRapide
                                     0.00, #Mur
-                                    0.05, #Alea
+                                    0.70, #Alea
                                     0.00, #ChaosState
-                                    0.05, #ReplayState
+                                    0.10, #ReplayState
                                 )
                              ),
                                 
@@ -199,8 +199,8 @@ if __name__ == "__main__":
         print(torch.cuda.get_device_name(0))
     else:
         print("Not found")
-        
     
+    input("Attention les logs précédant vont être suprimé. (press entre to continue)")
     file = open("log.txt", "w")
     file.write("")
     file.close(  )
