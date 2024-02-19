@@ -96,7 +96,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(150), 
+        terminal_conditions = (common_conditions.TimeoutCondition(250), 
                                common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
@@ -126,28 +126,28 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-                                    0.70, #DefaultState
+                                    0.10, #DefaultState
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
                                     0.00, #RandomState
-                                    0.00, #RandomStateOrange
-                                    0.00, #InvertedState
-                                    0.00, #InvertedStateOrange
+                                    0.10, #RandomStateOrange
+                                    0.10, #InvertedState
+                                    0.10, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.05, #LineState
-                                    0.05, #Attaque
-                                    0.05, #Defense
+                                    0.10, #LineState
+                                    0.10, #Attaque
+                                    0.10, #Defense
                                     0.00, #AirBallAD
-                                    0.05, #DefenseRapide
-                                    0.00, #Mur
-                                    0.05, #Alea
+                                    0.10, #DefenseRapide
+                                    0.10, #Mur
+                                    0.10, #Alea
                                     0.00, #ChaosState
-                                    0.05, #ReplayState
+                                    0.00, #ReplayState
                                 )
                              ),
                                 
@@ -199,8 +199,8 @@ if __name__ == "__main__":
         print(torch.cuda.get_device_name(0))
     else:
         print("Not found")
-        
     
+    input("Attention les logs précédant vont être suprimé. (press entre to continue)")
     file = open("log.txt", "w")
     file.write("")
     file.close(  )
