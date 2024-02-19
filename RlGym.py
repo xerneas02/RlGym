@@ -34,6 +34,7 @@ from schedule import linear_schedule
 
 import os
 import datetime
+import subprocess
 
 DiffDistanceBallGoalReward = DiffReward(DistanceBallGoalReward(z_axe=False))
 
@@ -126,14 +127,14 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-                                    0.10, #DefaultState
+                                    0.00, #DefaultState
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
                                     0.00, #RandomState
                                     0.10, #RandomStateOrange
-                                    0.10, #InvertedState
-                                    0.10, #InvertedStateOrange
+                                    0.00, #InvertedState
+                                    0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
@@ -143,11 +144,11 @@ def get_match(game_speed=GAME_SPEED):
                                     0.10, #Attaque
                                     0.10, #Defense
                                     0.00, #AirBallAD
-                                    0.10, #DefenseRapide
-                                    0.10, #Mur
-                                    0.10, #Alea
+                                    0.00, #DefenseRapide
+                                    0.00, #Mur
+                                    0.50, #Alea
                                     0.00, #ChaosState
-                                    0.00, #ReplayState
+                                    0.10, #ReplayState
                                 )
                              ),
                                 
@@ -170,24 +171,36 @@ def get_gym(game_speed=GAME_SPEED):
                )
     
 
-def linear_schedule(initial_value,final_value):
-    """
-    Linear learning rate schedule.
+def modifier_resolution(nouveau_res_x, nouveau_res_y):
+    result = subprocess.run(["powershell", "[Environment]::GetFolderPath('MyDocuments')"], capture_output=True, text=True)
+    documents_folder = result.stdout.strip()
 
-    :param initial_value: Initial learning rate.
-    :return: schedule that computes
-      current learning rate depending on remaining progress
-    """
-    def func(progress_remaining):
-        """
-        Progress will decrease from 1 (beginning) to 0.
-
-        :param progress_remaining:
-        :return: current learning rate
-        """
-        return progress_remaining * (initial_value - final_value) + final_value 
-
-    return func
+    chemin_fichier = f'{documents_folder}/My Games/Rocket League/TAGame/Config/TASystemSettings.ini'
+    nouvelle_ligne_res_x = f"ResX={nouveau_res_x}\n"
+    nouvelle_ligne_res_y = f"ResY={nouveau_res_y}\n"
+    nouvelle_ligne_borderless = "Borderless=True\n"
+    
+    lignes_modifiees = []
+    res_x_modifie = False
+    res_y_modifie = False
+    borderless_modifie = False
+    with open(chemin_fichier, 'r') as fichier:
+        lignes = fichier.readlines()
+        for ligne in lignes:
+            if ligne.startswith("ResX=") and not res_x_modifie:
+                lignes_modifiees.append(nouvelle_ligne_res_x)
+                res_x_modifie = True
+            elif ligne.startswith("ResY=") and not res_y_modifie:
+                lignes_modifiees.append(nouvelle_ligne_res_y)
+                res_y_modifie = True
+            elif ligne.startswith("Borderless=") and not borderless_modifie:
+                lignes_modifiees.append(nouvelle_ligne_borderless)
+                borderless_modifie = True
+            else:
+                lignes_modifiees.append(ligne)
+    
+    with open(chemin_fichier, 'w') as fichier:
+        fichier.writelines(lignes_modifiees)
 
 
 if __name__ == "__main__":
@@ -217,8 +230,9 @@ if __name__ == "__main__":
     file.write("")
     file.close(  )
     
+    modifier_resolution(ResX, ResY)
     
-    file_model_name = "BecomeBetterPlease"
+    file_model_name = "ZZeerWillTryHard"
     
     nbRep = 100
     
