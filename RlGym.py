@@ -64,10 +64,10 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                10      ,  # GoalScoredReward                    #1
+                7      ,  # GoalScoredReward                    #1
                 5      ,    # SaveReward
                 0.0025  ,  # BoostDifferenceReward               #2
-                0.5     ,  # BallTouchReward                     #3
+                5     ,  # BallTouchReward                     #3
                 0.3     ,  # DemoReward                          #4
                 0.0050  ,  # DistancePlayerBallReward            #5
                 0.0050  ,  # DistanceBallGoalReward              #6
@@ -126,7 +126,7 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-                                    0.10, #DefaultState
+                                    0.00, #DefaultState
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
@@ -139,7 +139,7 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.10, #LineState
+                                    0.20, #LineState
                                     0.10, #Attaque
                                     0.10, #Defense
                                     0.00, #AirBallAD

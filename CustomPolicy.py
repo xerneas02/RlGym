@@ -4,7 +4,7 @@ from gymnasium import spaces
 import torch as th
 from torch import nn
 
-from sb3_contrib.common.recurrent.policies import RecurrentActorCriticCnnPolicy
+from sb3_contrib.common.recurrent.policies import RecurrentActorCriticPolicy
 
 class CustomNetwork(nn.Module):
     """
@@ -64,7 +64,7 @@ class CustomNetwork(nn.Module):
         return self.value_net(features)
 
 
-class CustomActorCriticPolicy(RecurrentActorCriticCnnPolicy):
+class CustomActorCriticPolicy(RecurrentActorCriticPolicy):
     def __init__(
         self,
         observation_space: spaces.Space,
