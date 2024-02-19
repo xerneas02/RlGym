@@ -11,6 +11,7 @@ from numpy.linalg import norm
 from abc import ABC, abstractmethod
 
 from scipy.spatial.distance import cosine
+from collections import defaultdict
 
 
 from typing import Any, Optional, Tuple, overload, Union,Dict
@@ -30,20 +31,28 @@ BEHIND_BALL_TIME = 0
 NUMBER_TICK = 0
 
 def lire_fichier(nom_fichier):
-    simulations = []
-    buts_marques = []
-    balles_touchees = []
-    pourcentage_temps_bot = []
+    data = defaultdict(list)
 
     with open(nom_fichier, 'r') as fichier:
         lignes = fichier.readlines()
         for i in range(0, len(lignes), 5):  # Incrément de 5 pour chaque bloc de données
-            simulations.append(int(lignes[i].strip()))
-            buts_marques.append(int(lignes[i+1].strip()))
-            balles_touchees.append(int(lignes[i+2].strip()))
-            pourcentage_temps_bot.append(float(lignes[i+3].strip()))
+            simulation = int(lignes[i].strip())
+            data[simulation].append(int(lignes[i+1].strip()))  # Buts marqués
+            data[simulation].append(int(lignes[i+2].strip()))  # Balles touchées
+            data[simulation].append(float(lignes[i+3].strip()))  # % Temps du bot
 
-    return simulations, buts_marques, balles_touchees, pourcentage_temps_bot
+    simulations = []
+    buts_marques_avg = []
+    balles_touchees_avg = []
+    pourcentage_temps_bot_avg = []
+
+    for simulation, values in data.items():
+        simulations.append(simulation)
+        buts_marques_avg.append(sum(values[::3]) / len(values[::3]))
+        balles_touchees_avg.append(sum(values[1::3]) / len(values[1::3]))
+        pourcentage_temps_bot_avg.append(sum(values[2::3]) / len(values[2::3]))
+
+    return simulations, buts_marques_avg, balles_touchees_avg, pourcentage_temps_bot_avg
 
 def plot_courbe(nom_fichier):
     simulations, buts_marques, balles_touchees, pourcentage_temps_bot = lire_fichier(nom_fichier)
