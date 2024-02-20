@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Page</title>
+    <link rel="stylesheet" href="jeu.css"> <!-- Supposons que le fichier CSS est nommé styles.css -->
+</head>
+<body>
+    <div class="container">
+        <div class="navigation-bar">
+            <a href="#jeu" class="tab active">Jeu</a>
+            <a href="setup.html" class="tab">Setup</a>
+            <a href="architecture.html" class="tab">Architecture</a>
+            <a href="#experimentation" class="tab">Expérimentation</a>
+        </div>
+        <div class="contenu">
+            <div class="side-navigation"></div>
+            <div class="texte">
+                <h1>Rocket League</h1>
+                <img class="bigImg" src="https://beanstalk.io/wp-content/uploads/2022/11/rocket-league-wallpaper.png">
+                <h2>Introduction</h2>
+                <p>
+                    Rocket League est un jeu vidéo développé et édité par Psyonix sorti en juillet 2015.<br> 
+
+                    Deux équipes, composées de un à quatre joueurs selon les modes de jeu, conduisant des voitures, 
+                    s'affrontent au cours d'un match afin de frapper un ballon et de marquer dans le but adverse.<br>
+                    Les voitures sont équipées de propulseurs/turbos (boost), peuvent sauter, ou s'orienter selon n'importe quels axes.
+                    Ce qui permet de jouer le ballon dans les airs comme au sol délivrant ainsi une expérience de jeu unique.
+                </p>
+                <h2>Actions</h2>
+                <h3>########## Saut & Rotation ##########</h3>
+                <video autoplay="autoplay" muted="" loop="" src="video/cut1.mp4"></video>
+                <video autoplay="autoplay" muted="" loop="" src="video/cut2.mp4"></video>
+                <video autoplay="autoplay" muted="" loop="" src="video/cut3.mp4"></video>
+                <h3>########## Flip ##########</h3>
+                <video autoplay="autoplay" muted="" loop="" src="video/cut4.mp4"></video>
+                <h3>########## Boost ##########</h3>
+                <video autoplay="autoplay" muted="" loop="" src="video/cut5.mp4"></video>
+                <h2>Mode de jeu</h2>
+                <h3>Classique</h3>
+                <img src="img/classicMode.png">
+                <p>
+                    Il est possible de jouer dans le mode classique (football) en 1vs1, 2vs2 et 3vs3.
+                </p>
+                <h3>Extra</h3>
+                <img src="img/extraMode.png">
+                <p>
+                    Rocket League propose aussi certains modes extra permettant de diversifier le jeu tels que
+                    le mode panier (basketball), le jour de neige (même principe que le football mais le balon est remplacé
+                    par un palais qui glisse sur le sol), ou encore le mode rumble (similaire au football mais chaque voiture 
+                    dispose d'un super pouvoir à intervalles de temps réguliers).
+                </p>
+                <h2>Système de classement</h2>
+                <img src="img/rang.jpg">
+                Beaucoup de jeux compétitifs utilisent un système d'élo afin de pouvoir différencier les joueurs entre eux.<br>
+                Ce méchanisme est aussi utilisé par rocket league. En effet, le joueur débute le jeu avec un élo initial (=600 points),
+                s'il gagne un match, il peut remporter en moyenne 9 points d'élo, s'il perd en revanche, c'est en moyenne 9 points d'élo
+                aussi qui lui sont retiré en fonction de l'élo de son adversaire.<br>
+                Avec un tel système, plusieurs rangs ont été défini, chacun d'entre eux représente un intervalle fixe de point d'élo.
+                Plus un joueur a un élo élevé, plus son rang augmente.
+            </div>
+            
+        </div>
+    </div>
+    <script src="jeu.js"></script> <!-- Fichier JavaScript -->
+</body>
+</html>

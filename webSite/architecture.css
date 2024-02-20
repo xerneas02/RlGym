@@ -1,0 +1,109 @@
+/* Reset des styles pour la mise en forme de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: red; 
+    height: 100vh;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    display: flex;
+    flex-direction: column;
+    position: relative
+}
+
+.navigation-bar {
+    background-color: #333; 
+    display: flex;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 10%;
+}
+
+.tab {
+    color: white; 
+    text-align: center;
+    font-size: xx-large;
+    width: 25%;
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.tab.active {
+    background-color: #555; 
+}
+
+.tab:hover {
+    background-color: #555; 
+}
+
+.contenu {
+    width: 100%;
+    margin-top: 0%;
+    margin-left: 0%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    background-color: rgb(26, 26, 26);
+    height: 90%;
+}
+
+.texte {
+    position: relative;
+    width: 80%;
+    height: 20000px;;
+    display: flex;
+    flex-direction: column;
+    margin-left: 10%;
+    font-size: 1.3em;
+    text-align: justify;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    line-height: 1.4em;
+    overflow: auto; 
+}
+
+.texte h1 {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.navBarre {
+    position: relative;
+    width: 20%;
+    height: 100%;
+    left: 0%;
+    top: 0%;
+    display: flex;
+    flex-direction: column;
+}
+
+.toggle-title {
+    cursor: pointer;
+    margin: 0;
+    margin-right: 20%;
+    padding: 10px;
+    background-color: #010101;
+}
+
+.toggle-arrow {
+    float: right;
+}
+
+.toggle-content {
+    display: block;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+    max-height: 0px; /* Valeur arbitraire pour la hauteur maximale du contenu */
+
+}
+

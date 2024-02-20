@@ -115,7 +115,7 @@ def get_match(game_speed=GAME_SPEED):
                                     (BetterRandom(),              ()),
                                     (KickoffLikeSetter(),         ()),
                                     (WallPracticeState(),         ()),
-                                    (LineState(2300),             ()),
+                                    (LineState(100),             ()),
                                     (Attaque(),                   ()),
                                     (Defense(),                   ()),
                                     (AirBallAD(),                 ()),
