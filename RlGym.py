@@ -30,7 +30,7 @@ from Extracor import CustomFeatureExtractor
 from CustomPolicy import CustomActorCriticPolicy
 
 from sb3_contrib import RecurrentPPO
-from schedule import linear_schedule
+from schedule import linear_schedule,constant_schedule
 
 import os
 import datetime
@@ -65,29 +65,29 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                10      ,  # GoalScoredReward                    #1
-                5      ,    # SaveReward
-                0.0025  ,  # BoostDifferenceReward               #2
-                0.5     ,  # BallTouchReward                     #3
-                0.3     ,  # DemoReward                          #4
-                0.0050  ,  # DistancePlayerBallReward            #5
-                0.0050  ,  # DistanceBallGoalReward              #6
-                0.000625,  # FacingBallReward                    #7
-                0.00200 ,  # AlignBallGoalReward                 #8
-                0.00125 ,  # ClosestToBallReward                 #9
-                0.00125 ,  # TouchedLastReward                   #10
-                0.00300 ,  # BehindBallReward                    #11
-                0.00300 ,  # VelocityPlayerBallReward            #12
-                0.0025  ,  # KickoffReward (0.1)                 #13
-                0.0025  ,  # VelocityReward (0.000625)           #14
-                0.00125 ,  # BoostAmountReward                   #15
-                0.005   ,  # ForwardVelocityReward               #16
-                0       ,  # FirstTouchReward                    #17
-                0.003    ,  # DontTouchPenalityReward             #18
-                0.002   ,  # DontGoalPenalityReward              #19   
-                0       ,  # AirPenality                         #20
-                5       ,  # DiffDistanceBallGoalReward          #21
-                0.003   ,  # BehindTheBallPenalityReward         #22
+                0        ,  # GoalScoredReward                    #1
+                0        ,    # SaveReward
+                0.00     ,  # BoostDifferenceReward               #2
+                1        ,  # BallTouchReward                     #3
+                0      ,  # DemoReward                          #4
+                0.00   ,  # DistancePlayerBallReward            #5
+                0.00   ,  # DistanceBallGoalReward              #6
+                0.02   ,  # FacingBallReward                    #7
+                0.00   ,  # AlignBallGoalReward                 #8
+                0.00   ,  # ClosestToBallReward                 #9
+                0.00   ,  # TouchedLastReward                   #10
+                0.00   ,  # BehindBallReward                    #11
+                0.00   ,  # VelocityPlayerBallReward            #12
+                0.00   ,  # KickoffReward (0.1)                 #13
+                0.00   ,  # VelocityReward (0.000625)           #14
+                0.00   ,  # BoostAmountReward                   #15
+                0.00   ,  # ForwardVelocityReward               #16
+                0        ,  # FirstTouchReward                    #17
+                0.0     ,  # DontTouchPenalityReward             #18
+                0.00     ,  # DontGoalPenalityReward              #19   
+                0        ,  # AirPenality                         #20
+                0      ,  # DiffDistanceBallGoalReward          #21
+                0.00   ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -97,8 +97,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(250), 
-                               common_conditions.GoalScoredCondition()),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(5000), common_conditions.NoTouchTimeoutCondition(500)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -131,24 +130,24 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.00, #RandomState
-                                    0.10, #RandomStateOrange
-                                    0.00, #InvertedState
+                                    0.70, #RandomState
+                                    0.00, #RandomStateOrange
+                                    0.10, #InvertedState
                                     0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.00, #KickoffLikeSetter
+                                    0.20, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.10, #LineState
-                                    0.10, #Attaque
-                                    0.10, #Defense
+                                    0.00, #LineState
+                                    0.00, #Attaque
+                                    0.00, #Defense
                                     0.00, #AirBallAD
                                     0.00, #DefenseRapide
                                     0.00, #Mur
-                                    0.50, #Alea
+                                    0.00, #Alea
                                     0.00, #ChaosState
-                                    0.10, #ReplayState
+                                    0.00, #ReplayState
                                 )
                              ),
                                 
@@ -232,7 +231,7 @@ if __name__ == "__main__":
     
     modifier_resolution(ResX, ResY)
     
-    file_model_name = "ZZeerWillTryHard"
+    file_model_name = "ThisOneWilltouchDaBall" #ThisOneWilltouchDaBall
     
     nbRep = 100
     
@@ -240,8 +239,8 @@ if __name__ == "__main__":
     
     fps = 120 / FRAME_SKIP
     T = 20
-    gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*fps))
-    #gamma = np.exp(np.log10(0.5)/(T*fps))
+    #gamma = lambda x: np.exp(np.log10(0.5)/((T+x)*fps))
+    gamma = np.exp(np.log10(0.5)/(T*fps))
     
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match, num_instances=NUM_INSTANCE, wait_time=40, force_paging=True)
     env = VecMonitor(env) # Logs mean reward and ep_len to Tensorboard
@@ -283,10 +282,12 @@ if __name__ == "__main__":
                  verbose=1, 
                  device=torch.device("cuda:0"), 
                  custom_objects={  
-                                 "gamma": gamma(i//(nbRep/10)),
+                                 "gamma": gamma,
                                  "n_epochs": 10, 
-                                "n_steps": 27648,
-                                "batch_size": 1728,
+                                 "n_steps": 10000,
+                                 "batch_size": 256,
+                                 "learning_rate": constant_schedule(5e-5),
+                                 "ent_coef":0.1  
                                 }
                  )
              print("Load model")
@@ -295,12 +296,12 @@ if __name__ == "__main__":
                     policy=CustomActorCriticPolicy, 
                     env=env, 
                     n_epochs=10, 
-                    n_steps=27648,
-                    batch_size=1728,
-                    learning_rate=linear_schedule(1e-4, 5e-5), 
-                    ent_coef=0.01, 
+                    n_steps=10000,
+                    batch_size=256,
+                    learning_rate=constant_schedule(5e-5), 
+                    ent_coef=0.1, 
                     vf_coef=1., 
-                    gamma=gamma(i//(nbRep/10)), 
+                    gamma=gamma, 
                     clip_range= 0.2, 
                     verbose=1, 
                     policy_kwargs=dict(

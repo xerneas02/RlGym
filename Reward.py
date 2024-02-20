@@ -161,7 +161,7 @@ class CombinedReward(RewardFunction):
         
         self.verbose = verbose
         self.total_per_rew = np.zeros_like(reward_functions)
-        self.period = 50_000
+        self.period = 5_000
         self.count_period = 0
 
         if len(self.reward_functions) != len(self.reward_weights):
@@ -224,10 +224,6 @@ class CombinedReward(RewardFunction):
             NUMBER_TOUCH = 0
             BEHIND_BALL_TIME = 0
             NUMBER_TICK = 0
-        
-        if self.count_period >= self.period :
-            self.count_period = 0
-            self.total_per_rew = np.zeros_like(self.reward_functions)
         
         for func in self.reward_functions:
             func.reset(initial_state)
@@ -294,6 +290,9 @@ class CombinedReward(RewardFunction):
             
             file.write(txt)
             file.close()
+
+            self.count_period = 0
+            self.total_per_rew = np.zeros_like(self.reward_functions)
 
         return float(np.dot(self.reward_weights, rewards))
 
