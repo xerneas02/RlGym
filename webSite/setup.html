@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Page</title>
+    <link rel="stylesheet" href="setup.css"> 
+</head>
+<body>
+    <div class="container">
+        <div class="navigation-bar">
+            <a href="jeu.html" class="tab">Jeu</a>
+            <a href="#setup" class="tab active">Setup</a>
+            <a href="architecture.html" class="tab">Architecture</a>
+            <a href="#experimentation" class="tab">Expérimentation</a>
+        </div>
+        <div class="contenu">
+            
+            <div class="texte">
+                <h1>Setup de l'envrionnement<br> RlGym & RlBot</h1>
+                <img src="img/rlgym.png">
+                <h2>1] Installation de RlGym</h2>
+                <h4> <a href="https://www.python.org/downloads/release/python-3810/" target="_blank">Utilisation de Python 3.8.10</a></h4>
+                <p class="code">
+                    pip install rlgym stable-baselines3==1.7.0 torch sb3-contrib==1.7.0 rlgym_tools scipy shimmy>=0.2.1 stable-baselines3[extra] torch==2.2.0 tensorboard==2.14.0 rlgym==1.2.2 rlgym-tools==1.8.2 numpy==1.24.4
+
+                </p><br>
+                <a href="https://rlgym.org/docs-page.html#introduction" target="_blank">Documentation de RlGym</a>
+                <p>
+                    Rocket League Gym est une API Python qui peut être utilisée pour traiter le jeu Rocket 
+                    League comme s'il s'agissait d'un environnement de style OpenAI Gym pour les projets 
+                    d'apprentissage par renforcement . En d'autres terme, l'outils parfait pour entrainer votre
+                    agent rocket league.
+                </p><br>
+                <img src="img/rlbot_logo.png">
+                <h2>2] Installation de RlBot</h2>
+                <a href="https://rlbot.org/" target="_blank">Documentation de RlBot</a>
+                <p>
+                    RLBot permet le fait d'utiliser des bots personnalisés dans Rocket League. En utilisant RLBot, 
+                    vous pouvez télécharger et jouer avec des bots créés par la communauté.
+                    Ainsi, vous pourrez à l'avenir vous mesurer contre votre propre bot ou le
+                    faire jouer contre les autres bots de la communauté.<br><br>
+                </p>
+                <img src="img/github.png">
+                <h2>3] Télécharger le répertoire GitHub</h2>
+                <a href="https://github.com/xerneas02/RlGym" target="_blank">Répertoire Git du projet</a>
+                <p class="code">
+                    git init<br>
+                    git clone git@github.com:xerneas02/RlGym.git
+                </p><br>
+                <p>
+                    Ce répertoire GitHub vous permettra de démarrer avec une base suffisante pour pouvoir
+                    expérimenter vos propres tests et expériences de l'apprentissage par renforcement.
+                    L'ensemble de la structure de ce projet et la manière dont il fonctionne vous ai expliqué
+                    dans la partie <a href="Architecture.html">Architecture</a>.
+                </p><br><br>
+            </div>      
+        </div>
+    </div>
+</body>
+</html>

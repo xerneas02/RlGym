@@ -898,7 +898,7 @@ class ReplayState(StateSetter):
         while(error):
             try:
                 error = False
-                data_directory = 'DataState'
+                data_directory = REPLAY_FOLDER
                 random_csv_file = random.choice(os.listdir(data_directory))
                 random_csv_path = os.path.join(data_directory, random_csv_file)
 
