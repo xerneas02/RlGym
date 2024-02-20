@@ -52,15 +52,16 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    overflow: auto;
+    overflow-x: hidden; /* Assurez-vous que le défilement horizontal est masqué */
     background-color: rgb(26, 26, 26);
     height: 90%;
+    overflow-y: auto; /* Ajoutez cette propriété pour gérer le défilement vertical */
 }
+
 
 .texte {
     position: relative;
     width: 80%;
-    height: 20000px;;
     display: flex;
     flex-direction: column;
     margin-left: 10%;
@@ -69,7 +70,7 @@
     font-family: 'Courier New', Courier, monospace;
     color: white;
     line-height: 1.4em;
-    overflow: auto; 
+    overflow-y: auto; 
 }
 
 .texte h1 {
@@ -102,8 +103,12 @@
 .toggle-content {
     display: block;
     transition: max-height 0.3s ease-out;
+    max-height: 0px;
     overflow: hidden;
-    max-height: 0px; /* Valeur arbitraire pour la hauteur maximale du contenu */
+}
 
+
+.toggle-content.active {
+    max-height: none;
 }
 
