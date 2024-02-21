@@ -28,7 +28,6 @@ from Constante import *
 from CustomTerminal import CustomTerminalCondition
 from Extracor import CustomFeatureExtractor
 from CustomPolicy import CustomActorCriticPolicy
-from CustomRecurrentPPO import CustomRecurrentPPO
 
 from sb3_contrib import RecurrentPPO
 from schedule import linear_schedule,constant_schedule
@@ -69,9 +68,9 @@ rewards = CombinedReward(
                 5       ,  # GoalScoredReward                    #1
                 0       ,  # SaveReward
                 0.00    ,  # BoostDifferenceReward               #2
-                1       ,  # BallTouchReward                     #3
+                1.5     ,  # BallTouchReward                     #3
                 0       ,  # DemoReward                          #4
-                0.00    ,  # DistancePlayerBallReward            #5
+                0.0005  ,  # DistancePlayerBallReward            #5
                 0.00    ,  # DistanceBallGoalReward              #6
                 0.001   ,  # FacingBallReward                    #7
                 0.00    ,  # AlignBallGoalReward                 #8
@@ -80,7 +79,7 @@ rewards = CombinedReward(
                 0.00    ,  # BehindBallReward                    #11
                 0.001   ,  # VelocityPlayerBallReward            #12
                 0.00    ,  # KickoffReward (0.1)                 #13
-                0.000625,  # VelocityReward (0.000625)           #14
+                0.003   ,  # VelocityReward (0.000625)           #14
                 0.00    ,  # BoostAmountReward                   #15
                 0.00    ,  # ForwardVelocityReward               #16
                 0       ,  # FirstTouchReward                    #17
@@ -278,20 +277,29 @@ if __name__ == "__main__":
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
-             model = CustomRecurrentPPO.load(
+             model = RecurrentPPO.load(
                  best_model, 
                  env=env, 
                  verbose=1, 
                  device=torch.device("cuda:0"), 
                  custom_objects={  
+                                 "n_steps": 50000,
                                  "gamma": gamma,
                                  "n_epochs": 10, 
                                  "learning_rate": constant_schedule(5e-5),
+                                 "policy_kwargs": dict(
+                                                        features_extractor_class=CustomFeatureExtractor,
+                                                        features_extractor_kwargs=dict(features_dim=256),
+                                                        lstm_hidden_size=256,
+                                                        n_lstm_layers=16,
+                                                        shared_lstm=True,
+                                                        enable_critic_lstm=False
+                                                    )
                                 }
                  )
              print("Load model")
         except:
-            model = CustomRecurrentPPO(
+            model = RecurrentPPO(
                     policy=CustomActorCriticPolicy, 
                     env=env, 
                     n_epochs=10, 
@@ -307,7 +315,7 @@ if __name__ == "__main__":
                         features_extractor_class=CustomFeatureExtractor,
                         features_extractor_kwargs=dict(features_dim=256),
                         lstm_hidden_size=256,
-                        n_lstm_layers=1,
+                        n_lstm_layers=16,
                         shared_lstm=True,
                         enable_critic_lstm=False
                     ),

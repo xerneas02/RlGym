@@ -90,7 +90,7 @@ class CustomRecurrentPPO(RecurrentPPO):
         verbose: int = 0,
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
-        nb_memory_size: int = 16,
+        nb_memory_size: int = 2,
         _init_setup_model: bool = True,
     ):
         super().__init__(
@@ -147,10 +147,10 @@ class CustomRecurrentPPO(RecurrentPPO):
         single_hidden_state_shape = (lstm.num_layers, self.n_envs, lstm.hidden_size)
         # hidden and cell states for actor and critic
         self._last_lstm_states = RNNStates(
-            (
+            tuple(
                 th.zeros(single_hidden_state_shape, device=self.device) for _ in range(nb_memory_size)
             ),
-            (
+            tuple(
                 th.zeros(single_hidden_state_shape, device=self.device) for _ in range(nb_memory_size)
             ),
             

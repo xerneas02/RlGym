@@ -3,7 +3,7 @@ import numpy as np
 
 FRAME_SKIP   = 8
 GAME_SPEED   = 100
-NUM_INSTANCE = 8
+NUM_INSTANCE = 4
 
 BATCH_SIZE = 256
 
