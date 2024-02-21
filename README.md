@@ -108,10 +108,10 @@ Penalizes the bot for being in the air.
 Penalizes the bot for not touching the ball.
 
 ### VelocityBallOwnGoalReward
-Rewards the bot based on the velocity of the ball towards its own goal.
+Rewards the bot based on the velocity of the ball towards the orange goal.
 
 ### VelocityBallOpponentGoalReward
-Rewards the bot based on the velocity of the ball towards the opponent's goal.
+Rewards the bot based on the velocity of the ball towards the blue goal.
 
 ### SaveReward
 Rewards the bot for saving a shot towards its own goal.
