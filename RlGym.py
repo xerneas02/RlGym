@@ -28,6 +28,7 @@ from Constante import *
 from CustomTerminal import CustomTerminalCondition
 from Extracor import CustomFeatureExtractor
 from CustomPolicy import CustomActorCriticPolicy
+from CustomRecurrentPPO import CustomRecurrentPPO
 
 from sb3_contrib import RecurrentPPO
 from schedule import linear_schedule,constant_schedule
@@ -131,22 +132,22 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.00, #RandomState
+                                    0.70, #RandomState
                                     0.00, #RandomStateOrange
-                                    0.00, #InvertedState
+                                    0.10, #InvertedState
                                     0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.00, #KickoffLikeSetter
+                                    0.10, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    1.00, #LineState
+                                    0.00, #LineState
                                     0.00, #Attaque
                                     0.00, #Defense
                                     0.00, #AirBallAD
                                     0.00, #DefenseRapide
                                     0.00, #Mur
-                                    0.00, #Alea
+                                    0.10, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState
                                 )
@@ -277,7 +278,7 @@ if __name__ == "__main__":
         callback = CallbackList([checkpoint_callback, HParamCallback(), progressBard, eval_callback])
         
         try:
-             model = RecurrentPPO.load(
+             model = CustomRecurrentPPO.load(
                  best_model, 
                  env=env, 
                  verbose=1, 
@@ -290,7 +291,7 @@ if __name__ == "__main__":
                  )
              print("Load model")
         except:
-            model = RecurrentPPO(
+            model = CustomRecurrentPPO(
                     policy=CustomActorCriticPolicy, 
                     env=env, 
                     n_epochs=10, 
