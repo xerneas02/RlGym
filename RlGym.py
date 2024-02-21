@@ -65,29 +65,29 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                0        ,  # GoalScoredReward                    #1
-                0        ,    # SaveReward
-                0.00     ,  # BoostDifferenceReward               #2
-                1        ,  # BallTouchReward                     #3
-                0      ,  # DemoReward                          #4
-                0.00   ,  # DistancePlayerBallReward            #5
-                0.00   ,  # DistanceBallGoalReward              #6
-                0.02   ,  # FacingBallReward                    #7
-                0.00   ,  # AlignBallGoalReward                 #8
-                0.00   ,  # ClosestToBallReward                 #9
-                0.00   ,  # TouchedLastReward                   #10
-                0.00   ,  # BehindBallReward                    #11
-                0.00   ,  # VelocityPlayerBallReward            #12
-                0.00   ,  # KickoffReward (0.1)                 #13
-                0.00   ,  # VelocityReward (0.000625)           #14
-                0.00   ,  # BoostAmountReward                   #15
-                0.00   ,  # ForwardVelocityReward               #16
-                0        ,  # FirstTouchReward                    #17
+                5       ,  # GoalScoredReward                    #1
+                0       ,  # SaveReward
+                0.00    ,  # BoostDifferenceReward               #2
+                1       ,  # BallTouchReward                     #3
+                0       ,  # DemoReward                          #4
+                0.00    ,  # DistancePlayerBallReward            #5
+                0.00    ,  # DistanceBallGoalReward              #6
+                0.001   ,  # FacingBallReward                    #7
+                0.00    ,  # AlignBallGoalReward                 #8
+                0.00    ,  # ClosestToBallReward                 #9
+                0.00    ,  # TouchedLastReward                   #10
+                0.00    ,  # BehindBallReward                    #11
+                0.001   ,  # VelocityPlayerBallReward            #12
+                0.00    ,  # KickoffReward (0.1)                 #13
+                0.000625,  # VelocityReward (0.000625)           #14
+                0.00    ,  # BoostAmountReward                   #15
+                0.00    ,  # ForwardVelocityReward               #16
+                0       ,  # FirstTouchReward                    #17
                 0.0     ,  # DontTouchPenalityReward             #18
-                0.00     ,  # DontGoalPenalityReward              #19   
-                0        ,  # AirPenality                         #20
-                0      ,  # DiffDistanceBallGoalReward          #21
-                0.00   ,  # BehindTheBallPenalityReward         #22
+                0.00    ,  # DontGoalPenalityReward              #19   
+                0       ,  # AirPenality                         #20
+                0       ,  # DiffDistanceBallGoalReward          #21
+                0.00    ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
