@@ -295,7 +295,7 @@ if __name__ == "__main__":
                     env=env, 
                     n_epochs=10, 
                     n_steps=50000,
-                    batch_size=1728,
+                    batch_size=256,
                     learning_rate=constant_schedule(5e-5), 
                     ent_coef=0.1, 
                     vf_coef=1., 
