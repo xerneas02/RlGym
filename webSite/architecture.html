@@ -20,7 +20,137 @@
                 <h1>Architecture du projet</h1>         
                 <h2 class="toggle-bar" onclick="toggleMenu(1)">Constante.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content1">
-                    <p>Dans le monde de Solo Leveling, Jin-Woo est le protagoniste. Il possède une compétence unique appelée "Solo Leveling", qui lui permet de devenir plus fort en chassant des monstres. Au fur et à mesure de l'histoire, Jin-Woo affronte des ennemis de plus en plus puissants et évolue pour devenir un chasseur redoutable. Le manhwa est basé sur le roman Web de même nom écrit par Chu-Gong et est illustré par Jang Sung-Rak. Solo Leveling est l'un des manhwas les plus populaires actuellement et est publié en ligne sur KakaoPage en Corée du Sud.</p>
+                    <p>
+                        Ce fichier contient l'ensemble des constantes qui sont utilisés par la suite dans le code,
+                        nous allons vous les décrire une par une en spécifiant leur utilité.
+                    </p>
+                    <h4>FRAME_SKIP</h4>
+                    <p>
+                        a compléter...
+                    </p>
+
+                    <h4>GAME_SPEED [0 ; 100]</h4>
+                    <p>
+                        Vous permet de définir à quelle vitesse vous souhaitez que votre jeu s'accélère, la valeur 1 désigne la vitesse par défaut du jeu.
+                    <p>
+
+                    <h4>NUM_INSTANCE [1 ; 8]</h4>
+                    <p>
+                        Vous permet d'ouvrir plus d'une instance de rocket league pour obtenir une simulation plus rapide (exemple: 4 ouvrira 4 fois rocket league).
+                        Assurez-vous d'avoir la puissance machine requise pour ouvrir un tel nombre d'instance.
+                    </p>
+
+                    <h4>MOVE_BALL [False ; True]</h4>
+                    <p>
+                        Il existe un grand nombre d'états initiaux (state) disponible. Dans la plupart de ces derniers, la balle 
+                        apparait sans vitesse initiale. Il vous suffit de passer cette constante à True afin que la balle bénéficie
+                        d'une vitesse et d'une direction aléatoire au début de la plupart des états initiaux proposés.
+                        Si vous souhaitez intégrer cette fonctionnalité dans votre propre state, il vous suffira d'ajouter la ligne suivante:<br>
+                        <p class="code">if MOVE_BALL : movement_ball(state_wrapper.ball)</p>
+                    </p>
+
+                    <h4>BALL_SPEED [0 ; ?]</h4>
+                    <p>
+                        Permet de fixer une vitesse maximum à la balle lors des états initiaux énoncé ci-dessus.
+                    </p>
+
+                    <h4>AFFICHE_SCREEN = False</h4>
+                    <p>
+                        Lancer des simulations permet de récupérer des statistiques, vous avez la possibilité d'observer ces statistiques en tant réel.
+                        L'inconvénient est que cela engendre une ouverture et fermeture de fenêtres en continu ce qui peut être dérangeant si vous faites une activité à côté.
+                        Si vous souhaitez tout de même observer ces statistiques tout en conservant cette constante à False, il vous suffit de taper cette
+                        commande dans le terminal:<br>
+                        <p class="code">python .\lectureGraph.py</p>
+                    </p>
+
+                    <h4>SIMULATION_PER_STATS [1 ; ?]</h4>
+                    <p>
+                        Nous avons évoqué précédement la possibilité de récupérer des statistiques pendant la simulation. Il faut savoir qu'une simulation
+                        se compose de multiples sous-simulations, les statistiques sont établis toutes les x sous-simulations. Cette constante vous permet de définir
+                        le nombre de sous-simulations minimum requises avant de récupérer les statistiques et les stocker dans le fichier 'stats_bot.txt' .
+                    </p>
+
+                    <h4>ResX & ResY </h4>
+                    <p>
+                        Permet de définir la taille des fenêtres Rocket League pendant la simulation.<br>
+                        Il est possible d'optimiser légèrement la simulation en réduisant la taille des fenêtres Rocket League.
+                        Il faut savoir qu'il est possible de diminuer la taille de la fenêtre à 0x0.
+                    </p>
+
+                    <h4>REPLAY_FOLDER</h4>
+                    <p>
+                        Chemin relatif aux replays.
+                    </p>
+
+                    <h4>LIM_X</h4>
+                    <p>
+                        Coordonnée X maximum correspondant au mur du terrain auquel on soustrait le rayon de la balle.
+                    </p>
+
+                    <h4>LIM_Y</h4>
+                    <p>
+                        Coordonnée Y maximum correspondant au mur du terrain auquel on soustrait le rayon de la balle.
+                    </p>
+
+                    <h4>LIM_Z</h4>
+                    <p>
+                        Coordonnée Z maximum correspondant au plafond du terrain auquel on soustrait le rayon de la balle.
+                    </p>
+
+                    <h4>PITCH_LIM</h4>
+                    <p>
+                        Valeur de rotation maximum sur l'axe x et y (horizontal).
+                    </p>
+
+                    <h4>YAW_LIM = np.pi</h4>
+                    <p>
+                        Valeur de rotation maximum sur l'axe z (vertical).
+                    </p>
+
+                    <h4>ROLL_LIM = np.pi</h4>
+                    <p>
+                        Valeur de tonneau maximum
+                    </p>
+
+                    <h4>GOAL_X_MAX & GOAL_X_MIN</h4>
+                    <p>
+                        Coordonnée limite des poteaux des buts
+                    </p>
+
+                    <h4>PLACEMENT_BOX_X = 5000</h4>
+                    <p>
+                        a compléter...
+                    </p>
+
+                    <h4>PLACEMENT_BOX_Y = 2000</h4>
+                    <p>
+                        a compléter...
+                    </p>
+
+                    <h4>PLACEMENT_BOX_Y_OFFSET = 3000</h4>
+                    <p>
+                        a compléter...
+                    </p>
+
+                    <h4>GOAL_LINE = 5100</h4>
+                    <p>
+                        a compléter...
+                    </p>
+
+                    <h4>YAW_MAX</h4>
+                    <p>
+                        a compléter...
+                    </p>
+                    
+                    <h4>BLUE_TEAM</h4>
+                    <p>
+                        ID de l'équipe Bleu    
+                    </p>
+                    
+                    <h4>ORANGE_TEAM</h4>
+                    <p>
+                        ID de l'équipe Orange
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(2)">Action.py<span class="toggle-arrow">🡇</span></h2>
@@ -36,42 +166,240 @@
 
                 <h2 class="toggle-bar" onclick="toggleMenu(4)">Reward.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content4">
-                    <p>Solo Leveling suit l'histoire de Jin-Woo alors qu'il affronte des défis et surmonte des obstacles pour devenir le chasseur le plus puissant. Le manhwa explore des thèmes tels que la persévérance, le courage et le dépassement de soi.</p>
+                    <p>
+                        Ce fichier contient l'ensemble des fonctions de récompenses dont le rôle est de donner des points ou à l'inverse des pénalités selon le comportement
+                        de l'agent. Nous allons vous présentez l'ensemble des fonctions de récompenses que nous avons pu utiliser jusqu'à présent.<br>
+                        Nous allons vous présenter deux types de fonctions de récompenses, celles qui sont appelées lors d'un évènement précis, et celles qui sont 
+                        appelées à chaque tick du jeu.
+                    </p>
+                    <!--#######################################################################-->
+                    <h2>Fonction de récompense par évènement</h2>
+                    <h4>GoalScoredReward</h4>
+                    <p>
+                        L'agent est gratifié s'il marque un but. Dans certaines situations initiales, on donne à la balle une vitesse et une direction aléatoire ce 
+                        qui peut conduire à des simulations où la balle rentre directement dans les cages sans avoir été touché. Ce problème est réglé avec la variable
+                        globale 'TOUCH_VERIF', qui vérifie que la balle a été touché au moins une fois par un des deux agents.
+                    </p>
+                    <h4>BoostDifferenceReward</h4>
+                    <p>
+                        L'agent est récompensé lorsqu'il accumule et dépense du boost.
+                    </p>
+                    <h4>BallTouchReward</h4>
+                    <p>
+                        L'agent est récompensé lorsqu'il touche la balle.
+                    </p>
+                    <h4>DemoReward</h4>
+                    <p>
+                        L'agent est récompensé lorsqu'il détruit un adversaire (on peut détruire son adversaire lorsqu'on le percute avec une vitesse 'supersonic').
+                    </p>
+                    <h4>KickoffReward</h4>
+                    <p>
+                        L'agent est récompensé s'il remporte le kickoff (kickoff=engagement), si la balle est du côté de son adversaire après le kickoff réalisé, alors
+                        on considère ce dernier comme remporté.
+                    </p>
+                    <h4>FirstTouchReward</h4>
+                    <p>
+                        L'agent est récompensé s'il touche la balle en premier lors du kickoff.
+                    </p>
+                    <h4>SaveReward</h4>
+                    <p>
+                        L'agent est récompensé s'il effectue un arrêt.
+                    </p>
+                    <!--######################################################################-->
+                    <h2>Fonction de récompense par tick</h2>
+                    <h4>DistancePlayerBallReward</h4>
+                    <p>
+                        Plus l'agent est proche de la balle, plus il est récompensé.
+                    </p>
+                    <h4>DistanceBallGoalReward</h4>
+                    <p>
+                        Plus la balle est proche du but adverse (sans prendre en compte l'axe z vertical), plus l'agent est récompensé.
+                    </p>
+                    <h4>FacingBallReward</h4>
+                    <p>
+                        Si l'agent fait face à la balle, il est récompensé (pour éviter qu'il ne joue en arrière...).
+                    </p>
+                    <h4>AlignBallGoalReward</h4>
+                    <p>
+                        Plus l'agent s'aligne par rapport à la balle et le but adverse, plus il gagne de points.
+                    </p>
+                    <h4>ClosestToBallReward</h4>
+                    <p>
+                        Si l'agent est plus proche de la balle que son adversaire, alors il gagne des points.
+                    </p>
+                    <h4>TouchedLastReward</h4>
+                    <p>
+                        Si l'agent est le dernier à avoir touché la balle, alors il est récompensé.
+                    </p>
+                    <h4>BehindBallReward</h4>
+                    <p>
+                        Si l'agent se situe derrière la balle, alors il est récompensé. En effet, il y a peu d'intérêt pour l'agent de se trouver entre la balle
+                        et le but adverse.
+                    </p>
+                    <h4>VelocityPlayerBallReward</h4>
+                    <p>
+                        Si l'agent se déplace en direction de la balle, alors il est récompensé.
+                    </p>
+                    <h4>VelocityReward</h4>
+                    <p>
+                        Plus l'agent se déplace rapidement, plus il est récompensé.
+                    </p>
+                    <h4>BoostAmountReward</h4>
+                    <p>
+                        Plus l'agent possède du boost, plus il est récompensé.
+                    </p>
+                    <h4>ForwardVelocityReward</h4>
+                    <p>
+                        Si l'agent avance vers l'avant (pénalise la marche arrière) alors il est récompensé.
+                    </p>
+                    <h4>VelocityBallOwnGoalReward</h4>
+                    <p>
+                        a compléter...
+                    </p>
+                    <h4>VelocityBallOpponentGoalReward</h4>
+                    <p>
+                        a compléter...
+                    </p>
+                    <!--########################################################################################-->
+                    <h2>Pénalités</h2>
+                    <h4>AirPenalityReward (utilisation déconseillée) </h4>
+                    <p>
+                        Si le joueur part dans les airs à l'aide de son boost ou saut..etc, il est pénalisé.
+                    </p>
+                    <h4>DontTouchPenalityReward</h4>
+                    <p>
+                        L'agent subis une pénalité croissante en fonction du temps tant qu'il n'a pas touché au moins une fois la balle.
+                    </p>
+                    <h4>DontGoalPenalityReward</h4>
+                    <p>
+                        L'agent subis une pénalité croissante en fonction du temps tant qu'il n'a pas marqué.
+                    </p>
+                    <h4>BehindTheBallPenalityReward</h4>
+                    <p>
+                        L'agent subis une pénalité croissante en fonction du temps tant qu'il n'est pas du bon côté de la balle.
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(5)">State.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content5">
-                    <p>Jin-Woo se bat contre des monstres pour améliorer son niveau et devenir plus fort. Au fur et à mesure de l'histoire, il rencontre différents personnages et développe des alliances stratégiques pour vaincre des ennemis communs.</p>
+                    <p>
+                        Ce fichier contient l'ensemble des fonctions proposant un état initial pour une simulation. Cela permet
+                        d'entrainer l'agent pour certaines situation pré-fabriquée par nous même.
+                    </p>
+                    <h4>BetterRandom</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>TrainingStateSetter</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>DefaultStateClose</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>RandomState</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>InvertedState</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>DefaultStateCloseOrange</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>RandomStateOrange</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>InvertedStateOrange</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>LineState</h4>
+                    <p>
+                        Positionne la balle au centre du terrain ainsi que les agents dans leur côté respectif. La fonction prends en paramètre un
+                        entier qui détermine la largeur sur l'axe Y et donc une zone dans laquelle la balle et les agents peuvent apparaitre.
+                    </p>
+                    <h4>Alea</h4>
+                    <p>
+                        Les voitures et le ballon spawn de manière totalement aléatoire sur le terrain avec une rotation et du boost aléatoire.
+                        Cette fonction prend deux paramètre, le premier permet d'ajouter ou non une vitesse initiale à la balle, le second prend
+                        en considération dans cette vitesse initiale l'axe Z (vertical).
+                    </p>
+                    <h4>Attaque</h4>
+                    <p>
+                        Propose une situation d'attaque & de défense pour l'agent.
+                    </p>
+                    <h4>Defense</h4>
+                    <p>
+                        Propose une situation de défense et d'attaque pour l'agent.
+                    </p>
+                    <h4>AirBallAD</h4>
+                    <p>
+                        La balle spawn en l'air devant les cage avec un agent positionné pour défendre et l'autre pour attaquer. L'idée est de travailler les balles aériennes.
+                    </p>
+                    <h4>DefenseRapide</h4>
+                    <p>
+                        Propose une situation d'attaque et de défense rapide pour l'agent (la balle a une direction orienté vers les cages).
+                    </p>
+                    <h4>Mur</h4>
+                    <p>
+                        La balle et l'agent spawn sur le mur lattéral du terrain.
+                    </p>
+                    <h4>ChaosState</h4>
+                    <p>
+                        a faire...
+                    </p>
+                    <h4>ReplayState</h4>
+                    <p>
+                        a faire...
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(6)">Callback.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content6">
-                    <p>Dans Solo Leveling, Jin-Woo est confronté à des défis apparemment insurmontables, mais il trouve toujours un moyen de les surmonter. Le manhwa présente un mélange d'action, de suspense et de moments émotionnels qui captivent les lecteurs.</p>
+                    <p>
+                        a faire...
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(7)">CustomTerminal.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content7">
-                    <p>Jin-Woo est déterminé à protéger ceux qui lui sont chers, et il est prêt à risquer sa vie pour les sauver. Le manhwa est également connu pour son exploration de thèmes tels que l'amitié, la loyauté et la responsabilité.</p>
+                    <p>
+                        a faire...
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(8)">CustomPolicy.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content8">
-                    <p>Dans Solo Leveling, Jin-Woo se bat pour devenir plus fort non seulement pour lui-même, mais aussi pour protéger ceux qui lui sont chers. Le manhwa est apprécié pour ses personnages bien développés et son intrigue captivante.</p>
+                    <p>
+                        a faire...
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(9)">lectureGraph.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content9">
-                    <p>Solo Leveling est l'un des manhwas les plus populaires actuellement. Il est salué pour ses illustrations magnifiques, son écriture immersive et son action passionnante.</p>
+                    <p>
+                        Ce fichier permet de lire les données stockées dans 'stats_bot.txt' et de les visualiser sous forme de graphe.
+                        Penser à utiliser la commande suivante: <br>
+                        <p class="code">python .\lectureGraph.py</p>
+                    </p>
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(10)">log_rew.txt<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content10">
-                    <p>Dans Solo Leveling, Jin-Woo est constamment mis à l'épreuve et doit faire face à des situations dangereuses pour atteindre ses objectifs. Le manhwa est un incontournable pour les amateurs de fantasy et d'action.</p>
+                    Ce fichier enregistre l'évolution du gain de récompenses des fonctions de récompenses tout au long de la simulation.
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(11)">stats_bot.txt<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content11">
-                    <p>Solo Leveling est publié en ligne sur KakaoPage en Corée du Sud. Il a rapidement gagné en popularité pour son intrigue captivante et ses personnages charismatiques. Le manhwa est traduit dans de nombreuses langues et est lu par des millions de fans à travers le monde.</p>
+                    <p>
+                        Ce fichier contient les données actuelles (nombre de simulations, nombre de balles touchées, nombre de buts marqués, et % de temps passé du bon côté de la balle).
+                        Ces données sont récupérer toutes les 'SIMULATION_PER_STATS' simulations.
+                    </p>
                 </div>
 
             </div>    

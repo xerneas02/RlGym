@@ -3,7 +3,7 @@ import numpy as np
 
 FRAME_SKIP   = 8
 GAME_SPEED   = 100
-NUM_INSTANCE = 4
+NUM_INSTANCE = 8
 
 MOVE_BALL      = False
 BALL_SPEED     = 1500
