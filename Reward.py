@@ -343,7 +343,7 @@ class BoostDifferenceReward(RewardFunction):
 
     def get_reward(self, player, state, previous_action):
         current_boost = player.boost_amount
-        reward = np.sqrt(current_boost/100) - np.sqrt(self.previous_boost/100)
+        reward = np.abs(np.sqrt(current_boost/100) - np.sqrt(self.previous_boost/100))
         self.previous_boost = current_boost
         return reward
 

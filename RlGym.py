@@ -97,7 +97,8 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(5000), common_conditions.NoTouchTimeoutCondition(500)),# ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(150), 
+                               common_conditions.GoalScoredCondition()) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -130,16 +131,16 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.70, #RandomState
+                                    0.00, #RandomState
                                     0.00, #RandomStateOrange
-                                    0.10, #InvertedState
+                                    0.00, #InvertedState
                                     0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.20, #KickoffLikeSetter
+                                    0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.00, #LineState
+                                    1.00, #LineState
                                     0.00, #Attaque
                                     0.00, #Defense
                                     0.00, #AirBallAD
@@ -231,9 +232,9 @@ if __name__ == "__main__":
     
     modifier_resolution(ResX, ResY)
     
-    file_model_name = "ThisOneWilltouchDaBall" #ThisOneWilltouchDaBall
+    file_model_name = "ThisOneWilltouchDaBall"
     
-    nbRep = 100
+    nbRep = 100000
     
     save_periode = 1e5
     
@@ -284,10 +285,7 @@ if __name__ == "__main__":
                  custom_objects={  
                                  "gamma": gamma,
                                  "n_epochs": 10, 
-                                 "n_steps": 10000,
-                                 "batch_size": 256,
                                  "learning_rate": constant_schedule(5e-5),
-                                 "ent_coef":0.1  
                                 }
                  )
              print("Load model")
@@ -296,8 +294,8 @@ if __name__ == "__main__":
                     policy=CustomActorCriticPolicy, 
                     env=env, 
                     n_epochs=10, 
-                    n_steps=10000,
-                    batch_size=256,
+                    n_steps=50000,
+                    batch_size=1728,
                     learning_rate=constant_schedule(5e-5), 
                     ent_coef=0.1, 
                     vf_coef=1., 
