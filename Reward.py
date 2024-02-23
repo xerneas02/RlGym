@@ -24,6 +24,7 @@ from Constante import *
 import datetime
 
 TOUCH_VERIF = False
+LAST_TOUCH = -1
 NUMBER_SIMULATION = 0
 NUMBER_GOAL = 0
 NUMBER_TOUCH = 0
@@ -217,7 +218,7 @@ class CombinedReward(RewardFunction):
         global TOUCH_VERIF, NUMBER_SIMULATION, NUMBER_GOAL, NUMBER_TOUCH, BEHIND_BALL_TIME, NUMBER_TICK
         TOUCH_VERIF = False
         NUMBER_SIMULATION = NUMBER_SIMULATION +1
-        #print(NUMBER_SIMULATION)
+
         if NUMBER_SIMULATION % SIMULATION_PER_STATS == 0:
             SaveStatFile()
             NUMBER_GOAL = 0
@@ -308,25 +309,26 @@ class GoalScoredReward(RewardFunction):
         self.previous_orange_score = initial_state.orange_score
 
     def get_reward(self, player, state, previous_action):
-        blue_scored   = False
-        orange_scored = False
-        global TOUCH_VERIF, NUMBER_GOAL
+        team_score = -1
+        global TOUCH_VERIF, NUMBER_GOAL, LAST_TOUCH
         
-        if player.team_num == 0 and self.previous_blue_score != state.blue_score:
-            blue_scored = True
-            self.previous_blue_score = state.blue_score
+        if self.previous_blue_score != state.blue_score:
+            team_score = 0
+            if player.team_num == 1:
+                self.previous_blue_score = state.blue_score
         
-        if player.team_num == 1 and self.previous_orange_score != state.orange_score:
-            orange_scored = True
-            self.previous_orange_score = state.orange_score
+        if self.previous_orange_score != state.orange_score:
+            team_score = 1
+            if player.team_num == 1:
+                self.previous_orange_score = state.orange_score
             
-        if(player.team_num == 0 and not blue_scored  ) : return 0 
-        if(player.team_num == 1 and not orange_scored) : return 0
+        
         
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
-        if (TOUCH_VERIF):
+        if (TOUCH_VERIF and LAST_TOUCH == player.car_id and team_score != -1):
             NUMBER_GOAL = NUMBER_GOAL + 1
-            return 1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)
+
+            return (1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)) * (1 if player.team_num == team_score else -1)
         else:
             return 0
 
@@ -357,11 +359,13 @@ class BallTouchReward(RewardFunction):
         self.lamb = 0
 
     def reset(self, initial_state):
+        global LAST_TOUCH
+        LAST_TOUCH = -1
         self.last_touch = False
         self.lamb = 0
 
     def get_reward(self, player, state, previous_action):
-        global TOUCH_VERIF, NUMBER_TOUCH
+        global TOUCH_VERIF, NUMBER_TOUCH, LAST_TOUCH
         
         if self.last_touch:
             self.lamb = max(0.1, self.lamb * 0.95)
@@ -377,6 +381,7 @@ class BallTouchReward(RewardFunction):
         pos_ball_z = state.ball.position[2]
         reward = self.lamb * ((pos_ball_z + BALL_RADIUS)/(2*BALL_RADIUS)) ** 0.2836
         TOUCH_VERIF = True
+        LAST_TOUCH = player.car_id
         NUMBER_TOUCH = NUMBER_TOUCH + 1
         return reward
 
@@ -525,7 +530,8 @@ class TouchedLastReward(RewardFunction):
         pass
 
     def get_reward(self, player, state, previous_action):
-        return 1 if state.last_touch == player.car_id else 0
+        global LAST_TOUCH
+        return 1 if LAST_TOUCH == player.car_id else 0
 
     def get_final_reward(self, player, state, previous_action):
         return self.get_reward(player, state, previous_action)
@@ -649,10 +655,11 @@ class FirstTouchReward(RewardFunction):
         self.kickoff = True
 
     def get_reward(self, player, state, previous_action):
+        global LAST_TOUCH
         ball_position = state.ball.position
         if ball_position[0] != 0 or ball_position[1] != 0 and self.kickoff:
             self.kickoff = False
-            return player.car_id == state.last_touch
+            return player.car_id == LAST_TOUCH
         
         return 0
 
