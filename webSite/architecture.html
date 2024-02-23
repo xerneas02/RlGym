@@ -453,9 +453,34 @@
                 <h2 id="CustomTerminal" class="toggle-bar" onclick="toggleMenu(7)">CustomTerminal.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content7">
                     <p>
-                        a faire...
+                        Les terminal conditions sont des événements qui signalent la fin d'un épisode. Elles doivent implémenter à la fois une méthode de réinitialisation (reset) et une méthode is_terminal.
+                    </p>
+                    <h4 id="BallTouchCondition">BallTouchCondition</h4>
+                    <p>
+                        Cette terminal condition vérifie s'il y a eu un contact avec la balle depuis la dernière réinitialisation. Elle réinitialise son état chaque fois que l'état du jeu est réinitialisé.
+                    </p>
+
+                    <h4 id="NoTouchOrGoalTimeoutCondition">NoTouchOrGoalTimeoutCondition</h4>
+                    <p>
+                        Cette terminal condition agit comme une condition de temporisation (timeout) mais réinitialise le minuteur de temporisation lorsque la balle est touchée pour la première fois ou lorsqu'un but est marqué. Elle s'initialise avec une durée de temporisation spécifiée.
+                    </p>
+
+                    <h4 id="NoTouchFirstTimeoutCondition">NoTouchFirstTimeoutCondition</h4>
+                    <p>
+                        Similaire à NoTouchOrGoalTimeoutCondition, cette terminal condition réinitialise le minuteur de temporisation lorsque la balle est touchée pour la première fois. Elle s'initialise avec une durée de temporisation spécifiée.
+                    </p>
+
+                    <h4 id="NoGoalTimeoutCondition">NoGoalTimeoutCondition</h4>
+                    <p>
+                        Cette terminal condition réinitialise le minuteur de temporisation lorsqu'un but est marqué. Elle s'initialise avec une durée de temporisation spécifiée et peut être modifiée davantage par un coefficient.
+                    </p>
+
+                    <h4 id="AfterTouchTimeoutCondition">AfterTouchTimeoutCondition</h4>
+                    <p>
+                        Cette terminal condition démarre un minuteur de temporisation lorsque la balle est touchée pour la première fois par n'importe quel joueur.
                     </p>
                 </div>
+
 
                 <h2 id="CustomPolicy" class="toggle-bar" onclick="toggleMenu(8)">CustomPolicy.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content8">
