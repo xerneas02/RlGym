@@ -3,10 +3,10 @@ import numpy as np
 
 FRAME_SKIP   = 8
 GAME_SPEED   = 100
-NUM_INSTANCE = 8
+NUM_INSTANCE = 4
 
 BATCH_SIZE = 1728
-N_STEPS    = int(400_000/NUM_INSTANCE)
+N_STEPS    = int(200_000/NUM_INSTANCE)
 
 MOVE_BALL      = False
 BALL_SPEED     = 1500
@@ -18,7 +18,7 @@ ResY = 0#1080
 
 LAYERS = 1
 
-MODEL_NAME = "ZZeerWillTryHardV4"
+MODEL_NAME = "DoYourBest"
 REPLAY_FOLDER = "DataState/P1-D1"
 
 LIM_X = SIDE_WALL_X - 1152 / 2 - BALL_RADIUS * 2 ** 0.5

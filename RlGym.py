@@ -97,8 +97,8 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(100), 
-                               common_conditions.GoalScoredCondition()) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(200), 
+                               NoGoalTimeoutCondition(100, 1)),#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -122,10 +122,10 @@ def get_match(game_speed=GAME_SPEED):
                                     (AirBallAD(),                 ()),
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
-                                    (OpenGoal(),                  ()),
                                     (Alea (True, False),          ()),
                                     (ChaosState(),                ()),
-                                    (ReplayState(),               ())
+                                    (ReplayState(),               ()),
+                                    (OpenGoal(),                  ())
                                 ),
                                 (
                                     0.00, #DefaultState
@@ -139,17 +139,18 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.10, #KickoffLikeSetter
+                                    0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
                                     0.00, #LineState
-                                    0.40, #Attaque
-                                    0.20, #Defense
-                                    0.10, #AirBallAD
+                                    0.00, #Attaque
+                                    0.10, #Defense
+                                    0.00, #AirBallAD
                                     0.00, #DefenseRapide
-                                    0.10, #Mur
+                                    0.00, #Mur
                                     0.00, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState
+                                    0.80  #OpenGoal
                                 )
                              ),
                                 
@@ -237,7 +238,7 @@ if __name__ == "__main__":
     
     nbRep = 100000
     
-    save_periode = 1e5
+    save_periode = 2e5
     
     fps = 120 / FRAME_SKIP
     T = 20
@@ -271,7 +272,7 @@ if __name__ == "__main__":
         stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
 
         #                                 , callback_after_eval=stopTraining
-        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2), n_eval_episodes=200)
+        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2), n_eval_episodes=500)
         
         progressBard = ProgressBarCallback()
         
