@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 
-# Fonction pour lire les données à partir du fichier texte
+
 def read_data_from_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -10,9 +10,9 @@ def read_data_from_file(file_path):
     group = {}
     for line in lines:
         line = line.strip()
-        if not line:  # Ignorer les lignes vides
+        if not line:  
             continue
-        if line.startswith('20'):  # Ignorer les lignes de date
+        if line.startswith('20'):  
             if group:
                 for reward_name, value in group.items():
                     if reward_name in data:
@@ -29,12 +29,11 @@ def read_data_from_file(file_path):
             except:
                 pass
 
-    # Exclure les récompenses nulles
     data = {reward_name: values for reward_name, values in data.items() if any(value != 0 for value in values)}
 
     return data
 
-# Fonction pour détecter et remplacer les valeurs extrêmes
+
 def remove_outliers(values):
     if not values:
         return values
@@ -44,7 +43,7 @@ def remove_outliers(values):
     cleaned_values = [x if median - threshold * std_dev < x < median + threshold * std_dev else median for x in values]
     return cleaned_values
 
-# Fonction pour tracer les courbes
+
 def plot_rewards(data, remove_outliers_flag=False, smoothness=100):
     num_rewards = len(data)
     num_plots_per_window = 3  # Nombre de graphiques par fenêtre
@@ -54,16 +53,16 @@ def plot_rewards(data, remove_outliers_flag=False, smoothness=100):
         end_index = min((window_index + 1) * num_plots_per_window, num_rewards)
         fig, axes = plt.subplots(end_index - start_index, 1, figsize=(10, 6*(end_index - start_index)))
         if (end_index - start_index) == 1:
-            axes = [axes]  # Pour traiter le cas où il n'y a qu'une seule récompense dans la fenêtre
+            axes = [axes]  
         for ax, (reward_name, values) in zip(axes, list(data.items())[start_index:end_index]):
             if remove_outliers_flag:
                 values = remove_outliers(values)
-            x_values = range(1, len(values) + 1)  # Abcisses pour chaque simulation
+            x_values = range(1, len(values) + 1) 
             ax.plot(x_values, values, label=reward_name, marker='o', linestyle='-')
             
-            # Interpoler les données pour obtenir une courbe lissée
+           
             f = interp1d(x_values, values, kind='cubic')
-            x_smooth = range(1, len(values) + 1, smoothness)  # Points lissés pour un affichage plus fluide
+            x_smooth = range(1, len(values) + 1, smoothness) 
             ax.plot(x_smooth, f(x_smooth), color='red', linestyle='-', linewidth=3, label=f'{reward_name} (lissée)')
             
             ax.set_title(f'Récompense: {reward_name}')
@@ -72,16 +71,15 @@ def plot_rewards(data, remove_outliers_flag=False, smoothness=100):
             ax.legend()
             ax.grid(True)
 
-        plt.tight_layout()  # Ajuster la disposition pour éviter les chevauchements
+        plt.tight_layout() 
         plt.show()
 
 
-# Chemin vers le fichier texte
-file_path = 'log_rew.txt'  # Mettez votre propre chemin ici
 
-# Lecture des données à partir du fichier texte
+file_path = 'log_rew.txt'  
+
+
 data = read_data_from_file(file_path)
 
 
-# Tracer les courbes en retirant les valeurs extrêmes pour chaque récompense
 plot_rewards(data, remove_outliers_flag=True, smoothness=100)
