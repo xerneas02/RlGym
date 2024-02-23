@@ -85,7 +85,32 @@
     top: 0%;
     display: flex;
     flex-direction: column;
-    
+    overflow-y: auto;
+}
+
+.navBarre a {
+    text-decoration: none; /* Pour supprimer les soulignements */
+}
+
+.navTitle {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    font-size: xx-large;
+    margin-left: 1%;
+    color: goldenrod;
+}
+
+.navSousTitle {
+    font-size: large;
+    margin-left: 5%;
+    color: rgb(89, 124, 223);
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
+
+.navTexte {
+    margin-left: 7%;
+    color: white;
 }
 
 .toggle-bar {
