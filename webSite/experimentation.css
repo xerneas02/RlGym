@@ -1,0 +1,214 @@
+/* Reset des styles pour la mise en forme de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: red; 
+    height: 100vh;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    display: flex;
+    flex-direction: column;
+    position: relative
+}
+
+.navigation-bar {
+    background-color: #333; 
+    display: flex;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 10%;
+}
+
+.tab {
+    color: white; 
+    text-align: center;
+    font-size: xx-large;
+    width: 25%;
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.tab.active {
+    background-color: #555; 
+}
+
+.tab:hover {
+    background-color: #555; 
+}
+
+.contenu {
+    width: 100%;
+    margin-top: 0%;
+    margin-left: 0%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow-x: hidden; 
+    background-color: rgb(26, 26, 26);
+    height: 90%;
+    overflow-y: auto; 
+}
+
+
+.menu {
+    position: relative;
+    width: 80%;
+    flex-direction: column;
+    margin-left: 10%;
+    font-size: 1.3em;
+    text-align: justify;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: white;
+    line-height: 1.4em;
+    overflow-y: auto; 
+}
+
+.menu h1 {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.menu p {
+    margin-right: 20%;
+}
+
+.menu a {
+    text-decoration: none;
+    color: aqua;
+}
+
+.navBarre {
+    position: relative;
+    width: 20%;
+    height: 100%;
+    left: 0%;
+    top: 0%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.navBarre a {
+    text-decoration: none; /* Pour supprimer les soulignements */
+}
+
+.navTitle {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    font-size: xx-large;
+    margin-left: 1%;
+    color: goldenrod;
+}
+
+.navSousTitle {
+    font-size: large;
+    margin-left: 5%;
+    color: rgb(89, 124, 223);
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
+
+.navTexte {
+    margin-left: 7%;
+    color: white;
+}
+
+.toggle-bar {
+    width: 80%;
+    cursor: pointer;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
+
+}
+
+.toggle-arrow {
+    float: right;
+}
+
+.toggle-bar:hover {
+    background-color: #555;
+}
+
+.content {
+    width: 80%;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 10px;
+    background-color: rgb(26, 26, 26);
+    transition: max-height 0.3s ease;
+}
+
+.show {
+    max-height: 3000px;
+}
+
+.show .toggle-arrow {
+    transform: rotate(90deg);
+}
+
+.code {
+    background-color: black;
+    font-family: monospace;
+    border-radius: 5px;
+}
+
+.menu h1 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 3em;
+    line-height: 1.5em;
+}
+
+.menu h4 {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    color: gold;
+}
+
+.menu p{
+    margin-bottom: 0.5%;
+}
+
+.code {
+    background-color: black;
+    font-family: monospace;
+    border-radius: 5px;
+}
+
+video {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    max-width: 70%;
+    max-height: 50%;
+}
+  
+
+ol,
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Style pour les éléments de liste */
+li {
+    margin-bottom: 10px;
+}
+
+/* Style pour les éléments strong */
+strong {
+    font-weight: bold;
+}
