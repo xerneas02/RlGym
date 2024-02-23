@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea, ReplayState
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea, ReplayState, OpenGoal
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -97,8 +97,8 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(250), 
-                               common_conditions.NoTouchTimeoutCondition(100)) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(100), 
+                               common_conditions.GoalScoredCondition()) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -122,6 +122,7 @@ def get_match(game_speed=GAME_SPEED):
                                     (AirBallAD(),                 ()),
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
+                                    (OpenGoal(),                  ()),
                                     (Alea (True, False),          ()),
                                     (ChaosState(),                ()),
                                     (ReplayState(),               ())

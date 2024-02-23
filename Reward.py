@@ -162,7 +162,7 @@ class CombinedReward(RewardFunction):
         
         self.verbose = verbose
         self.total_per_rew = np.zeros_like(reward_functions)
-        self.period = 5_000
+        self.period = 100
         self.count_period = 0
 
         if len(self.reward_functions) != len(self.reward_weights):
@@ -229,6 +229,20 @@ class CombinedReward(RewardFunction):
         for func in self.reward_functions:
             func.reset(initial_state)
 
+        if self.count_period >= self.period:
+            file = open("log_rew.txt", "a")
+            txt = f"{datetime.datetime.now()} :\n"
+            for i in range(len(self.total_per_rew)):
+                txt += f"reward {str(self.reward_functions[i]).split('.')[1].split(' ')[0]}: {(self.total_per_rew[i]*self.reward_weights[i])}\n"
+            
+            txt += "-------------------------------------------------------------------\n\n"
+            
+            file.write(txt)
+            file.close()
+
+            self.count_period = 0
+            self.total_per_rew = np.zeros_like(self.reward_functions)
+
     def get_reward(
             self,
             player: PlayerData,
@@ -243,7 +257,6 @@ class CombinedReward(RewardFunction):
         
         total = float(np.dot(self.reward_weights, rewards))
         self.count += 1
-        self.count_period += 1
         
         for i in range(len(rewards)):
             self.total_per_rew[i] += rewards[i]
@@ -253,8 +266,8 @@ class CombinedReward(RewardFunction):
                 pondered_reward = rewards[i]*self.reward_weights[i]
                 self.track_rewards_on_rollout[self.reward_names[i]].append(pondered_reward)
                 
-                if rewards[i] != 0 and player.team_num == 0:
-                    print(f"reward {self.reward_names[i]}: {pondered_reward}")
+                # if rewards[i] != 0 and player.team_num == 0:
+                #     print(f"reward {self.reward_names[i]}: {pondered_reward}")
             
             
             if total != 0 and player.team_num == 0:
@@ -271,7 +284,6 @@ class CombinedReward(RewardFunction):
         if GAME_SPEED == 1 and player.team_num == 0 and self.verbose:
             print(f"---  Time = {self.count}  ---")
         
-        self.count_period += 1
         
         rewards = [
             func.get_final_reward(player, state, previous_action)
@@ -280,20 +292,8 @@ class CombinedReward(RewardFunction):
         
         for i in range(len(rewards)):
             self.total_per_rew[i] += rewards[i]
-
-        if self.count_period >= self.period:
-            file = open("log_rew.txt", "a")
-            txt = f"{datetime.datetime.now()} :\n"
-            for i in range(len(self.total_per_rew)):
-                txt += f"reward {str(self.reward_functions[i]).split('.')[1].split(' ')[0]}: {(self.total_per_rew[i]*self.reward_weights[i])}\n"
             
-            txt += "-------------------------------------------------------------------\n\n"
-            
-            file.write(txt)
-            file.close()
-
-            self.count_period = 0
-            self.total_per_rew = np.zeros_like(self.reward_functions)
+        self.count_period += 1
 
         return float(np.dot(self.reward_weights, rewards))
 
@@ -320,14 +320,11 @@ class GoalScoredReward(RewardFunction):
         if self.previous_orange_score != state.orange_score:
             team_score = 1
             if player.team_num == 1:
-                self.previous_orange_score = state.orange_score
-            
-        
+                self.previous_orange_score = state.orange_score 
         
         ball_speed = np.linalg.norm(state.ball.linear_velocity, 2)**2
         if (TOUCH_VERIF and LAST_TOUCH == player.car_id and team_score != -1):
             NUMBER_GOAL = NUMBER_GOAL + 1
-
             return (1.0 + 0.5 * ball_speed / (BALL_MAX_SPEED)) * (1 if player.team_num == team_score else -1)
         else:
             return 0

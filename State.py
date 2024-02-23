@@ -835,6 +835,37 @@ class Mur(StateSetter):
                 car.set_lin_vel(0, 300, 0)
             count = count + 1
         #---------------------------------------------------
+        
+class OpenGoal(StateSetter):
+    
+    def __init__(self):
+        super().__init__()
+
+    def reset(self, state_wrapper: StateWrapper):
+        count = 0
+        position1x = random.randint(-2500, 2500);
+        position1y = random.randint(-2000, 1000);
+        position2x = random.randint(-3500, 3500);
+        position2y = random.randint(-4000, 4000);
+        angle = np.pi / 2
+        angle2 = random.random() * np.pi * 2
+        #----SPAWN BOUBOULE--------------------------------
+        ball_x = random.randint(-1500, 1500);
+        ball_y = random.randint(2000, 4000);
+        ball_z = int(BALL_RADIUS)+1
+        state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        #---------------------------------------------------
+        #----SPAWN CARS-------------------------------------
+        for car in state_wrapper.cars:
+            car_x = position2x  if count == 1 else position1x 
+            car_y = position2y  if count == 1 else position1y
+            yaw = angle2 if count == 1 else angle
+            car_z = 17.1
+            car.set_pos(car_x, car_y, car_z)
+            car.boost = random.random()
+            car.set_rot(0, yaw=yaw)
+            count = count + 1
+        #---------------------------------------------------
 
 class ChaosState(StateSetter):
     
