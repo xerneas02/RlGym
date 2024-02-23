@@ -19,7 +19,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, ProgressBarCallback, StopTrainingOnNoModelImprovement
 
 from Observer import *
-from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea, ReplayState
+from State import CombinedState, BetterRandom, TrainingStateSetter, DefaultStateClose, RandomState, InvertedState, LineState, DefaultStateCloseOrange, InvertedStateOrange, RandomStateOrange, Attaque, Defense, ChaosState, AirBallAD, DefenseRapide, Mur, Alea, ReplayState, OpenGoal
 from Reward import *
 from Terminal import *
 from Action import ZeerLookupAction
@@ -65,18 +65,18 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                7        ,  # GoalScoredReward                    #1
-                5        ,    # SaveReward
+                30        ,  # GoalScoredReward                    #1
+                3        ,    # SaveReward
                 0.0025     ,  # BoostDifferenceReward               #2
-                6        ,  # BallTouchReward                     #3
+                7        ,  # BallTouchReward                     #3
                 0.3      ,  # DemoReward                          #4
-                0.005   ,  # DistancePlayerBallReward            #5
+                0.0030   ,  # DistancePlayerBallReward            #5
                 0.005   ,  # DistanceBallGoalReward              #6
                 0.000625   ,  # FacingBallReward                    #7
-                0.002   ,  # AlignBallGoalReward                 #8
+                0.004   ,  # AlignBallGoalReward                 #8
                 0.00125   ,  # ClosestToBallReward                 #9
                 0.00125   ,  # TouchedLastReward                   #10
-                0.00300   ,  # BehindBallReward                    #11
+                0.00200   ,  # BehindBallReward                    #11
                 0.00300   ,  # VelocityPlayerBallReward            #12
                 0.0025   ,  # KickoffReward (0.1)                 #13
                 0.0025   ,  # VelocityReward (0.000625)           #14
@@ -86,8 +86,8 @@ rewards = CombinedReward(
                 0.003     ,  # DontTouchPenalityReward             #18
                 0.002     ,  # DontGoalPenalityReward              #19   
                 0        ,  # AirPenality                         #20
-                5      ,  # DiffDistanceBallGoalReward          #21
-                0.003   ,  # BehindTheBallPenalityReward         #22
+                10      ,  # DiffDistanceBallGoalReward          #21
+                0.0010   ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -97,7 +97,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(150), 
+        terminal_conditions = (common_conditions.TimeoutCondition(100), 
                                common_conditions.GoalScoredCondition()) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
@@ -116,12 +116,13 @@ def get_match(game_speed=GAME_SPEED):
                                     (BetterRandom(),              ()),
                                     (KickoffLikeSetter(),         ()),
                                     (WallPracticeState(),         ()),
-                                    (LineState(100),             ()),
+                                    (LineState(1000),             ()),
                                     (Attaque(),                   ()),
                                     (Defense(),                   ()),
                                     (AirBallAD(),                 ()),
                                     (DefenseRapide(),             ()),
                                     (Mur(500),                    ()),
+                                    (OpenGoal(),                  ()),
                                     (Alea (True, False),          ()),
                                     (ChaosState(),                ()),
                                     (ReplayState(),               ())
@@ -140,12 +141,13 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    1.00, #LineState
+                                    0.00, #LineState
                                     0.00, #Attaque
                                     0.00, #Defense
                                     0.00, #AirBallAD
                                     0.00, #DefenseRapide
                                     0.00, #Mur
+                                    1.00, #OpenGoal
                                     0.00, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState
@@ -232,7 +234,7 @@ if __name__ == "__main__":
     
     modifier_resolution(ResX, ResY)
     
-    file_model_name = "ZZeerWillTryHard"
+    file_model_name = "ZZeerWillTryHardV4"
     
     nbRep = 100000
     
@@ -286,6 +288,7 @@ if __name__ == "__main__":
                                  "gamma": gamma,
                                  "n_epochs": 10, 
                                  "learning_rate": constant_schedule(5e-5),
+                                  "n_steps":50000,
                                 }
                  )
              print("Load model")

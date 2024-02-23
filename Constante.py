@@ -2,7 +2,7 @@ from rlgym.utils.common_values import CAR_MAX_SPEED, SIDE_WALL_X, BACK_WALL_Y, C
 import numpy as np
 
 FRAME_SKIP   = 8
-GAME_SPEED   = 100
+GAME_SPEED   = 200
 NUM_INSTANCE = 8
 
 MOVE_BALL      = False
@@ -10,8 +10,8 @@ BALL_SPEED     = 1500
 AFFICHE_SCREEN = False
 SIMULATION_PER_STATS = 100
 
-ResX = 0 #1920
-ResY = 0 #1080
+ResX = 0#1920
+ResY = 0#1080
 
 REPLAY_FOLDER = "DataState/P1-D1"
 
