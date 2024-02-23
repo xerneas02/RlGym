@@ -15,32 +15,87 @@
             <a href="#experimentation" class="tab">Expérimentation</a>
         </div>
         <div class="contenu">
-            <div class="navBarre">salut</div>
+            <div class="navBarre">
+                <a class="navTitle" href="#constante">Constante</a> <a class="navTexte" href="#FRAME_SKIP">FRAME_SKIP</a>
+                    <a class="navTexte" href="#GAME_SPEED">GAME_SPEED</a> <a class="navTexte" href="#NUM_INSTANCE">NUM_INSTANCE</a>
+                    <a class="navTexte" href="#MOVE_BALL">MOVE_BALL</a> <a class="navTexte" href="#BALL_SPEED">BALL_SPEED</a>
+                    <a class="navTexte" href="#AFFICHE_SCREEN">AFFICHE_SCREEN</a> <a class="navTexte" href="#SIMULATION_PER_STATS">SIMULATION_PER_STATS</a>
+                    <a class="navTexte" href="#ResX & ResY">ResX & ResY</a> <a class="navTexte" href="#REPLAY_FOLDER">REPLAY_FOLDER</a>
+                    <a class="navTexte" href="#LIM_X">LIM_X</a> <a class="navTexte" href="#LIM_Y">LIM_Y</a>
+                    <a class="navTexte" href="#LIM_Z">LIM_Z</a> <a class="navTexte" href="#PITCH_LIM">PITCH_LIM</a>
+                    <a class="navTexte" href="#YAW_LIM">YAW_LIM</a> <a class="navTexte" href="#ROLL_LIM">ROLL_LIM</a>
+                    <a class="navTexte" href="#BLUE_TEAM">BLUE_TEAM</a> <a class="navTexte" href="#ORANGE_TEAM">ORANGE_TEAM</a>
+
+                <a class="navTitle" href="#actionparser">ActionParser</a> <a class="navTexte" href="#Initialisation">Initialisation</a>
+                    <a class="navTexte" href="#Espace des actions">Espace des actions</a> <a class="navTexte" href="#Génération de la table de recherche">Génération de la table de recherche</a>
+                    <a class="navTexte" href="#Analyse des actions">Analyse des actions</a> <a class="navTexte" href="#Environnement">Environnement</a>
+
+                <a class="navTitle" href="#Observer">Observer</a>
+
+                <a class="navTitle" href="#Reward">Reward</a> <a class="navSousTitle" href="#Fonction de récompense par évènement">Fonction de récompense par évènement</a>
+                    <a class="navTexte" href="#GoalScoredReward">GoalScoredReward</a> <a class="navTexte" href="#BoostDifferenceReward">BoostDifferenceReward</a>
+                    <a class="navTexte" href="#BallTouchReward">BallTouchReward</a> <a class="navTexte" href="#DemoReward">DemoReward</a>
+                    <a class="navTexte" href="#KickoffReward">KickoffReward</a> <a class="navTexte" href="#FirstTouchReward">FirstTouchReward</a>
+                    <a class="navTexte" href="#SaveReward">SaveReward</a> <a class="navSousTitle" href="#Fonction de récompense par tick">Fonction de récompense par tick</a>
+                    <a class="navTexte" href="#DistancePlayerBallReward">DistancePlayerBallReward</a> <a class="navTexte" href="#DistanceBallGoalReward">DistanceBallGoalReward</a>
+                    <a class="navTexte" href="#FacingBallReward">FacingBallReward</a> <a class="navTexte" class="navTexte" href="#AlignBallGoalReward">AlignBallGoalReward</a>
+                    <a class="navTexte" href="#ClosestToBallReward">ClosestToBallReward</a> <a class="navTexte" href="#TouchedLastReward">TouchedLastReward</a>
+                    <a class="navTexte" href="#BehindBallReward">BehindBallReward</a> <a class="navTexte" href="#VelocityPlayerBallReward">VelocityPlayerBallReward</a>
+                    <a class="navTexte" href="#VelocityReward">VelocityReward</a> <a class="navTexte" href="#BoostAmountReward">BoostAmountReward</a>
+                    <a class="navTexte" href="#ForwardVelocityReward">ForwardVelocityReward</a> <a class="navTexte" href="#VelocityBallOwnGoalReward">VelocityBallOwnGoalReward</a>
+                    <a class="navTexte" href="#VelocityBallOpponentGoalReward">VelocityBallOpponentGoalReward</a> <a class="navSousTitle" href="#Pénalités">Pénalités</a>
+                    <a class="navTexte" href="#AirPenalityReward">AirPenalityReward</a> <a class="navTexte" href="#DontTouchPenalityReward">DontTouchPenalityReward</a>
+                    <a class="navTexte" href="#DontGoalPenalityReward">DontGoalPenalityReward</a> <a class="navTexte" href="#BehindTheBallPenalityReward">BehindTheBallPenalityReward</a>
+
+                <a class="navTitle" href="#state">State</a> <a class="navTexte" href="#BetterRandom">BetterRandom</a>
+                    <a class="navTexte" href="#TrainingStateSetter">TrainingStateSetter</a> <a class="navTexte" href="#DefaultStateClose">DefaultStateClose</a>
+                    <a class="navTexte" href="#RandomState">RandomState</a> <a class="navTexte" href="#InvertedState">InvertedState</a>
+                    <a class="navTexte" href="#DefaultStateCloseOrange">DefaultStateCloseOrange</a> <a class="navTexte" href="#RandomStateOrange">RandomStateOrange</a>
+                    <a class="navTexte" href="#InvertedStateOrange">InvertedStateOrange</a> <a class="navTexte" href="#LineState">LineState</a>
+                    <a class="navTexte" href="#Alea">Alea</a> <a class="navTexte" href="#Attaque">Attaque</a>
+                    <a class="navTexte" href="#Defense">Defense</a> <a class="navTexte" class="navTexte" href="#AirBallAD">AirBallAD</a>
+                    <a class="navTexte" href="#DefenseRapide">DefenseRapide</a> <a class="navTexte" href="#Mur">Mur</a>
+                    <a class="navTexte" href="#ChaosState">ChaosState</a> <a class="navTexte" href="#ReplayState">ReplayState</a>
+
+                <a class="navTitle" href="#Callback">Callback</a>
+
+                <a class="navTitle" href="#CustomTerminal">CustomTerminal</a>
+                
+                <a class="navTitle" href="#CustomPolicy">CustomPolicy</a>
+
+                <a class="navTitle" href="#lectureGraph">lectureGraph</a>
+
+                <a class="navTitle" href="#log_rew">log_rew</a>
+
+                <a class="navTitle" href="#stats_bot">stats_bot</a>
+
+               
+            </div>
             <div class="menu">
                 <h1>Architecture du projet</h1>         
-                <h2 class="toggle-bar" onclick="toggleMenu(1)">Constante.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="constante" class="toggle-bar" onclick="toggleMenu(1)">Constante.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content1">
                     <p>
                         Ce fichier contient l'ensemble des constantes qui sont utilisés par la suite dans le code,
                         nous allons vous les décrire une par une en spécifiant leur utilité.
                     </p>
-                    <h4>FRAME_SKIP</h4>
+                    <h4 id="FRAME_SKIP" >FRAME_SKIP</h4>
                     <p>
                         Permet de définir à quelle fréquence on avance d'un 'time step'. Si le 'Frame skip' vaut 8, cela signifie qu'à chaque 8 frames, on avance d'un 'time step'. Avancer d'un 'time step' implique de demander un nouvel input au bot.
                     </p>
 
-                    <h4>GAME_SPEED [0 ; 100]</h4>
+                    <h4 id="GAME_SPEED">GAME_SPEED [0 ; 100]</h4>
                     <p>
                         Vous permet de définir à quelle vitesse vous souhaitez que votre jeu s'accélère, la valeur 1 désigne la vitesse par défaut du jeu.
                     <p>
 
-                    <h4>NUM_INSTANCE [1 ; 8]</h4>
+                    <h4 id="NUM_INSTANCE">NUM_INSTANCE [1 ; 8]</h4>
                     <p>
                         Vous permet d'ouvrir plus d'une instance de rocket league pour obtenir une simulation plus rapide (exemple: 4 ouvrira 4 fois rocket league).
                         Assurez-vous d'avoir la puissance machine requise pour ouvrir un tel nombre d'instance.
                     </p>
 
-                    <h4>MOVE_BALL [False ; True]</h4>
+                    <h4 id="MOVE_BALL">MOVE_BALL [False ; True]</h4>
                     <p>
                         Il existe un grand nombre d'états initiaux (state) disponible. Dans la plupart de ces derniers, la balle 
                         apparait sans vitesse initiale. Il vous suffit de passer cette constante à True afin que la balle bénéficie
@@ -49,12 +104,12 @@
                         <p class="code">if MOVE_BALL : movement_ball(state_wrapper.ball)</p>
                     </p>
 
-                    <h4>BALL_SPEED [0 ; ?]</h4>
+                    <h4 id="BALL_SPEED">BALL_SPEED [0 ; ?]</h4>
                     <p>
                         Permet de fixer une vitesse maximum à la balle lors des états initiaux énoncé ci-dessus.
                     </p>
 
-                    <h4>AFFICHE_SCREEN = False</h4>
+                    <h4 id="AFFICHE_SCREEN">AFFICHE_SCREEN [False ; True]</h4>
                     <p>
                         Lancer des simulations permet de récupérer des statistiques, vous avez la possibilité d'observer ces statistiques en tant réel.
                         L'inconvénient est que cela engendre une ouverture et fermeture de fenêtres en continu ce qui peut être dérangeant si vous faites une activité à côté.
@@ -63,106 +118,107 @@
                         <p class="code">python .\lectureGraph.py</p>
                     </p>
 
-                    <h4>SIMULATION_PER_STATS [1 ; ?]</h4>
+                    <h4 id="SIMULATION_PER_STATS">SIMULATION_PER_STATS [1 ; ?]</h4>
                     <p>
                         Nous avons évoqué précédement la possibilité de récupérer des statistiques pendant la simulation. Il faut savoir qu'une simulation
                         se compose de multiples sous-simulations, les statistiques sont établis toutes les x sous-simulations. Cette constante vous permet de définir
                         le nombre de sous-simulations minimum requises avant de récupérer les statistiques et les stocker dans le fichier 'stats_bot.txt' .
                     </p>
 
-                    <h4>ResX & ResY </h4>
+                    <h4 id="ResX & ResY">ResX & ResY </h4>
                     <p>
                         Permet de définir la taille des fenêtres Rocket League pendant la simulation.<br>
                         Il est possible d'optimiser légèrement la simulation en réduisant la taille des fenêtres Rocket League.
                         Il faut savoir qu'il est possible de diminuer la taille de la fenêtre à 0x0.
                     </p>
 
-                    <h4>REPLAY_FOLDER</h4>
+                    <h4 id="REPLAY_FOLDER">REPLAY_FOLDER</h4>
                     <p>
                         Chemin relatif vers le dossier contenant les données sur les replays. Ce chemin est utilisé par le state setter <code>ReplayState</code>.
                     </p>
 
-                    <h4>LIM_X</h4>
+                    <h4 id="LIM_X">LIM_X</h4>
                     <p>
                         Coordonnée X maximum correspondant au mur du terrain auquel on soustrait le rayon de la balle.
                     </p>
 
-                    <h4>LIM_Y</h4>
+                    <h4 id="LIM_Y">LIM_Y</h4>
                     <p>
                         Coordonnée Y maximum correspondant au mur du terrain auquel on soustrait le rayon de la balle.
                     </p>
 
-                    <h4>LIM_Z</h4>
+                    <h4 id="LIM_Z">LIM_Z</h4>
                     <p>
                         Coordonnée Z maximum correspondant au plafond du terrain auquel on soustrait le rayon de la balle.
                     </p>
 
-                    <h4>PITCH_LIM</h4>
+                    <h4 id="PITCH_LIM">PITCH_LIM</h4>
                     <p>
                         Valeur de rotation maximum sur l'axe x et y (horizontal).
                     </p>
 
-                    <h4>YAW_LIM = np.pi</h4>
+                    <h4 id="YAW_LIM">YAW_LIM = np.pi</h4>
                     <p>
                         Valeur de rotation maximum sur l'axe z (vertical).
                     </p>
 
-                    <h4>ROLL_LIM = np.pi</h4>
+                    <h4 id="ROLL_LIM">ROLL_LIM = np.pi</h4>
                     <p>
                         Valeur de tonneau maximum
                     </p>
                     
-                    <h4>BLUE_TEAM</h4>
+                    <h4 id="BLUE_TEAM">BLUE_TEAM</h4>
                     <p>
                         ID de l'équipe Bleu    
                     </p>
                     
-                    <h4>ORANGE_TEAM</h4>
+                    <h4 id="ORANGE_TEAM">ORANGE_TEAM</h4>
                     <p>
                         ID de l'équipe Orange
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(2)">Action.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="actionparser" class="toggle-bar" onclick="toggleMenu(2)">Action.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content2">
-                    <h4>ActionParser</h4> 
                     <p>
                         Un ActionParser est composant responsable de traduire les indices d'actions en actions concrètes adaptées à l'environnement. Il définit comment l'espace des actions est représenté et comment les actions sont traduites des indices à leurs valeurs correspondantes.
                     </p>
 
-                    <h4>Initialisation</h4> 
+                    <h4 id="Initialisation">Initialisation</h4> 
                     <p>
                         Lors de son initialisation, ZeerLookupAction définit des intervalles prédéfinis ou des valeurs discrètes pour chaque dimension d'action. Cela signifie qu'il détermine à l'avance les différentes valeurs que chaque action peut prendre, comme la vitesse, la direction, etc.
                     </p>
 
-                    <h4>Espace des actions</h4> 
+                    <h4 id="Espace des actions">Espace des actions</h4> 
                     <p>
                         ZeerLookupAction fournit une méthode pour obtenir la représentation de l'espace des actions. Dans ce cas, il s'agit d'un espace discret dont la taille est égale au nombre d'entrées dans la table de recherche.
                     </p>
 
-                    <h4>Génération de la table de recherche</h4> 
+                    <h4 id="Génération de la table de recherche">Génération de la table de recherche</h4> 
                     <p>
                         Cette implémentation crée une table de recherche qui associe des indices d'actions à des valeurs d'actions concrètes en fonction des intervalles ou des valeurs discrètes définies précédemment. Cette table couvre à la fois les actions au sol et en vol.
                     </p>
 
-                    <h4>Analyse des actions</h4> 
+                    <h4 id="Analyse des actions">Analyse des actions</h4> 
                     <p>
                         ZeerLookupAction est capable de traduire les indices d'actions en valeurs d'actions concrètes en utilisant la table de recherche générée.
                     </p>
 
-                    <h4>Analyse des actions</h4> 
+                    <h4 id="Environnement">Environnement</h4> 
                     <p>
                         Utilisation dans l'environnement : Ce composant peut être utilisé dans un environnement de simulation de Rocket League pour permettre à un agent d'interagir avec le jeu en fournissant des actions compréhensibles par le moteur de jeu.
                     </p>
 
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(3)">Observer.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="Observer" class="toggle-bar" onclick="toggleMenu(3)">Observer.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content3">
-                    <p>Dans Solo Leveling, Jin-Woo évolue dans un monde rempli de monstres et de chasseurs. Il doit se débrouiller seul pour survivre et atteindre ses objectifs. Le manhwa est réputé pour ses dessins de haute qualité et ses scènes d'action palpitantes.</p>
+                    <p>
+                        à faire...
+                    </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(4)">Reward.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="Reward" class="toggle-bar" onclick="toggleMenu(4)">Reward.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content4">
                     <p>
                         Ce fichier contient l'ensemble des fonctions de récompenses dont le rôle est de donner des points ou à l'inverse des pénalités selon le comportement
@@ -171,214 +227,214 @@
                         appelées à chaque tick du jeu.
                     </p>
                     <!--#######################################################################-->
-                    <h2>Fonction de récompense par évènement</h2>
-                    <h4>GoalScoredReward</h4>
+                    <h3 id="Fonction de récompense par évènement">Fonction de récompense par évènement</h3>
+                    <h4 id="GoalScoredReward">GoalScoredReward</h4>
                     <p>
                         L'agent est gratifié s'il marque un but. Dans certaines situations initiales, on donne à la balle une vitesse et une direction aléatoire ce 
                         qui peut conduire à des simulations où la balle rentre directement dans les cages sans avoir été touché. Ce problème est réglé avec la variable
                         globale 'TOUCH_VERIF', qui vérifie que la balle a été touché au moins une fois par un des deux agents.
                     </p>
-                    <h4>BoostDifferenceReward</h4>
+                    <h4 id="BoostDifferenceReward">BoostDifferenceReward</h4>
                     <p>
                         L'agent est récompensé lorsqu'il accumule et dépense du boost.
                     </p>
-                    <h4>BallTouchReward</h4>
+                    <h4 id="BallTouchReward">BallTouchReward</h4>
                     <p>
                         L'agent est récompensé lorsqu'il touche la balle.
                     </p>
-                    <h4>DemoReward</h4>
+                    <h4 id="DemoReward">DemoReward</h4>
                     <p>
                         L'agent est récompensé lorsqu'il détruit un adversaire (on peut détruire son adversaire lorsqu'on le percute avec une vitesse 'supersonic').
                     </p>
-                    <h4>KickoffReward</h4>
+                    <h4 id="KickoffReward">KickoffReward</h4>
                     <p>
                         L'agent est récompensé s'il remporte le kickoff (kickoff=engagement), si la balle est du côté de son adversaire après le kickoff réalisé, alors
                         on considère ce dernier comme remporté.
                     </p>
-                    <h4>FirstTouchReward</h4>
+                    <h4 id="FirstTouchReward">FirstTouchReward</h4>
                     <p>
                         L'agent est récompensé s'il touche la balle en premier lors du kickoff.
                     </p>
-                    <h4>SaveReward</h4>
+                    <h4 id="SaveReward">SaveReward</h4>
                     <p>
                         L'agent est récompensé s'il effectue un arrêt.
                     </p>
                     <!--######################################################################-->
-                    <h2>Fonction de récompense par tick</h2>
-                    <h4>DistancePlayerBallReward</h4>
+                    <h3 id="Fonction de récompense par tick">Fonction de récompense par tick</h3>
+                    <h4 id="DistancePlayerBallReward">DistancePlayerBallReward</h4>
                     <p>
                         Plus l'agent est proche de la balle, plus il est récompensé.
                     </p>
-                    <h4>DistanceBallGoalReward</h4>
+                    <h4 id="DistanceBallGoalReward">DistanceBallGoalReward</h4>
                     <p>
                         Plus la balle est proche du but adverse (sans prendre en compte l'axe z vertical), plus l'agent est récompensé.
                     </p>
-                    <h4>FacingBallReward</h4>
+                    <h4 id="FacingBallReward">FacingBallReward</h4>
                     <p>
                         Si l'agent fait face à la balle, il est récompensé (pour éviter qu'il ne joue en arrière...).
                     </p>
-                    <h4>AlignBallGoalReward</h4>
+                    <h4 id="AlignBallGoalReward">AlignBallGoalReward</h4>
                     <p>
                         Plus l'agent s'aligne par rapport à la balle et le but adverse, plus il gagne de points.
                     </p>
-                    <h4>ClosestToBallReward</h4>
+                    <h4 id="ClosestToBallReward">ClosestToBallReward</h4>
                     <p>
                         Si l'agent est plus proche de la balle que son adversaire, alors il gagne des points.
                     </p>
-                    <h4>TouchedLastReward</h4>
+                    <h4 id="TouchedLastReward">TouchedLastReward</h4>
                     <p>
                         Si l'agent est le dernier à avoir touché la balle, alors il est récompensé.
                     </p>
-                    <h4>BehindBallReward</h4>
+                    <h4 id="BehindBallReward">BehindBallReward</h4>
                     <p>
                         Si l'agent se situe derrière la balle, alors il est récompensé. En effet, il y a peu d'intérêt pour l'agent de se trouver entre la balle
                         et le but adverse.
                     </p>
-                    <h4>VelocityPlayerBallReward</h4>
+                    <h4 id="VelocityPlayerBallReward">VelocityPlayerBallReward</h4>
                     <p>
                         Si l'agent se déplace en direction de la balle, alors il est récompensé.
                     </p>
-                    <h4>VelocityReward</h4>
+                    <h4 id="VelocityReward">VelocityReward</h4>
                     <p>
                         Plus l'agent se déplace rapidement, plus il est récompensé.
                     </p>
-                    <h4>BoostAmountReward</h4>
+                    <h4 id="BoostAmountReward">BoostAmountReward</h4>
                     <p>
                         Plus l'agent possède du boost, plus il est récompensé.
                     </p>
-                    <h4>ForwardVelocityReward</h4>
+                    <h4 id="ForwardVelocityReward">ForwardVelocityReward</h4>
                     <p>
                         Si l'agent avance vers l'avant (pénalise la marche arrière) alors il est récompensé.
                     </p>
-                    <h4>VelocityBallOwnGoalReward</h4>
+                    <h4 id="VelocityBallOwnGoalReward">VelocityBallOwnGoalReward</h4>
                     <p>
                         a compléter...
                     </p>
-                    <h4>VelocityBallOpponentGoalReward</h4>
+                    <h4 id="VelocityBallOpponentGoalReward">VelocityBallOpponentGoalReward</h4>
                     <p>
                         a compléter...
                     </p>
                     <!--########################################################################################-->
-                    <h2>Pénalités</h2>
-                    <h4>AirPenalityReward (utilisation déconseillée) </h4>
+                    <h3 id="Pénalités">Pénalités</h3>
+                    <h4 id="AirPenalityReward">AirPenalityReward (utilisation déconseillée) </h4>
                     <p>
                         Si le joueur part dans les airs à l'aide de son boost ou saut..etc, il est pénalisé.
                     </p>
-                    <h4>DontTouchPenalityReward</h4>
+                    <h4 id="DontTouchPenalityReward">DontTouchPenalityReward</h4>
                     <p>
                         L'agent subis une pénalité croissante en fonction du temps tant qu'il n'a pas touché au moins une fois la balle.
                     </p>
-                    <h4>DontGoalPenalityReward</h4>
+                    <h4 id="DontGoalPenalityReward">DontGoalPenalityReward</h4>
                     <p>
                         L'agent subis une pénalité croissante en fonction du temps tant qu'il n'a pas marqué.
                     </p>
-                    <h4>BehindTheBallPenalityReward</h4>
+                    <h4 id="BehindTheBallPenalityReward">BehindTheBallPenalityReward</h4>
                     <p>
                         L'agent subis une pénalité croissante en fonction du temps tant qu'il n'est pas du bon côté de la balle.
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(5)">State.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="state" class="toggle-bar" onclick="toggleMenu(5)">State.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content5">
                     <p>
                         Ce fichier contient l'ensemble des fonctions proposant un état initial pour une simulation. Cela permet
                         d'entrainer l'agent pour certaines situation pré-fabriquée par nous même.
                     </p>
-                    <h4>BetterRandom</h4>
+                    <h4 id="BetterRandom">BetterRandom</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>TrainingStateSetter</h4>
+                    <h4 id="TrainingStateSetter">TrainingStateSetter</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>DefaultStateClose</h4>
+                    <h4 id="DefaultStateClose">DefaultStateClose</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>RandomState</h4>
+                    <h4 id="RandomState">RandomState</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>InvertedState</h4>
+                    <h4 id="InvertedState">InvertedState</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>DefaultStateCloseOrange</h4>
+                    <h4 id="DefaultStateCloseOrange">DefaultStateCloseOrange</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>RandomStateOrange</h4>
+                    <h4 id="RandomStateOrange">RandomStateOrange</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>InvertedStateOrange</h4>
+                    <h4 id="InvertedStateOrange">InvertedStateOrange</h4>
                     <p>
                         a faire...
                     </p>
-                    <h4>LineState</h4>
+                    <h4 id="LineState">LineState</h4>
                     <p>
                         Positionne la balle au centre du terrain ainsi que les agents dans leur côté respectif. La fonction prends en paramètre un
                         entier qui détermine la largeur sur l'axe Y et donc une zone dans laquelle la balle et les agents peuvent apparaitre.
                     </p>
-                    <h4>Alea</h4>
+                    <h4 id="Alea">Alea</h4>
                     <p>
                         Les voitures et le ballon spawn de manière totalement aléatoire sur le terrain avec une rotation et du boost aléatoire.
                         Cette fonction prend deux paramètre, le premier permet d'ajouter ou non une vitesse initiale à la balle, le second prend
                         en considération dans cette vitesse initiale l'axe Z (vertical).
                     </p>
-                    <h4>Attaque</h4>
+                    <h4 id="Attaque">Attaque</h4>
                     <p>
                         Propose une situation d'attaque & de défense pour l'agent.
                     </p>
-                    <h4>Defense</h4>
+                    <h4 id="Defense">Defense</h4>
                     <p>
                         Propose une situation de défense et d'attaque pour l'agent.
                     </p>
-                    <h4>AirBallAD</h4>
+                    <h4 id="AirBallAD">AirBallAD</h4>
                     <p>
                         La balle spawn en l'air devant les cage avec un agent positionné pour défendre et l'autre pour attaquer. L'idée est de travailler les balles aériennes.
                     </p>
-                    <h4>DefenseRapide</h4>
+                    <h4 id="DefenseRapide">DefenseRapide</h4>
                     <p>
                         Propose une situation d'attaque et de défense rapide pour l'agent (la balle a une direction orienté vers les cages).
                     </p>
-                    <h4>Mur</h4>
+                    <h4 id="Mur">Mur</h4>
                     <p>
                         La balle et l'agent spawn sur le mur lattéral du terrain.
                     </p>
-                    <h4>ChaosState</h4>
+                    <h4 id="ChaosState">ChaosState</h4>
                     <p>
                         La balle et les voitures sont placées aléatoirement sur le sol avec une orientation et une vitesse aléatoire.
                     </p>
-                    <h4>ReplayState</h4>
+                    <h4 id="ReplayState">ReplayState</h4>
                     <p>
                         a faire...
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(6)">Callback.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="Callback" class="toggle-bar" onclick="toggleMenu(6)">Callback.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content6">
                     <p>
                         a faire...
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(7)">CustomTerminal.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="CustomTerminal" class="toggle-bar" onclick="toggleMenu(7)">CustomTerminal.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content7">
                     <p>
                         a faire...
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(8)">CustomPolicy.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="CustomPolicy" class="toggle-bar" onclick="toggleMenu(8)">CustomPolicy.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content8">
                     <p>
                         a faire...
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(9)">lectureGraph.py<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="lectureGraph" class="toggle-bar" onclick="toggleMenu(9)">lectureGraph.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content9">
                     <p>
                         Ce fichier permet de lire les données stockées dans 'stats_bot.txt' et de les visualiser sous forme de graphe.
@@ -387,12 +443,12 @@
                     </p>
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(10)">log_rew.txt<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="log_rew" class="toggle-bar" onclick="toggleMenu(10)">log_rew.txt<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content10">
                     Ce fichier enregistre l'évolution du gain de récompenses des fonctions de récompenses tout au long de la simulation.
                 </div>
 
-                <h2 class="toggle-bar" onclick="toggleMenu(11)">stats_bot.txt<span class="toggle-arrow">🡇</span></h2>
+                <h2 id="stats_bot" class="toggle-bar" onclick="toggleMenu(11)">stats_bot.txt<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content11">
                     <p>
                         Ce fichier contient les données actuelles (nombre de simulations, nombre de balles touchées, nombre de buts marqués, et % de temps passé du bon côté de la balle).
