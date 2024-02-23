@@ -73,7 +73,7 @@ rewards = CombinedReward(
                 0.0005  ,  # DistancePlayerBallReward            #5
                 0.00    ,  # DistanceBallGoalReward              #6
                 0.00    ,  # FacingBallReward                    #7
-                0.00    ,  # AlignBallGoalReward                 #8
+                0.001   ,  # AlignBallGoalReward                 #8
                 0.00    ,  # ClosestToBallReward                 #9
                 0.00    ,  # TouchedLastReward                   #10
                 0.0005  ,  # BehindBallReward                    #11
@@ -132,22 +132,22 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
                                     0.10, #RandomState
-                                    0.20, #RandomStateOrange
+                                    0.00, #RandomStateOrange
                                     0.00, #InvertedState
                                     0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.60, #KickoffLikeSetter
+                                    0.10, #KickoffLikeSetter
                                     0.00, #WallPracticeState
                                     0.00, #LineState
-                                    0.00, #Attaque
-                                    0.00, #Defense
-                                    0.00, #AirBallAD
+                                    0.40, #Attaque
+                                    0.20, #Defense
+                                    0.10, #AirBallAD
                                     0.00, #DefenseRapide
-                                    0.00, #Mur
+                                    0.10, #Mur
                                     0.00, #Alea
-                                    0.10, #ChaosState
+                                    0.00, #ChaosState
                                     0.00, #ReplayState
                                 )
                              ),
@@ -270,7 +270,7 @@ if __name__ == "__main__":
         stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
 
         #                                 , callback_after_eval=stopTraining
-        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
+        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2), n_eval_episodes=200)
         
         progressBard = ProgressBarCallback()
         
