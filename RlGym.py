@@ -65,29 +65,29 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                30        ,  # GoalScoredReward                    #1
-                3        ,    # SaveReward
-                0.0025     ,  # BoostDifferenceReward               #2
-                7        ,  # BallTouchReward                     #3
-                0.3      ,  # DemoReward                          #4
-                0.0030   ,  # DistancePlayerBallReward            #5
-                0.005   ,  # DistanceBallGoalReward              #6
-                0.000625   ,  # FacingBallReward                    #7
-                0.004   ,  # AlignBallGoalReward                 #8
-                0.00125   ,  # ClosestToBallReward                 #9
-                0.00125   ,  # TouchedLastReward                   #10
-                0.00200   ,  # BehindBallReward                    #11
-                0.00300   ,  # VelocityPlayerBallReward            #12
-                0.0025   ,  # KickoffReward (0.1)                 #13
-                0.0025   ,  # VelocityReward (0.000625)           #14
-                0.00125   ,  # BoostAmountReward                   #15
-                0.005   ,  # ForwardVelocityReward               #16
-                0        ,  # FirstTouchReward                    #17
-                0.003     ,  # DontTouchPenalityReward             #18
-                0.002     ,  # DontGoalPenalityReward              #19   
-                0        ,  # AirPenality                         #20
-                10      ,  # DiffDistanceBallGoalReward          #21
-                0.0010   ,  # BehindTheBallPenalityReward         #22
+                10      ,  # GoalScoredReward                    #1
+                0       ,  # SaveReward
+                0.00    ,  # BoostDifferenceReward               #2
+                5       ,  # BallTouchReward                     #3
+                0       ,  # DemoReward                          #4
+                0.0005  ,  # DistancePlayerBallReward            #5
+                0.00    ,  # DistanceBallGoalReward              #6
+                0.00    ,  # FacingBallReward                    #7
+                0.001   ,  # AlignBallGoalReward                 #8
+                0.00    ,  # ClosestToBallReward                 #9
+                0.00    ,  # TouchedLastReward                   #10
+                0.0005  ,  # BehindBallReward                    #11
+                0.00    ,  # VelocityPlayerBallReward            #12
+                0.00    ,  # KickoffReward (0.1)                 #13
+                0.0005  ,  # VelocityReward (0.000625)           #14
+                0.00    ,  # BoostAmountReward                   #15
+                0.00    ,  # ForwardVelocityReward               #16
+                0       ,  # FirstTouchReward                    #17
+                0.0     ,  # DontTouchPenalityReward             #18
+                0.00    ,  # DontGoalPenalityReward              #19   
+                0       ,  # AirPenality                         #20
+                0       ,  # DiffDistanceBallGoalReward          #21
+                0.00    ,  # BehindTheBallPenalityReward         #22
              ),
             verbose=1
         )
@@ -132,22 +132,21 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #DefaultStateClose
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter
-                                    0.00, #RandomState
+                                    0.10, #RandomState
                                     0.00, #RandomStateOrange
                                     0.00, #InvertedState
                                     0.00, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
-                                    0.00, #KickoffLikeSetter
+                                    0.10, #KickoffLikeSetter
                                     0.00, #WallPracticeState
                                     0.00, #LineState
-                                    0.00, #Attaque
-                                    0.00, #Defense
-                                    0.00, #AirBallAD
+                                    0.40, #Attaque
+                                    0.20, #Defense
+                                    0.10, #AirBallAD
                                     0.00, #DefenseRapide
-                                    0.00, #Mur
-                                    1.00, #OpenGoal
+                                    0.10, #Mur
                                     0.00, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState
@@ -272,7 +271,7 @@ if __name__ == "__main__":
         stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
 
         #                                 , callback_after_eval=stopTraining
-        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2), n_eval_episodes=100)
+        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2), n_eval_episodes=200)
         
         progressBard = ProgressBarCallback()
         
