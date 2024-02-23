@@ -26,7 +26,7 @@
                     </p>
                     <h4>FRAME_SKIP</h4>
                     <p>
-                        a compléter...
+                        Permet de définir à quelle fréquence on avance d'un 'time step'. Si le 'Frame skip' vaut 8, cela signifie qu'à chaque 8 frames, on avance d'un 'time step'. Avancer d'un 'time step' implique de demander un nouvel input au bot.
                     </p>
 
                     <h4>GAME_SPEED [0 ; 100]</h4>
@@ -79,7 +79,7 @@
 
                     <h4>REPLAY_FOLDER</h4>
                     <p>
-                        Chemin relatif aux replays.
+                        Chemin relatif vers le dossier contenant les données sur les replays. Ce chemin est utilisé par le state setter <code>ReplayState</code>.
                     </p>
 
                     <h4>LIM_X</h4>
@@ -111,36 +111,6 @@
                     <p>
                         Valeur de tonneau maximum
                     </p>
-
-                    <h4>GOAL_X_MAX & GOAL_X_MIN</h4>
-                    <p>
-                        Coordonnée limite des poteaux des buts
-                    </p>
-
-                    <h4>PLACEMENT_BOX_X = 5000</h4>
-                    <p>
-                        a compléter...
-                    </p>
-
-                    <h4>PLACEMENT_BOX_Y = 2000</h4>
-                    <p>
-                        a compléter...
-                    </p>
-
-                    <h4>PLACEMENT_BOX_Y_OFFSET = 3000</h4>
-                    <p>
-                        a compléter...
-                    </p>
-
-                    <h4>GOAL_LINE = 5100</h4>
-                    <p>
-                        a compléter...
-                    </p>
-
-                    <h4>YAW_MAX</h4>
-                    <p>
-                        a compléter...
-                    </p>
                     
                     <h4>BLUE_TEAM</h4>
                     <p>
@@ -155,8 +125,36 @@
 
                 <h2 class="toggle-bar" onclick="toggleMenu(2)">Action.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content2">
-                    <p>Dans Solo Leveling, Jin-Woo se bat contre des monstres pour améliorer son niveau et devenir plus fort. Il affronte des ennemis de plus en plus puissants au fur et à mesure de l'histoire. Le manhwa est connu sous le nom de "I Alone Level Up" et a acquis une grande popularité pour son intrigue captivante et ses scènes de combat épiques.</p>
-                    <!-- Ajoutez autant de contenu que nécessaire pour chaque bouton -->
+                    <h4>ActionParser</h4> 
+                    <p>
+                        Un ActionParser est composant responsable de traduire les indices d'actions en actions concrètes adaptées à l'environnement. Il définit comment l'espace des actions est représenté et comment les actions sont traduites des indices à leurs valeurs correspondantes.
+                    </p>
+
+                    <h4>Initialisation</h4> 
+                    <p>
+                        Lors de son initialisation, ZeerLookupAction définit des intervalles prédéfinis ou des valeurs discrètes pour chaque dimension d'action. Cela signifie qu'il détermine à l'avance les différentes valeurs que chaque action peut prendre, comme la vitesse, la direction, etc.
+                    </p>
+
+                    <h4>Espace des actions</h4> 
+                    <p>
+                        ZeerLookupAction fournit une méthode pour obtenir la représentation de l'espace des actions. Dans ce cas, il s'agit d'un espace discret dont la taille est égale au nombre d'entrées dans la table de recherche.
+                    </p>
+
+                    <h4>Génération de la table de recherche</h4> 
+                    <p>
+                        Cette implémentation crée une table de recherche qui associe des indices d'actions à des valeurs d'actions concrètes en fonction des intervalles ou des valeurs discrètes définies précédemment. Cette table couvre à la fois les actions au sol et en vol.
+                    </p>
+
+                    <h4>Analyse des actions</h4> 
+                    <p>
+                        ZeerLookupAction est capable de traduire les indices d'actions en valeurs d'actions concrètes en utilisant la table de recherche générée.
+                    </p>
+
+                    <h4>Analyse des actions</h4> 
+                    <p>
+                        Utilisation dans l'environnement : Ce composant peut être utilisé dans un environnement de simulation de Rocket League pour permettre à un agent d'interagir avec le jeu en fournissant des actions compréhensibles par le moteur de jeu.
+                    </p>
+
                 </div>
 
                 <h2 class="toggle-bar" onclick="toggleMenu(3)">Observer.py<span class="toggle-arrow">🡇</span></h2>

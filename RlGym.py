@@ -234,7 +234,7 @@ if __name__ == "__main__":
     
     modifier_resolution(ResX, ResY)
     
-    file_model_name = "ZZeerWillTryHardV4"
+    file_model_name = MODEL_NAME
     
     nbRep = 100000
     
@@ -272,7 +272,7 @@ if __name__ == "__main__":
         stopTraining = StopTrainingOnNoModelImprovement(10, verbose=1)
 
         #                                 , callback_after_eval=stopTraining
-        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2))
+        eval_callback = EvalCallback(env, best_model_save_path=f"./models/{file_model_name}/best_model", log_path=f"./logs/{file_model_name}/results", eval_freq=save_periode/(2), n_eval_episodes=100)
         
         progressBard = ProgressBarCallback()
         
@@ -285,10 +285,11 @@ if __name__ == "__main__":
                  verbose=1, 
                  device=torch.device("cuda:0"), 
                  custom_objects={  
+                                 "n_steps": N_STEPS,
+                                 "batch_size": BATCH_SIZE,
                                  "gamma": gamma,
                                  "n_epochs": 10, 
-                                 "learning_rate": constant_schedule(5e-5),
-                                  "n_steps":50000,
+                                 "learning_rate": constant_schedule(5e-5)
                                 }
                  )
              print("Load model")
@@ -297,8 +298,8 @@ if __name__ == "__main__":
                     policy=CustomActorCriticPolicy, 
                     env=env, 
                     n_epochs=10, 
-                    n_steps=50000,
-                    batch_size=1728,
+                    n_steps=N_STEPS,
+                    batch_size=BATCH_SIZE,
                     learning_rate=constant_schedule(5e-5), 
                     ent_coef=0.1, 
                     vf_coef=1., 
@@ -306,10 +307,8 @@ if __name__ == "__main__":
                     clip_range= 0.2, 
                     verbose=1, 
                     policy_kwargs=dict(
-                        features_extractor_class=CustomFeatureExtractor,
-                        features_extractor_kwargs=dict(features_dim=256),
                         lstm_hidden_size=256,
-                        n_lstm_layers=1,
+                        n_lstm_layers=LAYERS,
                         shared_lstm=True,
                         enable_critic_lstm=False
                     ),

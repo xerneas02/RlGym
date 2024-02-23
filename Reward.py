@@ -218,7 +218,7 @@ class CombinedReward(RewardFunction):
         global TOUCH_VERIF, NUMBER_SIMULATION, NUMBER_GOAL, NUMBER_TOUCH, BEHIND_BALL_TIME, NUMBER_TICK
         TOUCH_VERIF = False
         NUMBER_SIMULATION = NUMBER_SIMULATION +1
-        #print(NUMBER_SIMULATION)
+
         if NUMBER_SIMULATION % SIMULATION_PER_STATS == 0:
             SaveStatFile()
             NUMBER_GOAL = 0

@@ -147,3 +147,19 @@
 }
   
 
+ol,
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Style pour les éléments de liste */
+li {
+    margin-bottom: 10px;
+}
+
+/* Style pour les éléments strong */
+strong {
+    font-weight: bold;
+}
