@@ -340,37 +340,67 @@
                         Ce fichier contient l'ensemble des fonctions proposant un état initial pour une simulation. Cela permet
                         d'entrainer l'agent pour certaines situation pré-fabriquée par nous même.
                     </p>
+                    <h4 id="CombinedState">CombinedState</h4>
+                    <p>
+                        Ce state setter est inspiré de la classe <strong>CombinedReward</strong>. Il permet de combiner plusieurs autres state setters et de leur attribuer différentes probabilités d'apparition, ainsi que différents poids pour les récompenses. Le fonctionnement est le suivant : en lui fournissant un tuple de tuples, chaque tuple interne contenant une classe StateSetter et un autre tuple. Si ce tuple interne est laissé vide, il conservera les poids par défaut des récompenses. Si vous le remplissez avec autant de valeurs flottantes qu'il y a de récompenses, il remplacera les poids par défaut des récompenses. (si vous mettez 42 comme poids de récompense, il conservera la valeur par défaut)
+                    </p>
                     <h4 id="BetterRandom">BetterRandom</h4>
                     <p>
-                        a faire...
+                        Ce state setter est l'un des états utilisés par <a href="https://github.com/Rolv-Arild/Necto">Necto</a>. Il génère des états de départ aléatoires avec certaines contraintes et distributions :
                     </p>
+                    <ul>
+                        <li>
+                            <strong>Position de la balle :</strong> Sélectionnée de manière aléatoire à l'intérieur des limites du jeu (`LIM_X`, `LIM_Y`) pour les coordonnées x et y, et suit une distribution triangulaire pour la coordonnée z entre `BALL_RADIUS` et `LIM_Z`.
+                        </li>
+                        <li>
+                            <strong>Vélocité linéaire de la balle :</strong> Génère une vélocité aléatoire avec une chance de 99,9 % d'être inférieure à la vitesse maximale de la balle (`BALL_MAX_SPEED`). Cela se fait en échantillonnant à partir d'une distribution exponentielle pour garantir que la plupart des vélocités sont inférieures à la vitesse maximale.
+                        </li>
+                        <li>
+                            <strong>Vélocité angulaire de la balle :</strong> Génère de manière aléatoire une vélocité angulaire avec une distribution triangulaire entre 0 et la vélocité angulaire maximale (`CAR_MAX_ANG_VEL`) plus un petit décalage.
+                        </li>
+                        <li>
+                            <strong>Position de la voiture :</strong> Calcule une position pour chaque voiture en fonction de la position de la balle, en veillant à ce que la voiture soit, en moyenne, à 1 seconde de la balle à la vitesse maximale. Si la position calculée se trouve à l'intérieur des limites du jeu (`LIM_X`, `LIM_Y`) et au-dessus du sol mais toujours proche de la balle, elle utilise cette position. Sinon, elle génère une position totalement aléatoire.
+                        </li>
+                        <li>
+                            <strong>Vélocité linéaire de la voiture :</strong> Génère une vélocité linéaire aléatoire avec une distribution triangulaire entre 0 et la vitesse maximale de la voiture (`CAR_MAX_SPEED`).
+                        </li>
+                        <li>
+                            <strong>Orientation de la voiture (Rotation) :</strong> Définit de manière aléatoire le tangage, le lacet et le roulis de la voiture dans des limites spécifiées (`PITCH_LIM`, `YAW_LIM`, `ROLL_LIM`), en suivant des distributions triangulaires.
+                        </li>
+                        <li>
+                            <strong>Vélocité angulaire de la voiture :</strong> Génère de manière aléatoire une vélocité angulaire avec une distribution triangulaire entre 0 et la vélocité angulaire maximale de la voiture (`CAR_MAX_ANG_VEL`).
+                        </li>
+                        <li>
+                            <strong>Boost de la voiture :</strong> Attribue une quantité de boost aléatoire entre 0 et 1 à chaque voiture.
+                        </li>
+                    </ul>
                     <h4 id="TrainingStateSetter">TrainingStateSetter</h4>
                     <p>
-                        a faire...
+                        Ce state setter a été trouvé sur le github <a href="https://github.com/calebjjor/RL-in-RL/tree/main?tab=readme-ov-file">RL-in-RL</a> et est conçu pour des scénarios d'entraînement où différentes conditions initiales sont nécessaires pour enseigner à l'agent des compétences ou des comportements spécifiques. Il sélectionne de manière aléatoire parmi plusieurs états de spawn prédéfinis pour fournir une variété de scénarios d'entraînement.
                     </p>
                     <h4 id="DefaultStateClose">DefaultStateClose</h4>
                     <p>
-                        a faire...
+                        Ce state setter est une variation du state setter par défaut où les positions initiales des voitures sont ajustées pour créer des scénarios d'entraînement avec des distances différentes par rapport à la balle au coup d'envoi. Il sélectionne de manière aléatoire un sous-ensemble de positions de coup d'envoi prédéfinies pour les voitures des équipes bleue et orange et ajuste leurs positions en conséquence.
                     </p>
                     <h4 id="RandomState">RandomState</h4>
                     <p>
-                        a faire...
+                        Ce state setter distribue aléatoirement la balle sur le terrain tout en maintenant les voitures dans leurs positions de coup d'envoi par défaut.
                     </p>
                     <h4 id="InvertedState">InvertedState</h4>
                     <p>
-                        a faire...
+                        Il s'agit d'un état de coup d'envoi normal, mais les voitures sont tournées loin de la balle.
                     </p>
                     <h4 id="DefaultStateCloseOrange">DefaultStateCloseOrange</h4>
                     <p>
-                        a faire...
+                        Similaire à <strong>DefaultStateClose</strong>, mais les voitures oranges sont positionnées du côté bleu, et les voitures bleues sont du côté orange.
                     </p>
                     <h4 id="RandomStateOrange">RandomStateOrange</h4>
                     <p>
-                        a faire...
+                        Similaire à <strong>RandomState</strong>, mais les voitures oranges sont positionnées du côté bleu, et les voitures bleues sont du côté orange.
                     </p>
                     <h4 id="InvertedStateOrange">InvertedStateOrange</h4>
                     <p>
-                        a faire...
+                        Similaire à <strong>InvertedState</strong>, mais les voitures oranges sont positionnées du côté bleu, et les voitures bleues sont du côté orange.
                     </p>
                     <h4 id="LineState">LineState</h4>
                     <p>
@@ -409,7 +439,7 @@
                     </p>
                     <h4 id="ReplayState">ReplayState</h4>
                     <p>
-                        a faire...
+                        Récupère un fichier de replay au hasard dans le dossier indiqué par la constante REPLAY_FOLDER, puis extrait une frame aléatoire de ce replay. Ensuite, positionne les voitures et la balle comme sur cette frame, avec le même niveau de boost et la même vitesse. Les données des replays ont été récupérées et traitées à l'aide du code disponible à cette adresse : <a href="https://github.com/xerneas02/RocketleagueReplayToData">https://github.com/xerneas02/RocketleagueReplayToData</a>.
                     </p>
                 </div>
 
