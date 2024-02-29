@@ -1,8 +1,9 @@
 import numpy as np
-from stable_baselines3 import PPO
+from sb3_contrib import RecurrentPPO
 import pathlib
 from Actions import ZeerLookupAction
-    
+from CustomPolicy import CustomNetwork, CustomActorCriticPolicy
+from Extracor import CustomFeatureExtractor
 
 class TrainedAgent:
     def __init__(self):
@@ -13,7 +14,7 @@ class TrainedAgent:
             "n_envs": 1,
         }
         
-        self.actor = PPO.load(str(_path) + '/rl_model', device='cpu', custom_objects=custom_objects)
+        self.actor = RecurrentPPO.load(str(_path) + '/rl_model')
         self.parser = ZeerLookupAction()
 
     def act(self, state):

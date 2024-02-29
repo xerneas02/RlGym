@@ -2,8 +2,8 @@ from rlgym.utils.common_values import CAR_MAX_SPEED, SIDE_WALL_X, BACK_WALL_Y, C
 import numpy as np
 
 FRAME_SKIP   = 8
-GAME_SPEED   = 100
-NUM_INSTANCE = 4
+GAME_SPEED   = 1
+NUM_INSTANCE = 1
 
 BATCH_SIZE = 1728
 N_STEPS    = int(200_000/NUM_INSTANCE)
@@ -13,8 +13,8 @@ BALL_SPEED     = 1500
 AFFICHE_SCREEN = False
 SIMULATION_PER_STATS = 100
 
-ResX = 0#1920
-ResY = 0#1080
+ResX = 0+1920
+ResY = 0+1080
 
 LAYERS = 1
 

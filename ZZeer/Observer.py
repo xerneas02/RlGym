@@ -6,14 +6,14 @@ import math
 import numpy as np
 from typing import Any, List
 from rlgym import *
+from common_values import *
 
 
 
 
 class ZeerObservations(ObsBuilder):
     # Normalization distances
-    POS_STD = 2300 
-    ANG_STD = math.pi
+    POS_MAX = np.linalg.norm([4096,5120,2044])
 
     def __init__(self):
         super().__init__()
@@ -31,11 +31,12 @@ class ZeerObservations(ObsBuilder):
             inverted = False
             ball = state.ball
             pads = state.boost_pads
-        
 
-        obs = [ball.position / self.POS_STD,
-               ball.linear_velocity / self.POS_STD,
-               ball.angular_velocity / self.ANG_STD,
+        
+        obs = [ball.position / self.POS_MAX,
+               ball.linear_velocity / BALL_MAX_SPEED,
+               ball.angular_velocity / CAR_MAX_ANG_VEL,
+               [np.linalg.norm(ball.linear_velocity / self.POS_MAX)],
                previous_action,
                pads]
 
@@ -57,8 +58,13 @@ class ZeerObservations(ObsBuilder):
 
             # Extra info
             team_obs.extend([
-                (other_car.position - player_car.position) / self.POS_STD,
-                (other_car.linear_velocity - player_car.linear_velocity) / self.POS_STD
+                (other_car.position - player_car.position) / self.POS_MAX,
+                (other_car.linear_velocity - player_car.linear_velocity) / CAR_MAX_SPEED,
+                [
+                    np.linalg.norm((other_car.position - player_car.position) / self.POS_MAX),
+                    np.linalg.norm((other_car.linear_velocity - player_car.linear_velocity) / CAR_MAX_SPEED)
+                ]
+                
             ])
 
         obs.extend(allies)
@@ -81,18 +87,20 @@ class ZeerObservations(ObsBuilder):
         rel_attack = attack_goal - player_car.position
         defend_goal = common_values.BLUE_GOAL_BACK
         rel_defend = defend_goal - player_car.position
+        super_sonic = np.linalg.norm(player_car.linear_velocity) >= common_values.SUPERSONIC_THRESHOLD
 
         obs.extend([
-            rel_pos / self.POS_STD,
-            rel_vel / self.POS_STD,
-            rel_attack / self.POS_STD,
-            rel_defend / self.POS_STD,
-            player_car.position / self.POS_STD,
+            rel_pos / self.POS_MAX,
+            rel_vel / CAR_MAX_SPEED,
+            rel_attack / self.POS_MAX,
+            rel_defend / self.POS_MAX,
+            player_car.position / self.POS_MAX,
             player_car.forward(),
             player_car.up(),
-            player_car.linear_velocity / self.POS_STD,
-            player_car.angular_velocity / self.ANG_STD,
+            player_car.linear_velocity / CAR_MAX_SPEED,
+            player_car.angular_velocity / CAR_MAX_ANG_VEL,
             [player.boost_amount,
+             int(super_sonic),
              int(player.on_ground),
              int(player.has_flip),
              int(player.is_demoed)]])
