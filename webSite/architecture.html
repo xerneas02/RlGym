@@ -214,7 +214,10 @@
                 <h2 id="Observer" class="toggle-bar" onclick="toggleMenu(3)">Observer.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content3">
                     <p>
-                        à faire...
+                        L'observateur est un objet permettant de visualiser l’environnement dans son état actuel, dans le
+                        cas de Rocket League, une observation de l’agent se base sur sa position et sa vitesse sur
+                        le terrain, les positions et vitesses des autres joueurs ainsi que la position et la vitesse du
+                        ballon.
                     </p>
                 </div>
 
@@ -308,11 +311,11 @@
                     </p>
                     <h4 id="VelocityBallOwnGoalReward">VelocityBallOwnGoalReward</h4>
                     <p>
-                        a compléter...
+                        Plus la vitesse de la balle vers le but orange est élevée, plus l'agent remporte des points.
                     </p>
                     <h4 id="VelocityBallOpponentGoalReward">VelocityBallOpponentGoalReward</h4>
                     <p>
-                        a compléter...
+                        Plus la vitesse de la balle vers le but bleu est élevée, plus l'agent remporte des points.
                     </p>
                     <!--########################################################################################-->
                     <h3 id="Pénalités">Pénalités</h3>
@@ -446,7 +449,11 @@
                 <h2 id="Callback" class="toggle-bar" onclick="toggleMenu(6)">Callback.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content6">
                     <p>
-                        a faire...
+                        Un objet callBack est utilisé pour effectuer des actions à des moments spécifiques pendant l'entraînement
+                         de l'agent. Un callBack est une fonction ou un objet qui est appelé à des points déterminés pendant 
+                         l'entraînement de l'agent pour effectuer des tâches telles que la sauvegarde de modèles, l'enregistrement 
+                         de statistiques d'entraînement, la modification dynamique des hyperparamètres, ou toute autre opération
+                         personnalisée.
                     </p>
                 </div>
 
@@ -485,7 +492,19 @@
                 <h2 id="CustomPolicy" class="toggle-bar" onclick="toggleMenu(8)">CustomPolicy.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content8">
                     <p>
-                        a faire...
+                        Tout agent en apprentissage par renforcement suit ce que l’on appelle une politique, que l’on
+                        peut apparenter comme le cerveau de l’agent. C’est le centre névralgique des décisions qu’un
+                        agent puisse prendre. La politique et son optimisation sont donc les éléments centraux de notre
+                        projet .
+                        L’implémentation d’un agent dépend en grande partie de l’algorithme d’apprentissage par ren-
+                        forcement utlisé. <br>
+                        Il existe deux grands types d’algorithmes dans ce domaine :
+                        — les méthodes basées on-policy dans lesquelles la collecte des données d’apprentissage
+                        est réalisée par l’agent lui-même, ce qui couple les performances de la politique de l’agent
+                        avec la diversité des données sur lesquelles il s’entraîne.<br>
+                        — les méthodes basées off-policy qui contrairement aux méthodes on-policy découplent l’ex-
+                        ploration de l’environnement et le comportement. Ainsi, nous pouvons disposer de deux
+                        politiques, une qui régit le comportement de l’agent.<br>
                     </p>
                 </div>
 
