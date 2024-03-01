@@ -65,15 +65,15 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                30        ,  # GoalScoredReward                    #1
+                7        ,  # GoalScoredReward                    #1
                 3        ,    # SaveReward
                 0.0025     ,  # BoostDifferenceReward               #2
-                7        ,  # BallTouchReward                     #3
+                1.0        ,  # BallTouchReward                     #3
                 0.3      ,  # DemoReward                          #4
                 0.0030   ,  # DistancePlayerBallReward            #5
                 0.005   ,  # DistanceBallGoalReward              #6
                 0.000625   ,  # FacingBallReward                    #7
-                0.004   ,  # AlignBallGoalReward                 #8
+                0.0075   ,  # AlignBallGoalReward                 #8
                 0.00125   ,  # ClosestToBallReward                 #9
                 0.00125   ,  # TouchedLastReward                   #10
                 0.00200   ,  # BehindBallReward                    #11
@@ -97,7 +97,7 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(100), 
+        terminal_conditions = (common_conditions.TimeoutCondition(250), 
                                common_conditions.GoalScoredCondition()) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
@@ -135,20 +135,20 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #RandomState
                                     0.00, #RandomStateOrange
                                     0.00, #InvertedState
-                                    0.00, #InvertedStateOrange
+                                    0.10, #InvertedStateOrange
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-                                    0.00, #LineState
-                                    0.00, #Attaque
-                                    0.00, #Defense
+                                    0.10, #LineState
+                                    0.05, #Attaque
+                                    0.05, #Defense
                                     0.00, #AirBallAD
-                                    0.00, #DefenseRapide
-                                    0.00, #Mur
-                                    1.00, #OpenGoal
-                                    0.00, #Alea
+                                    0.10, #DefenseRapide
+                                    0.05, #Mur
+                                    0.50, #OpenGoal
+                                    0.05, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState
                                 )
@@ -300,7 +300,7 @@ if __name__ == "__main__":
                     n_epochs=10, 
                     n_steps=N_STEPS,
                     batch_size=BATCH_SIZE,
-                    learning_rate=constant_schedule(5e-5), 
+                    learning_rate=constant_schedule(5e-4), 
                     ent_coef=0.1, 
                     vf_coef=1., 
                     gamma=gamma, 

@@ -850,7 +850,7 @@ class OpenGoal(StateSetter):
         angle = np.pi / 2
         angle2 = random.random() * np.pi * 2
         #----SPAWN BOUBOULE--------------------------------
-        ball_x = random.randint(-1500, 1500);
+        ball_x = random.randint(-2000, 2000);
         ball_y = random.randint(2000, 4000);
         ball_z = int(BALL_RADIUS)+1
         state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
