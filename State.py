@@ -854,6 +854,8 @@ class OpenGoal(StateSetter):
         ball_y = random.randint(2000, 4000);
         ball_z = int(BALL_RADIUS)+1
         state_wrapper.ball.set_pos(ball_x, ball_y, ball_z)
+        
+        if MOVE_BALL : movement_ball(state_wrapper.ball)
         #---------------------------------------------------
         #----SPAWN CARS-------------------------------------
         for car in state_wrapper.cars:

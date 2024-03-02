@@ -65,13 +65,13 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-                20        ,  # GoalScoredReward                    #1
+                30        ,  # GoalScoredReward                    #1
                 5         ,    # SaveReward
-                0.00      ,  # BoostDifferenceReward               #2
+                0.001     ,  # BoostDifferenceReward               #2
                 5         ,  # BallTouchReward                     #3
                 0.0       ,  # DemoReward                          #4
                 0.005     ,  # DistancePlayerBallReward            #5
-                0.005     ,  # DistanceBallGoalReward              #6
+                0.01      ,  # DistanceBallGoalReward              #6
                 0.001     ,  # FacingBallReward                    #7
                 0.001     ,  # AlignBallGoalReward                 #8
                 0.000     ,  # ClosestToBallReward                 #9
@@ -97,8 +97,8 @@ def get_match(game_speed=GAME_SPEED):
     match = Match(
         game_speed          = game_speed,
         reward_function     = rewards,
-        terminal_conditions = (common_conditions.TimeoutCondition(250), 
-                               common_conditions.GoalScoredCondition()) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
+        terminal_conditions = (common_conditions.TimeoutCondition(500), 
+                               NoGoalTimeoutCondition(300, 1)) ,#NoGoalTimeoutCondition(300, 1) #NoTouchFirstTimeoutCondition(50) #common_conditions.GoalScoredCondition(), common_conditions.NoTouchTimeoutCondition(80)
         obs_builder         = ZeerObservations(),
         state_setter        = CombinedState( 
                                 rewards,
@@ -128,26 +128,26 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-                                    0.10, #DefaultState *
-                                    0.00, #DefaultStateClose 
+                                    0.00, #DefaultState *
+                                    0.10, #DefaultStateClose 
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter *
-                                    0.00, #RandomState *
-                                    0.30, #RandomStateOrange *
-                                    0.00, #InvertedState *
-                                    0.30, #InvertedStateOrange *
+                                    0.10, #RandomState *
+                                    0.10, #RandomStateOrange *
+                                    0.10, #InvertedState *
+                                    0.10, #InvertedStateOrange *
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
                                     0.00, #LineState
-                                    0.20, #Attaque *
-                                    0.05, #Defense *
-                                    0.05, #AirBallAD *
+                                    0.40, #Attaque *
+                                    0.00, #Defense *
+                                    0.00, #AirBallAD *
                                     0.00, #DefenseRapide
                                     0.00, #Mur
-                                    0.00, #OpenGoal *
+                                    0.10, #OpenGoal *
                                     0.00, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState

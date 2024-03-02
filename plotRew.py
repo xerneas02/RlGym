@@ -44,7 +44,7 @@ def remove_outliers(values):
     return cleaned_values
 
 
-def plot_rewards(data, remove_outliers_flag=False, smoothness=100):
+def plot_rewards(data, remove_outliers_flag=False, smoothness_percentage=10):
     num_rewards = len(data)
     num_plots_per_window = 3  # Nombre de graphiques par fenêtre
     num_windows = (num_rewards + num_plots_per_window - 1) // num_plots_per_window
@@ -57,13 +57,18 @@ def plot_rewards(data, remove_outliers_flag=False, smoothness=100):
         for ax, (reward_name, values) in zip(axes, list(data.items())[start_index:end_index]):
             if remove_outliers_flag:
                 values = remove_outliers(values)
-            x_values = range(1, len(values) + 1) 
+            num_points = len(values)
+            smoothness = int(num_points * smoothness_percentage / 100)
+            smoothed_values = []
+            for i in range(num_points):
+                start = max(0, i - smoothness // 2)
+                end = min(num_points, i + smoothness // 2 + 1)
+                smoothed_value = sum(values[start:end]) / (end - start)
+                smoothed_values.append(smoothed_value)
+            x_values = range(1, num_points + 1) 
             ax.plot(x_values, values, label=reward_name, marker='o', linestyle='-')
             
-           
-            f = interp1d(x_values, values, kind='cubic')
-            x_smooth = range(1, len(values) + 1, smoothness) 
-            ax.plot(x_smooth, f(x_smooth), color='red', linestyle='-', linewidth=3, label=f'{reward_name} (lissée)')
+            ax.plot(x_values, smoothed_values, color='red', linestyle='-', linewidth=3, label=f'{reward_name} (lissée)')
             
             ax.set_title(f'Récompense: {reward_name}')
             ax.set_xlabel('Simulation')
@@ -74,12 +79,6 @@ def plot_rewards(data, remove_outliers_flag=False, smoothness=100):
         plt.tight_layout() 
         plt.show()
 
-
-
 file_path = 'log_rew.txt'  
-
-
 data = read_data_from_file(file_path)
-
-
-plot_rewards(data, remove_outliers_flag=True, smoothness=100)
+plot_rewards(data, remove_outliers_flag=True, smoothness_percentage=10)
