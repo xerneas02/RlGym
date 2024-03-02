@@ -16,69 +16,135 @@
         </div>
         <div class="contenu">
             <div class="navBarre">
-                <a class="navTitle" href="#constante">Constante</a> <a class="navTexte" href="#FRAME_SKIP">FRAME_SKIP</a>
-                    <a class="navTexte" href="#GAME_SPEED">GAME_SPEED</a> <a class="navTexte" href="#NUM_INSTANCE">NUM_INSTANCE</a>
-                    <a class="navTexte" href="#MOVE_BALL">MOVE_BALL</a> <a class="navTexte" href="#BALL_SPEED">BALL_SPEED</a>
-                    <a class="navTexte" href="#AFFICHE_SCREEN">AFFICHE_SCREEN</a> <a class="navTexte" href="#SIMULATION_PER_STATS">SIMULATION_PER_STATS</a>
-                    <a class="navTexte" href="#ResX & ResY">ResX & ResY</a> <a class="navTexte" href="#REPLAY_FOLDER">REPLAY_FOLDER</a>
-                    <a class="navTexte" href="#LIM_X">LIM_X</a> <a class="navTexte" href="#LIM_Y">LIM_Y</a>
-                    <a class="navTexte" href="#LIM_Z">LIM_Z</a> <a class="navTexte" href="#PITCH_LIM">PITCH_LIM</a>
-                    <a class="navTexte" href="#YAW_LIM">YAW_LIM</a> <a class="navTexte" href="#ROLL_LIM">ROLL_LIM</a>
-                    <a class="navTexte" href="#BLUE_TEAM">BLUE_TEAM</a> <a class="navTexte" href="#ORANGE_TEAM">ORANGE_TEAM</a>
+                <a class="navTitle" href="#Carte du terrain de rocket league">Carte du terrain de rocket league</a> 
 
-                <a class="navTitle" href="#actionparser">ActionParser</a> <a class="navTexte" href="#Initialisation">Initialisation</a>
-                    <a class="navTexte" href="#Espace des actions">Espace des actions</a> <a class="navTexte" href="#Génération de la table de recherche">Génération de la table de recherche</a>
-                    <a class="navTexte" href="#Analyse des actions">Analyse des actions</a> <a class="navTexte" href="#Environnement">Environnement</a>
+                <a class="navTitle" href="#Classement de bots communautaires">Classement de bots communautaires</a> 
 
-                <a class="navTitle" href="#Observer">Observer</a>
+                <a class="navTitle" href="#Interprétation des résultats du TensorBoard">Interprétation des résultats du TensorBoard</a> <a class="navTexte" href="#rollout/ep_len_mean">rollout/ep_len_mean</a>
+                    <a class="navTexte" href="#rollout/ep_rew_mean">rollout/ep_rew_mean</a> <a class="navTexte" href="#fps">fps</a>
+                    <a class="navTexte" href="#time/iterations">time/iterations</a> <a class="navTexte" href="#time/time_elapsed">time/time_elapsed</a>
+                    <a class="navTexte" href="#time/total_timesteps">time/total_timesteps</a> <a class="navTexte" href="#train/approx_kl">train/approx_kl</a>
+                    <a class="navTexte" href="#train/clip_fraction">train/clip_fraction</a> <a class="navTexte" href="#train/clip_range">train/clip_range</a>
+                    <a class="navTexte" href="#train/entropy_loss">train/entropy_loss</a> <a class="navTexte" href="#train/explained_variance">train/explained_variance</a>
+                    <a class="navTexte" href="#train/learning_rate">train/learning_rate</a> <a class="navTexte" href="#train/loss">train/loss</a>
+                    <a class="navTexte" href="#train/n_updates">train/n_updates</a> <a class="navTexte" href="#train/policy_gradient_loss">train/policy_gradient_loss</a>
+                    <a class="navTexte" href="#train/value_loss">train/value_loss</a>
 
-                <a class="navTitle" href="#Reward">Reward</a> <a class="navSousTitle" href="#Fonction de récompense par évènement">Fonction de récompense par évènement</a>
-                    <a class="navTexte" href="#GoalScoredReward">GoalScoredReward</a> <a class="navTexte" href="#BoostDifferenceReward">BoostDifferenceReward</a>
-                    <a class="navTexte" href="#BallTouchReward">BallTouchReward</a> <a class="navTexte" href="#DemoReward">DemoReward</a>
-                    <a class="navTexte" href="#KickoffReward">KickoffReward</a> <a class="navTexte" href="#FirstTouchReward">FirstTouchReward</a>
-                    <a class="navTexte" href="#SaveReward">SaveReward</a> <a class="navSousTitle" href="#Fonction de récompense par tick">Fonction de récompense par tick</a>
-                    <a class="navTexte" href="#DistancePlayerBallReward">DistancePlayerBallReward</a> <a class="navTexte" href="#DistanceBallGoalReward">DistanceBallGoalReward</a>
-                    <a class="navTexte" href="#FacingBallReward">FacingBallReward</a> <a class="navTexte" class="navTexte" href="#AlignBallGoalReward">AlignBallGoalReward</a>
-                    <a class="navTexte" href="#ClosestToBallReward">ClosestToBallReward</a> <a class="navTexte" href="#TouchedLastReward">TouchedLastReward</a>
-                    <a class="navTexte" href="#BehindBallReward">BehindBallReward</a> <a class="navTexte" href="#VelocityPlayerBallReward">VelocityPlayerBallReward</a>
-                    <a class="navTexte" href="#VelocityReward">VelocityReward</a> <a class="navTexte" href="#BoostAmountReward">BoostAmountReward</a>
-                    <a class="navTexte" href="#ForwardVelocityReward">ForwardVelocityReward</a> <a class="navTexte" href="#VelocityBallOwnGoalReward">VelocityBallOwnGoalReward</a>
-                    <a class="navTexte" href="#VelocityBallOpponentGoalReward">VelocityBallOpponentGoalReward</a> <a class="navSousTitle" href="#Pénalités">Pénalités</a>
-                    <a class="navTexte" href="#AirPenalityReward">AirPenalityReward</a> <a class="navTexte" href="#DontTouchPenalityReward">DontTouchPenalityReward</a>
-                    <a class="navTexte" href="#DontGoalPenalityReward">DontGoalPenalityReward</a> <a class="navTexte" href="#BehindTheBallPenalityReward">BehindTheBallPenalityReward</a>
+                <a class="navTitle" href="#première semaine">Résultats première semaine</a> <a class="navTexte" href="#toucheBalle">Touché de balle</a>
+                    <a class="navTexte" href="#lineState">LineState</a> <a class="navTexte" href="#InvertedState">InvertedState</a>
 
-                <a class="navTitle" href="#state">State</a> <a class="navTexte" href="#BetterRandom">BetterRandom</a>
-                    <a class="navTexte" href="#TrainingStateSetter">TrainingStateSetter</a> <a class="navTexte" href="#DefaultStateClose">DefaultStateClose</a>
-                    <a class="navTexte" href="#RandomState">RandomState</a> <a class="navTexte" href="#InvertedState">InvertedState</a>
-                    <a class="navTexte" href="#DefaultStateCloseOrange">DefaultStateCloseOrange</a> <a class="navTexte" href="#RandomStateOrange">RandomStateOrange</a>
-                    <a class="navTexte" href="#InvertedStateOrange">InvertedStateOrange</a> <a class="navTexte" href="#LineState">LineState</a>
-                    <a class="navTexte" href="#Alea">Alea</a> <a class="navTexte" href="#Attaque">Attaque</a>
-                    <a class="navTexte" href="#Defense">Defense</a> <a class="navTexte" class="navTexte" href="#AirBallAD">AirBallAD</a>
-                    <a class="navTexte" href="#DefenseRapide">DefenseRapide</a> <a class="navTexte" href="#Mur">Mur</a>
-                    <a class="navTexte" href="#ChaosState">ChaosState</a> <a class="navTexte" href="#ReplayState">ReplayState</a>
+                <a class="navTitle" href="#deuxième semaine">Résultat de la deuxième semaine</a> <a class="navTexte" href="#Ajout de statistiques">Ajout de statistiques</a>
 
-                <a class="navTitle" href="#Callback">Callback</a>
+                <a class="navTitle" href="#troisième semaine">Résultat de la troisième semaine</a> 
+                    <a class="navTexte" href="#ZZeer_V.1">ZZeer_V.1</a> <a class="navTexte" href="#ZZeer_V.2">ZZeer_V.2</a>
+                    <a class="navTexte" href="#ZZeer_V.3">ZZeer_V.3</a> <a class="navTexte" href="#ZZeer_V.4">ZZeer_V.4</a>
 
-                <a class="navTitle" href="#CustomTerminal">CustomTerminal</a>
-                
-                <a class="navTitle" href="#CustomPolicy">CustomPolicy</a>
-
-                <a class="navTitle" href="#lectureGraph">lectureGraph</a>
-
-                <a class="navTitle" href="#log_rew">log_rew</a>
-
-                <a class="navTitle" href="#stats_bot">stats_bot</a>
 
                
             </div>
             <div class="menu">
                 <h1>Expérimentation de<br>l'apprentissage par renforcement</h1>
+
+                <h2 id="Carte du terrain de rocket league">Carte du terrain de rocket league</h2>
+
+                <img src="img/coordonnee_map.png">
+
+                <h2 id="Classement de bots communautaires">Classement de bots communautaires</h2>
+
+                <img src="./img/classe_bot.png">
+
+                <h2 id="Interprétation des résultats du TensorBoard">Interprétation des résultats du TensorBoard</h2>
+
+                <p>
+                    Le TensorBoard vous permet de récolter des données relatives à votre simulation permettant ainsi d'améliorer les analyses et interprétations des résultats.
+                    Voici plusieurs données ainsi que leur signification:
+                </p>
+
+                <h4 id="rollout/ep_len_mean">rollout/ep_len_mean</h4>
+                <p>
+                    C'est la longueur moyenne de chaque épisode d'apprentissage. Cela indique la durée moyenne de chaque épisode d'interaction de l'agent avec l'environnement.
+                </p>
+
+                <h4 id="rollout/ep_rew_mean">rollout/ep_rew_mean</h4>
+                <p>
+                    C'est la récompense moyenne par épisode. Il représente la moyenne des récompenses obtenues par l'agent au cours de chaque épisode.
+                </p>
+
+                <h4 id="fps">fps</h4>
+                <p>
+                    C'est le nombre de frames par seconde (images par seconde) que l'algorithme peut traiter pendant l'entraînement. Cela indique la vitesse à laquelle l'algorithme génère des données et met à jour les paramètres du modèle.
+                </p>
+
+                <h4 id="time/iterations">time/iterations</h4>
+                <p>
+                    C'est le nombre d'itérations (ou pas de temps) que l'algorithme a effectuées jusqu'à présent pendant l'entraînement.
+                </p>
+
+                <h4 id="time/time_elapsed">time/time_elapsed</h4>
+                <p>
+                    C'est le temps écoulé depuis le début de l'entraînement, mesuré en secondes ou en minutes.
+                </p>
+
+                <h4 id="time/total_timesteps">time/total_timesteps</h4>
+                <p>
+                    C'est le nombre total d'étapes (ou pas de temps) que l'algorithme a effectuées depuis le début de l'entraînement.
+                </p>
+
+                <h4 id="train/approx_kl">train/approx_kl</h4>
+                <p>
+                    Il s'agit de la divergence KL (Kullback-Leibler) approximative entre les nouvelles et anciennes politiques. Cela mesure à quel point la nouvelle politique diffère de l'ancienne politique.
+                </p>
+
+                <h4 id="train/clip_fraction">train/clip_fraction</h4>
+                <p>
+                    C'est la fraction d'échantillons qui ont été tronqués lors de l'optimisation. Cela mesure à quel point les gradients ont été tronqués pour respecter la contrainte de clip lors de la mise à jour de la politique. 
+                </p>
+
+                <h4 id="train/clip_range">train/clip_range</h4>
+                <p>
+                    C'est la plage de clip utilisée pour la mise à jour de la politique. C'est la valeur maximale de changement autorisée pour les paramètres de la politique.
+                </p>
+                    
+                <h4 id="train/entropy_loss">train/entropy_loss</h4>
+                <p>
+                    C'est la perte d'entropie, qui mesure l'incertitude de la politique. Une politique plus incertaine a une entropie plus élevée.
+                </p>
+
+                <h4 id="train/explained_variance">train/explained_variance</h4>
+                <p>
+                    C'est la variance expliquée par le modèle par rapport aux données observées. Cela mesure à quel point les prédictions du modèle correspondent aux récompenses réelles.
+                </p>
+
+                <h4 id="train/learning_rate">train/learning_rate</h4>
+                <p>
+                    C'est le taux d'apprentissage utilisé par l'algorithme d'optimisation pour mettre à jour les paramètres du modèle.
+                </p>
+
+                <h4 id="train/loss">train/loss</h4>
+                <p>
+                    C'est la perte totale de l'algorithme. Cela mesure à quel point les prédictions du modèle diffèrent des récompenses réelles.
+                </p>
+
+                <h4 id="train/n_updates">train/n_updates</h4>
+                <p>
+                    C'est le nombre total de mises à jour des paramètres du modèle effectuées jusqu'à présent pendant l'entraînement.
+                </p>
+
+                <h4 id="train/policy_gradient_loss">train/policy_gradient_loss</h4>
+                <p>
+                    C'est la perte de gradient de politique, qui mesure à quel point la politique actuelle est éloignée de la politique optimale.
+                </p>
+
+                <h4 id="train/value_loss">train/value_loss</h4>
+                <p>
+                    C'est la perte de valeur, qui mesure à quel point les valeurs prédites par le modèle correspondent aux valeurs réelles.
+                </p>
                 
-                <h2>Resultat de la première semaine</h2>
+                <h2 id="première semaine">Resultat de la première semaine</h2>
                 <p>
                     Les premiers jours du projet ont été essentiellement consacré à l'installation et la mise en place des différents modules necessaires 
                     et à la compréhension de l'architecture général du projet. Le compte rendu de ces phases vous est présenté dans les onglets <a href="setup.html">Setup</a>
-                    et <a href="architecture.html">Architecture</a>, si vous souhaitez vous lancer dans la conception de bot rocket league, nous vous conseillons de vous
+                    et <a href="architecture.html">Architecture</a>, si vous souhaitez vous lancer dans la conception d'un bot rocket league, nous vous conseillons de vous
                     informer au préalable sur ces structures et la manière dont elles fonctionnent.<br><br>
 
                     La politique et le réseau de neuronne utilisés pendant la première semaine fut celle et celui de base proposé par stable baselines 3.<br>
@@ -92,14 +158,14 @@
                     De plus, le terme "Politique" fait référence à la classe qui gère tous les réseaux utiles à la formation et donc pas seulement le réseau utilisé pour prédire les actions.<br>
                     Pour plus de précisions, je vous renvoie à la source dont ont été extraites ces informations: <a href="https://stable-baselines3.readthedocs.io/en/master/guide/custom_policy.html">Policy Networks</a>.<br><br>
 
-                    Lors de nos tout premier tests, nous avons pris la décision d'observer la réaction de l'agent si ce dernier n'était soumis qu'à une seule
+                    Lors de nos tous premiers tests, nous avons pris la décision d'observer la réaction de l'agent si ce dernier n'était soumis qu'à une seule
                     et même fonction de récompense qui se traduisait finalement par une pénalité si l'agent était dans les airs.<br>
                     Après simplement 15 à 30 minutes d'entrainement, nous nous sommes aperçus que l'agent ne sautait plus et conservait ses quatres roues collées au sol. En
                     effet, il se contentait à présent de simplement rouler de manière aléatoire dans le terrain.
                     Cela nous a conforté dans l'idée que malgré une structure de réseau de neuronne assez basique, l'agent pouvait tout de même apprendre et s'améliorer.<br><br>
                 </p>
 
-                <h3>Touché de balle</h3>
+                <h3 id="toucheBalle">Touché de balle</h3>
                 <p>
                     Notre premier objectif fut de tenter d'apprendre à l'agent de toucher la balle, afin de vous donner une idée de notre attribution de coefficient
                     selon les fonctions dé récompenses:<br><br>
@@ -129,19 +195,23 @@
 
                     Après plusieurs heures d'entrainement, nous avons pu constater une réaction innatendu de l'agent (voir exemple ci-dessous):<br>
 
-                    <video autoplay="autoplay" muted="" loop="" src="video/bot_doesnt_touch_ball.mp4"></video>
+                    <video autoplay="autoplay" muted="" loop="" src="video/bot_doesnt_touch_ball.mp4"></video><br>
 
-                    Nous pouvons observer que l'agent se rapproche difficilement de la balle mais sans jamais toucher cette dernière.<br>
+                    Nous pouvons observer que l'agent se rapproche difficilement de la balle mais sans jamais toucher cette dernière.
                     Après réflexion et l'analyse du gain de récompense qu'obtenait le bot pendant son entrainement, nous nous sommes
                     aperçut qu'il avait jugé plus rentable de se rapprocher de la balle afin de toucher la récompense de "DistancePlayerBallReward",
                     plutôt que de directement toucher cette dernière.<br>
                     C'est ainsi que nous avons pris conscience de la difficulté et de la justesse dont il faut faire preuve lorsque nous associons
-                    un coefficient à une fonction de récompense. C'est ...
+                    un coefficient à une fonction de récompense. C'est aussi la raison pour laquelle il faut observer attentivement l'évolution
+                    de comportement de l'agent pendant son entrainement au risque de l'entrainer en vain pendant une longue durée.<br><br>
 
+                    Par conséquent, nous avons opter pour un changement dans les coefficients attribués aux fonctions de récompenses.
+                    En effet, nous avons drastiquement augmenté le gain correspondant au touché de balle afin que cet action devienne plus rentable
+                    que la distance de l'agent par rapport à la balle.
 
+                </p>
+                <p class="code">
                     10       ,  # GoalScoredReward<br>
-                    #0.1     ,  # BoostDifferenceReward <br>
-                    10    ,  # GoalScoredReward<br>
                     0.000000  ,  # BoostDifferenceReward <br>
                     3       ,  # BallTouchReward<br>
                     #0.3     ,  # DemoReward<br>
@@ -169,392 +239,174 @@
                     3       ,  # FirstTouchReward<br>
                     1       ,  # DontTouchPenalityReward<br>
                     #5         # AirPenality<br>
+                </p>
+                <p id="lineState">
+                    Ensuite, après de nombreuse heure d'entrainement sur des états initiaux de kickoff, l'agent était en capacité de toucher la balle à chaque
+                    simulation. Nous avons donc pris la décision d'étendre le nombre d'états initiaux en créant la situation suivante: Les deux agents sont situés
+                    dans leur camp avec comme orientation le but adverse. La balle quant à elle, est positionné au centre du terrain, selon l'axe X et non l'axe Y.
+                    Ce qui a pour objectif d'observer les réactions de l'agent sur des situations autres qu'un kickoff. Nous appelerons cette situations "LineState".<br>
+                </p>
+                <img src="./img/lineState.png">
+                <p>
+
+                    En conséquence, nous avons pu remarquer que nous avions mal interprété le résultat de la simulation. Effectivement, nous 
+                    pensions initialement que l'agent avait appris à toucher la balle. En réalité, ce dernier avait juste compris qu'en avançant tout droit,
+                    de temps en temps, il gagnait plus de points. Etant donné qu'un kickoff a tendance à favoriser le fait que la balle se trouve devant le bot,
+                    il n'avait effectivement qu'à aller tout droit de manière à percuter la balle.<br>
+
+                    Ainsi l'entrainement n'avait servi à rien, le bot ayant adopté un comportement que nous ne voulions pas. Nous avons donc récupéré un modèle de base
+                    sans aucun entrainement au préalable avec des coefficients similaires et pour comme seul état initial, le "LineState".
+                    Puis, à la suite d'une nuit entière d'entrainement, nous avons obtenu des résultats beaucoup plus significatifs. En effet, l'agent réussissait dans la 
+                    quasi-totalité des cas à toucher la balle.<br><br>
+
+                </p>
+                <img src="./img/coefLineState.png">
+                <img src="./img/stateInversted.png">
+                <img src="./img/result_first_semaine.png">
+                <img src="./img/entropy_first_week.png">
+                <img src="./img/value_loss.png">
+                <p>
+                    Selon les résultats-ci dessus, nous pouvons observer que le temps moyen d'une simulation augmente, cela signifie si on en croit les conditions d'arrêt
+                    que le bot touche de plus en plus vite la balle. En effet, la simulation s'arrête en seulement 50 ticks dans le cas où l'agent ne toucherait pas la balle,
+                    contre 2000 s'il la touche. En sachant que plus une simulation est prolongée, plus l'agent gagne de points car certaines récompenses fournissent des points à chaque
+                    tick comme la DistanceBallGoalReward qui donne plus ou moins de récompenses en fonction de la distance qui sépare l'agent de la balle.<br>
+                    Ensuite, la récompense moyenne obtenu en fonction au fur et à mesure des épisodes augmente elle aussi, ce qui signifie que l'agent
+                    effectue de plus en plus de tâche qui lui rapporte des récompenses.<br>
+                    En constate aussi une hausse de la perte d'entropie, par conséquent l'entropie est plus faible et cela sous-entend une politique plus certaine.
+                    C'est à dire que l'agent effectue de moins en moins d'actions aléatoires.<br>
+                    Cependant on remarque aussi une baisse de la variance expliquée,
+                    une valeur faible indique que le modèle ne parvient pas à capturer la structure des données et que ses prédictions ne sont pas fiables. Cela est en correlation
+                    avec la hausse de la perte de valeur et un baisse de la perte du gradient.
+                    Ces résultats sont peu compréhensibles à en constater l'obtention d'un gain plus élevé de récompense...
+                </p>
+                <p id="InvertedState">
+                    Nous avons poursuivi notre étude en positionnant l'agent en situation réelle d'un match afin d'anlyser son comportement.
+                    Le résultat résiliant de ce test fut que l'agent, lorsque ce dernier se situe du bon côté de la balle. C'est à dire entre la balle et son propre but,
+                    il n'éprouvait que peu de difficulté à toucher la balle. En revanche, si l'agent se situait entre la balle et le but adverse, son comportement
+                    devenait comme aléatoire sans aucun mouvement de concret.<br>
+                    Nous pouvons ainsi constater que l'agent peut être réactif voir très réactif dans certaines situation qui lui ont été familiaire pendant son entrainement,
+                    cependant, lorsqu'une situation lui est inconnu, les mouvements de l'agent deviennent totalement aléatoire et son comportement perds de son sens.<br><br>
+
+                    Afin de palier à ce problème, nous avons mis en place un nouvel état initial que nous nommerons "InvertedStateOrange" ou "InvertedState", ces états ont pour effet
+                    de mettre l'agent dans une situation plus complexe. Effectivement, l'un le bot est toujours orienté vers le but adverse en revanche il se situe entre
+                    le but adverse et la balle. Pour l'autre, l'agent est situé comme à son habitude entre la balle et son but. Cependant, il est orienté vers son propre but. Ces deux états initiaux
+                    ont pour objectif de complexifier et de diversifier des situations pouvant avoir lieux pendant un match de sorte à ce que les mouvements de l'agent, peu importe qu'il soit du bon ou du côté de
+                    la balle, ne soit plus aléatoire.<br>
+                </p>
+                <img src="./img/inverted.png">
+                <iframe src="https://www.youtube.com/embed/xGgKRURvr-k?autoplay=1&loop=1&playlist=xGgKRURvr-k&mute=1" frameborder="0" allowfullscreen></iframe>
+                <p>
+                    A la suite de l'entrainement, nous avons de nouveau constaté un problème. Bien que le bot réussissait à présent, malgré son placement du mauvais côté, à se diriger vers la balle et à la toucher certaines fois.
+                    Ce dernier frappait la balle dans le sens inverse du jeu et parvenait même à marquer des buts contre son camp faussant ainsi l'entrainement. En effet, il faut savoir que le gain obtenu lorsque l'agent marque un but
+                    est supérieur à l'ensemble des autres récompenses. De plus, étant donné que pour chaque entrainement le bot joue contre lui même, les fonctions de récompenses et les données récoltées ainsi que l'analyse de ces dernières
+                    prennent en compte aussi le bot adverse. Par conséquent, si un des agents marques contre son camp, il est possible que des actions effectuées par le bot qui n'a pas marqué soit valorisé
+                    alors que ces dernières n'auront aucun sens étant donné qu'il s'agit simplement d'un but marqué par le bot adverse et non pas un but marqué par la réussite d'une suite d'actions réalisées par
+                    l'agent en question.<br>
+                    Cela a engendré la création d'une pénalité ayant comme fonction de retirer des points à l'agent s'il se situe du mauvais côté de la balle.
+                </p>
+
+                <h2 id="deuxième semaine">Résultat deuxième semaine</h2>
+
+                <h3 id="Ajout de statistiques">Ajout de statistiques</h3>
+
+                <h2 id="troisième semaine">Résultat troisième semaine</h2>
+
+                <p>
+
+                A la suite du changement de la structure du réseau de neuronne de notre modèle, nous avons décidé de réitéré les expériences
+                exercées lors de la première semaine en ayant d'une part un nombre de données récoltées plus important, et d'autres parts,
+                en ne reproduisant pas les erreurs commisent par le passé.<br>
+                Pour s'assurer que le bot se concentre d'avantage sur le fait de marquer nous avons conçu un nouvel état initial nommé openGoal
+                qui devrait favorisé les situations où l'agent a la possibilité de marquer pendant un match.
+                        
+                </p>
+
+                <img src="img/openGoal.png">
+
+                <p>
+                    Sur l'image si dessus, l'agent bleu apparaît dans la zone bleu, pareillement pour le orange mais dans la zone rouge, tandis que la balle apparaît dans la zone rose.
+                    Par conséquent l'agent bleu aura plus tendance à apparaître derrière une balle positionné proche du but adverse avec un adversaire ayant une probabilité plus accrue
+                    d'apparaître derrière et donc de ne pas gêner un éventuel tir.
+                </p>
+
+                <h3 id="ZZeer_V.1">ZZeer_V.1</h3>
+
+                <p>
+                    ZZeer_V.1 s'est entrainé essentiellement avec l'état initial LineState.
+                </p>
+                <img src="./img/zzeerv1stat.png">
+                <img src="./img/zzeerv1stat2.png">
+                <img src="./img/zzeerv1tensor.png">
+                <img src="./img/zzeerv1tensor2.png">
+
+                <p>
+                    On constate une légère augmentation du gain de récompense moyenne en fonction du temps. L'approx_kl indique que la nouvelle politique
+                    se diffère de plus en plus de l'original. Ensuite, l'augmentation de la perte d'entropie souligne le fait que les choix du bot sont de
+                    moins en moins aléatoire. Concernant la variance expliqué, malgé une chute importante, nous pouvons observer qu'elle a tendance à remonter
+                    la pente au fils du temps.
 
                 </p>
 
-                <h2 id="constante" class="toggle-bar" onclick="toggleMenu(1)">Constante.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content1">
-                    <p>
-                        Ce fichier contient l'ensemble des constantes qui sont utilisés par la suite dans le code,
-                        nous allons vous les décrire une par une en spécifiant leur utilité.
-                    </p>
-                    <h4 id="FRAME_SKIP" >FRAME_SKIP</h4>
-                    <p>
-                        Permet de définir à quelle fréquence on avance d'un 'time step'. Si le 'Frame skip' vaut 8, cela signifie qu'à chaque 8 frames, on avance d'un 'time step'. Avancer d'un 'time step' implique de demander un nouvel input au bot.
-                    </p>
 
-                    <h4 id="GAME_SPEED">GAME_SPEED [0 ; 100]</h4>
-                    <p>
-                        Vous permet de définir à quelle vitesse vous souhaitez que votre jeu s'accélère, la valeur 1 désigne la vitesse par défaut du jeu.
-                    <p>
+                <h3 id="ZZeer_V.2">ZZeer_V.2</h3>
+                <p>
+                    ZZeer_V.2 a suivis un entrainement légèrement différent couplant des situations d'attaque et de défense afin qu'il apprenne ces caractéristiques de jeu.
+                    Tout en conservant des états initiaux plus basiques.
+                </p>
 
-                    <h4 id="NUM_INSTANCE">NUM_INSTANCE [1 ; 8]</h4>
-                    <p>
-                        Vous permet d'ouvrir plus d'une instance de rocket league pour obtenir une simulation plus rapide (exemple: 4 ouvrira 4 fois rocket league).
-                        Assurez-vous d'avoir la puissance machine requise pour ouvrir un tel nombre d'instance.
-                    </p>
+                <iframe src="https://www.youtube.com/embed/HvSb7z_esBk?autoplay=1&loop=1&playlist=HvSb7z_esBk&mute=1" frameborder="0" allowfullscreen></iframe>
 
-                    <h4 id="MOVE_BALL">MOVE_BALL [False ; True]</h4>
-                    <p>
-                        Il existe un grand nombre d'états initiaux (state) disponible. Dans la plupart de ces derniers, la balle 
-                        apparait sans vitesse initiale. Il vous suffit de passer cette constante à True afin que la balle bénéficie
-                        d'une vitesse et d'une direction aléatoire au début de la plupart des états initiaux proposés.
-                        Si vous souhaitez intégrer cette fonctionnalité dans votre propre state, il vous suffira d'ajouter la ligne suivante:<br>
-                        <p class="code">if MOVE_BALL : movement_ball(state_wrapper.ball)</p>
-                    </p>
+                <h3 id="ZZeer_V.3">ZZeer_V.3</h3>
+                <p>
+                    La version 3 de ZZeer a éré abandonné à la suite d'une erreur dans le code. En effet, il se trouve que la fonction de récompense GoalScoredReward
+                    avait un problème lors de ces simulations. En effet, la fonction renvoyait 0 quoiqu'il arrive. L'impacte de ce bug a eu comme effet le fait que l'agent
+                    malgré le fait qu'il avait appris à toucher la balle, n'avait absolument pas pris en compte l'intérêt de s'aligner avec le but et de marquer.
+                    La modification d'un comportement qui a été établi après de nombreuses heures d'entrainement s'avérant complexe, nous avons priviligié le fait
+                    de reprendre le modèle de ZZeer_V.2 et d'abandonner ZZeer_V.3.                         
+                </p>
 
-                    <h4 id="BALL_SPEED">BALL_SPEED [0 ; ?]</h4>
-                    <p>
-                        Permet de fixer une vitesse maximum à la balle lors des états initiaux énoncé ci-dessus.
-                    </p>
+                <h3 id="ZZeer_V.4">ZZeer_V.4</h3>
 
-                    <h4 id="AFFICHE_SCREEN">AFFICHE_SCREEN [False ; True]</h4>
-                    <p>
-                        Lancer des simulations permet de récupérer des statistiques, vous avez la possibilité d'observer ces statistiques en tant réel.
-                        L'inconvénient est que cela engendre une ouverture et fermeture de fenêtres en continu ce qui peut être dérangeant si vous faites une activité à côté.
-                        Si vous souhaitez tout de même observer ces statistiques tout en conservant cette constante à False, il vous suffit de taper cette
-                        commande dans le terminal:<br>
-                        <p class="code">python .\lectureGraph.py</p>
-                    </p>
+                <p>
+                    Concernant la version 4 de ZZeer, nous avons opter pour un entrainement intensif à longue durée avec les états initiaux diversifiés, et des coefficients
+                    cohérents. Le temps dont dispose le bot pour chaque simulation a été volontairement réduis afin qu'il puisse s'entrainer sur des situations précises.
+                </p>
 
-                    <h4 id="SIMULATION_PER_STATS">SIMULATION_PER_STATS [1 ; ?]</h4>
-                    <p>
-                        Nous avons évoqué précédement la possibilité de récupérer des statistiques pendant la simulation. Il faut savoir qu'une simulation
-                        se compose de multiples sous-simulations, les statistiques sont établis toutes les x sous-simulations. Cette constante vous permet de définir
-                        le nombre de sous-simulations minimum requises avant de récupérer les statistiques et les stocker dans le fichier 'stats_bot.txt' .
-                    </p>
+                <img src="img/coefV4.png">
+                <img src="img/statev4.png">
+                <img src="img/terminalCondV4.png">
 
-                    <h4 id="ResX & ResY">ResX & ResY </h4>
-                    <p>
-                        Permet de définir la taille des fenêtres Rocket League pendant la simulation.<br>
-                        Il est possible d'optimiser légèrement la simulation en réduisant la taille des fenêtres Rocket League.
-                        Il faut savoir qu'il est possible de diminuer la taille de la fenêtre à 0x0.
-                    </p>
+                <p>
+                    Après l'équivalent d'une semaine complète d'entrainement sans pause, nous avons obtenu les résultats suivants:
+                </p>
 
-                    <h4 id="REPLAY_FOLDER">REPLAY_FOLDER</h4>
-                    <p>
-                        Chemin relatif vers le dossier contenant les données sur les replays. Ce chemin est utilisé par le state setter <code>ReplayState</code>.
-                    </p>
+                <img src="img/statistiqueV4.png">
+                <img src="img/statistique2V4.png">
+                <img src="img/statosV4.png">
+                <img src="img/statos2V4.png">
+                <img src="img/t1.png">
+                <img src="img/t2.png">
+                <img src="img/t3.png">
+                <img src="img/t4.png">
+                <img src="img/t5.png">
+                <img src="img/t6.png">
+                <img src="img/t7.png">
 
-                    <h4 id="LIM_X">LIM_X</h4>
-                    <p>
-                        Coordonnée X maximum correspondant au mur du terrain auquel on soustrait le rayon de la balle.
-                    </p>
-
-                    <h4 id="LIM_Y">LIM_Y</h4>
-                    <p>
-                        Coordonnée Y maximum correspondant au mur du terrain auquel on soustrait le rayon de la balle.
-                    </p>
-
-                    <h4 id="LIM_Z">LIM_Z</h4>
-                    <p>
-                        Coordonnée Z maximum correspondant au plafond du terrain auquel on soustrait le rayon de la balle.
-                    </p>
-
-                    <h4 id="PITCH_LIM">PITCH_LIM</h4>
-                    <p>
-                        Valeur de rotation maximum sur l'axe x et y (horizontal).
-                    </p>
-
-                    <h4 id="YAW_LIM">YAW_LIM = np.pi</h4>
-                    <p>
-                        Valeur de rotation maximum sur l'axe z (vertical).
-                    </p>
-
-                    <h4 id="ROLL_LIM">ROLL_LIM = np.pi</h4>
-                    <p>
-                        Valeur de tonneau maximum
-                    </p>
-                    
-                    <h4 id="BLUE_TEAM">BLUE_TEAM</h4>
-                    <p>
-                        ID de l'équipe Bleu    
-                    </p>
-                    
-                    <h4 id="ORANGE_TEAM">ORANGE_TEAM</h4>
-                    <p>
-                        ID de l'équipe Orange
-                    </p>
-                </div>
-
-                <h2 id="actionparser" class="toggle-bar" onclick="toggleMenu(2)">Action.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content2">
-                    <p>
-                        Un ActionParser est composant responsable de traduire les indices d'actions en actions concrètes adaptées à l'environnement. Il définit comment l'espace des actions est représenté et comment les actions sont traduites des indices à leurs valeurs correspondantes.
-                    </p>
-
-                    <h4 id="Initialisation">Initialisation</h4> 
-                    <p>
-                        Lors de son initialisation, ZeerLookupAction définit des intervalles prédéfinis ou des valeurs discrètes pour chaque dimension d'action. Cela signifie qu'il détermine à l'avance les différentes valeurs que chaque action peut prendre, comme la vitesse, la direction, etc.
-                    </p>
-
-                    <h4 id="Espace des actions">Espace des actions</h4> 
-                    <p>
-                        ZeerLookupAction fournit une méthode pour obtenir la représentation de l'espace des actions. Dans ce cas, il s'agit d'un espace discret dont la taille est égale au nombre d'entrées dans la table de recherche.
-                    </p>
-
-                    <h4 id="Génération de la table de recherche">Génération de la table de recherche</h4> 
-                    <p>
-                        Cette implémentation crée une table de recherche qui associe des indices d'actions à des valeurs d'actions concrètes en fonction des intervalles ou des valeurs discrètes définies précédemment. Cette table couvre à la fois les actions au sol et en vol.
-                    </p>
-
-                    <h4 id="Analyse des actions">Analyse des actions</h4> 
-                    <p>
-                        ZeerLookupAction est capable de traduire les indices d'actions en valeurs d'actions concrètes en utilisant la table de recherche générée.
-                    </p>
-
-                    <h4 id="Environnement">Environnement</h4> 
-                    <p>
-                        Utilisation dans l'environnement : Ce composant peut être utilisé dans un environnement de simulation de Rocket League pour permettre à un agent d'interagir avec le jeu en fournissant des actions compréhensibles par le moteur de jeu.
-                    </p>
-
-                </div>
-
-                <h2 id="Observer" class="toggle-bar" onclick="toggleMenu(3)">Observer.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content3">
-                    <p>
-                        à faire...
-                    </p>
-                </div>
-
-                <h2 id="Reward" class="toggle-bar" onclick="toggleMenu(4)">Reward.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content4">
-                    <p>
-                        Ce fichier contient l'ensemble des fonctions de récompenses dont le rôle est de donner des points ou à l'inverse des pénalités selon le comportement
-                        de l'agent. Nous allons vous présentez l'ensemble des fonctions de récompenses que nous avons pu utiliser jusqu'à présent.<br>
-                        Nous allons vous présenter deux types de fonctions de récompenses, celles qui sont appelées lors d'un évènement précis, et celles qui sont 
-                        appelées à chaque tick du jeu.
-                    </p>
-                    <!--#######################################################################-->
-                    <h3 id="Fonction de récompense par évènement">Fonction de récompense par évènement</h3>
-                    <h4 id="GoalScoredReward">GoalScoredReward</h4>
-                    <p>
-                        L'agent est gratifié s'il marque un but. Dans certaines situations initiales, on donne à la balle une vitesse et une direction aléatoire ce 
-                        qui peut conduire à des simulations où la balle rentre directement dans les cages sans avoir été touché. Ce problème est réglé avec la variable
-                        globale 'TOUCH_VERIF', qui vérifie que la balle a été touché au moins une fois par un des deux agents.
-                    </p>
-                    <h4 id="BoostDifferenceReward">BoostDifferenceReward</h4>
-                    <p>
-                        L'agent est récompensé lorsqu'il accumule et dépense du boost.
-                    </p>
-                    <h4 id="BallTouchReward">BallTouchReward</h4>
-                    <p>
-                        L'agent est récompensé lorsqu'il touche la balle.
-                    </p>
-                    <h4 id="DemoReward">DemoReward</h4>
-                    <p>
-                        L'agent est récompensé lorsqu'il détruit un adversaire (on peut détruire son adversaire lorsqu'on le percute avec une vitesse 'supersonic').
-                    </p>
-                    <h4 id="KickoffReward">KickoffReward</h4>
-                    <p>
-                        L'agent est récompensé s'il remporte le kickoff (kickoff=engagement), si la balle est du côté de son adversaire après le kickoff réalisé, alors
-                        on considère ce dernier comme remporté.
-                    </p>
-                    <h4 id="FirstTouchReward">FirstTouchReward</h4>
-                    <p>
-                        L'agent est récompensé s'il touche la balle en premier lors du kickoff.
-                    </p>
-                    <h4 id="SaveReward">SaveReward</h4>
-                    <p>
-                        L'agent est récompensé s'il effectue un arrêt.
-                    </p>
-                    <!--######################################################################-->
-                    <h3 id="Fonction de récompense par tick">Fonction de récompense par tick</h3>
-                    <h4 id="DistancePlayerBallReward">DistancePlayerBallReward</h4>
-                    <p>
-                        Plus l'agent est proche de la balle, plus il est récompensé.
-                    </p>
-                    <h4 id="DistanceBallGoalReward">DistanceBallGoalReward</h4>
-                    <p>
-                        Plus la balle est proche du but adverse (sans prendre en compte l'axe z vertical), plus l'agent est récompensé.
-                    </p>
-                    <h4 id="FacingBallReward">FacingBallReward</h4>
-                    <p>
-                        Si l'agent fait face à la balle, il est récompensé (pour éviter qu'il ne joue en arrière...).
-                    </p>
-                    <h4 id="AlignBallGoalReward">AlignBallGoalReward</h4>
-                    <p>
-                        Plus l'agent s'aligne par rapport à la balle et le but adverse, plus il gagne de points.
-                    </p>
-                    <h4 id="ClosestToBallReward">ClosestToBallReward</h4>
-                    <p>
-                        Si l'agent est plus proche de la balle que son adversaire, alors il gagne des points.
-                    </p>
-                    <h4 id="TouchedLastReward">TouchedLastReward</h4>
-                    <p>
-                        Si l'agent est le dernier à avoir touché la balle, alors il est récompensé.
-                    </p>
-                    <h4 id="BehindBallReward">BehindBallReward</h4>
-                    <p>
-                        Si l'agent se situe derrière la balle, alors il est récompensé. En effet, il y a peu d'intérêt pour l'agent de se trouver entre la balle
-                        et le but adverse.
-                    </p>
-                    <h4 id="VelocityPlayerBallReward">VelocityPlayerBallReward</h4>
-                    <p>
-                        Si l'agent se déplace en direction de la balle, alors il est récompensé.
-                    </p>
-                    <h4 id="VelocityReward">VelocityReward</h4>
-                    <p>
-                        Plus l'agent se déplace rapidement, plus il est récompensé.
-                    </p>
-                    <h4 id="BoostAmountReward">BoostAmountReward</h4>
-                    <p>
-                        Plus l'agent possède du boost, plus il est récompensé.
-                    </p>
-                    <h4 id="ForwardVelocityReward">ForwardVelocityReward</h4>
-                    <p>
-                        Si l'agent avance vers l'avant (pénalise la marche arrière) alors il est récompensé.
-                    </p>
-                    <h4 id="VelocityBallOwnGoalReward">VelocityBallOwnGoalReward</h4>
-                    <p>
-                        a compléter...
-                    </p>
-                    <h4 id="VelocityBallOpponentGoalReward">VelocityBallOpponentGoalReward</h4>
-                    <p>
-                        a compléter...
-                    </p>
-                    <!--########################################################################################-->
-                    <h3 id="Pénalités">Pénalités</h3>
-                    <h4 id="AirPenalityReward">AirPenalityReward (utilisation déconseillée) </h4>
-                    <p>
-                        Si le joueur part dans les airs à l'aide de son boost ou saut..etc, il est pénalisé.
-                    </p>
-                    <h4 id="DontTouchPenalityReward">DontTouchPenalityReward</h4>
-                    <p>
-                        L'agent subis une pénalité croissante en fonction du temps tant qu'il n'a pas touché au moins une fois la balle.
-                    </p>
-                    <h4 id="DontGoalPenalityReward">DontGoalPenalityReward</h4>
-                    <p>
-                        L'agent subis une pénalité croissante en fonction du temps tant qu'il n'a pas marqué.
-                    </p>
-                    <h4 id="BehindTheBallPenalityReward">BehindTheBallPenalityReward</h4>
-                    <p>
-                        L'agent subis une pénalité croissante en fonction du temps tant qu'il n'est pas du bon côté de la balle.
-                    </p>
-                </div>
-
-                <h2 id="state" class="toggle-bar" onclick="toggleMenu(5)">State.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content5">
-                    <p>
-                        Ce fichier contient l'ensemble des fonctions proposant un état initial pour une simulation. Cela permet
-                        d'entrainer l'agent pour certaines situation pré-fabriquée par nous même.
-                    </p>
-                    <h4 id="BetterRandom">BetterRandom</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="TrainingStateSetter">TrainingStateSetter</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="DefaultStateClose">DefaultStateClose</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="RandomState">RandomState</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="InvertedState">InvertedState</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="DefaultStateCloseOrange">DefaultStateCloseOrange</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="RandomStateOrange">RandomStateOrange</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="InvertedStateOrange">InvertedStateOrange</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="LineState">LineState</h4>
-                    <p>
-                        Positionne la balle au centre du terrain ainsi que les agents dans leur côté respectif. La fonction prends en paramètre un
-                        entier qui détermine la largeur sur l'axe Y et donc une zone dans laquelle la balle et les agents peuvent apparaitre.
-                    </p>
-                    <h4 id="Alea">Alea</h4>
-                    <p>
-                        Les voitures et le ballon spawn de manière totalement aléatoire sur le terrain avec une rotation et du boost aléatoire.
-                        Cette fonction prend deux paramètre, le premier permet d'ajouter ou non une vitesse initiale à la balle, le second prend
-                        en considération dans cette vitesse initiale l'axe Z (vertical).
-                    </p>
-                    <h4 id="Attaque">Attaque</h4>
-                    <p>
-                        Propose une situation d'attaque & de défense pour l'agent.
-                    </p>
-                    <h4 id="Defense">Defense</h4>
-                    <p>
-                        Propose une situation de défense et d'attaque pour l'agent.
-                    </p>
-                    <h4 id="AirBallAD">AirBallAD</h4>
-                    <p>
-                        La balle spawn en l'air devant les cage avec un agent positionné pour défendre et l'autre pour attaquer. L'idée est de travailler les balles aériennes.
-                    </p>
-                    <h4 id="DefenseRapide">DefenseRapide</h4>
-                    <p>
-                        Propose une situation d'attaque et de défense rapide pour l'agent (la balle a une direction orienté vers les cages).
-                    </p>
-                    <h4 id="Mur">Mur</h4>
-                    <p>
-                        La balle et l'agent spawn sur le mur lattéral du terrain.
-                    </p>
-                    <h4 id="ChaosState">ChaosState</h4>
-                    <p>
-                        a faire...
-                    </p>
-                    <h4 id="ReplayState">ReplayState</h4>
-                    <p>
-                        a faire...
-                    </p>
-                </div>
-
-                <h2 id="Callback" class="toggle-bar" onclick="toggleMenu(6)">Callback.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content6">
-                    <p>
-                        a faire...
-                    </p>
-                </div>
-
-                <h2 id="CustomTerminal" class="toggle-bar" onclick="toggleMenu(7)">CustomTerminal.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content7">
-                    <p>
-                        a faire...
-                    </p>
-                </div>
-
-                <h2 id="CustomPolicy" class="toggle-bar" onclick="toggleMenu(8)">CustomPolicy.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content8">
-                    <p>
-                        a faire...
-                    </p>
-                </div>
-
-                <h2 id="lectureGraph" class="toggle-bar" onclick="toggleMenu(9)">lectureGraph.py<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content9">
-                    <p>
-                        Ce fichier permet de lire les données stockées dans 'stats_bot.txt' et de les visualiser sous forme de graphe.
-                        Penser à utiliser la commande suivante: <br>
-                        <p class="code">python .\lectureGraph.py</p>
-                    </p>
-                </div>
-
-                <h2 id="log_rew" class="toggle-bar" onclick="toggleMenu(10)">log_rew.txt<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content10">
-                    Ce fichier enregistre l'évolution du gain de récompenses des fonctions de récompenses tout au long de la simulation.
-                </div>
-
-                <h2 id="stats_bot" class="toggle-bar" onclick="toggleMenu(11)">stats_bot.txt<span class="toggle-arrow">🡇</span></h2>
-                <div class="content show" id="content11">
-                    <p>
-                        Ce fichier contient les données actuelles (nombre de simulations, nombre de balles touchées, nombre de buts marqués, et % de temps passé du bon côté de la balle).
-                        Ces données sont récupérer toutes les 'SIMULATION_PER_STATS' simulations.
-                    </p>
-                </div>
-
+                <p>
+                    Dans l'ensemble des statistiques ci-dessus, on remarque que l'agent semble toucher de plus en plus de fois la balle, que son gain de récompense augmente en fonction du temps,
+                    que sa politique actuelle a divergé drastiquement comparé à la politique antécédante et que la perte d'entropie augmente elle aussi. De plus, si on observe attentivement l'évolution des
+                    des points rapportés par les fonctions de récompenses en fonction du temps, malgré le fait que nombreuses d'entre elles n'apporte pas d'informations concrètes, nous pouvons tout de même
+                    remarquer que le bot a tendance à faire un peu plus d'arrêt, que son nombre de touche de balle a augmenté et que l'agent accentue l'action de s'aligner par rapport à la balle et le but adverse
+                    qu'il se déplace plus rapidement vers la balle.<br><br>
+                    Effectivement, après une observation à temps réel, nous avons pu remarquer que le bot sait toucher la balle, il sait aussi la cadrer dans les cages ainsi que de faire demi-tour pour repasser du bon côté
+                    de la balle. En revanche, nous avons détecté les problèmes suivant. Le premier et le plus impactant est que si la balle possède une vitesse plus ou moins élevé, l'agent éprouve une plus grande difficulté
+                    à toucher la balle car ce dernier s'est entraîné sur des états initiaux où la balle était la majorité du temps immobile. De plus, l'agent se déplace plus lentement comme s'il souhaitait s'appliquer pour 
+                    tirer ou pour toucher la balle dans le bon sens tout en étant aligné au cages adverse. Or, le plus innatendu c'est qu'il a quasiment cessé de sauter. En effet, le fait d'effectuer un flick dans la balle
+                    propulse cette dernière ce qui a pour effet de diminuer le gain obtenu grâce à la distance entre le joueur et la balle ainsi que le nombre de touches de balles se retrouve diminués car la balle s'éloigne de l'agent.<br>
+                    C'est assurément pour c'est raison que le bot a pris la décision de ne plus flip (sauter) mais de simplement pousser à vitesse lente la balle en avançant afin de maximiser le nombre de touches de balles et donc 
+                    un gain de récompense plus élevé.<br>
+                    L'erreur à ne pas reproduire serait d'effectuer un entrainement similaire avec des balles possédant une vitesse initiale afin que le bot prenne en compte la vitesse de la balle voir la hauteur dans son entrainement.
+                </p> 
             </div>    
         </div>
     </div>

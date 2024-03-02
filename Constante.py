@@ -13,12 +13,17 @@ BALL_SPEED     = 1500
 AFFICHE_SCREEN = False
 SIMULATION_PER_STATS = 100
 
+<<<<<<< HEAD
 ResX = 1920*0
 ResY = 1080*0
+=======
+ResX = 1920
+ResY = 1080
+>>>>>>> 872fd6467cb5995b5b5fc3902fd73bdc3852fa0c
 
 LAYERS = 1
 
-MODEL_NAME = "DoYourBest"
+MODEL_NAME = "ZZeerWillTryHardV4"
 REPLAY_FOLDER = "DataState/P1-D1"
 
 LIM_X = SIDE_WALL_X - 1152 / 2 - BALL_RADIUS * 2 ** 0.5

@@ -104,7 +104,7 @@
 .navTitle {
     margin-top: 1%;
     margin-bottom: 1%;
-    font-size: xx-large;
+    font-size: 1.5em;
     margin-left: 1%;
     color: goldenrod;
 }
@@ -170,6 +170,11 @@
     line-height: 1.5em;
 }
 
+.menu h2 {
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
+
 .menu h4 {
     margin-top: 1%;
     margin-bottom: 1%;
@@ -194,7 +199,20 @@ video {
     max-width: 70%;
     max-height: 50%;
 }
+
+img {
+    margin-left: 0%;
+    margin-right: 20%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    max-width: 70%;
+    max-height: 70%;
+}
   
+iframe {
+    width: 70%;
+    height: 50%;
+}
 
 ol,
 ul {
