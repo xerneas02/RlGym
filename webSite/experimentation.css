@@ -104,7 +104,7 @@
 .navTitle {
     margin-top: 1%;
     margin-bottom: 1%;
-    font-size: xx-large;
+    font-size: 1.5em;
     margin-left: 1%;
     color: goldenrod;
 }
@@ -209,6 +209,10 @@ img {
     max-height: 70%;
 }
   
+iframe {
+    width: 70%;
+    height: 50%;
+}
 
 ol,
 ul {
