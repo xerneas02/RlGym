@@ -65,7 +65,6 @@ rewards = CombinedReward(
                 BehindTheBallPenalityReward()
             ),
             (
-<<<<<<< HEAD
                 30        ,  # GoalScoredReward                    #1
                 5         ,    # SaveReward
                 0.001     ,  # BoostDifferenceReward               #2
@@ -89,31 +88,6 @@ rewards = CombinedReward(
                 0         ,  # AirPenality                         #20
                 0         ,  # DiffDistanceBallGoalReward          #21
                 0.0000    ,  # BehindTheBallPenalityReward         #22
-=======
-                7        ,  # GoalScoredReward                    #1
-                3        ,    # SaveReward
-                0.0025     ,  # BoostDifferenceReward               #2
-                1.0        ,  # BallTouchReward                     #3
-                0.3      ,  # DemoReward                          #4
-                0.0030   ,  # DistancePlayerBallReward            #5
-                0.005   ,  # DistanceBallGoalReward              #6
-                0.000625   ,  # FacingBallReward                    #7
-                0.0075   ,  # AlignBallGoalReward                 #8
-                0.00125   ,  # ClosestToBallReward                 #9
-                0.00125   ,  # TouchedLastReward                   #10
-                0.00200   ,  # BehindBallReward                    #11
-                0.00300   ,  # VelocityPlayerBallReward            #12
-                0.0025   ,  # KickoffReward (0.1)                 #13
-                0.0025   ,  # VelocityReward (0.000625)           #14
-                0.00125   ,  # BoostAmountReward                   #15
-                0.005   ,  # ForwardVelocityReward               #16
-                0        ,  # FirstTouchReward                    #17
-                0.003     ,  # DontTouchPenalityReward             #18
-                0.002     ,  # DontGoalPenalityReward              #19   
-                0        ,  # AirPenality                         #20
-                10      ,  # DiffDistanceBallGoalReward          #21
-                0.0010   ,  # BehindTheBallPenalityReward         #22
->>>>>>> 872fd6467cb5995b5b5fc3902fd73bdc3852fa0c
              ),
             verbose=1
         )
@@ -154,7 +128,6 @@ def get_match(game_speed=GAME_SPEED):
                                     (ReplayState(),               ())
                                 ),
                                 (
-<<<<<<< HEAD
                                     0.00, #DefaultState *
                                     0.10, #DefaultStateClose 
                                     0.00, #DefaultStateCloseOrange
@@ -163,22 +136,11 @@ def get_match(game_speed=GAME_SPEED):
                                     0.10, #RandomStateOrange *
                                     0.10, #InvertedState *
                                     0.10, #InvertedStateOrange *
-=======
-                                    0.00, #DefaultState
-                                    0.00, #DefaultStateClose
-                                    0.00, #DefaultStateCloseOrange
-                                    0.00, #TrainingStateSetter
-                                    0.00, #RandomState
-                                    0.00, #RandomStateOrange
-                                    0.00, #InvertedState
-                                    0.10, #InvertedStateOrange
->>>>>>> 872fd6467cb5995b5b5fc3902fd73bdc3852fa0c
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
                                     0.00, #KickoffLikeSetter
                                     0.00, #WallPracticeState
-<<<<<<< HEAD
                                     0.00, #LineState
                                     0.40, #Attaque *
                                     0.00, #Defense *
@@ -187,16 +149,6 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #Mur
                                     0.10, #OpenGoal *
                                     0.00, #Alea
-=======
-                                    0.10, #LineState
-                                    0.05, #Attaque
-                                    0.05, #Defense
-                                    0.00, #AirBallAD
-                                    0.10, #DefenseRapide
-                                    0.05, #Mur
-                                    0.50, #OpenGoal
-                                    0.05, #Alea
->>>>>>> 872fd6467cb5995b5b5fc3902fd73bdc3852fa0c
                                     0.00, #ChaosState
                                     0.00, #ReplayState
                                 )
@@ -348,7 +300,7 @@ if __name__ == "__main__":
                     n_epochs=10, 
                     n_steps=N_STEPS,
                     batch_size=BATCH_SIZE,
-                    learning_rate=constant_schedule(5e-4), 
+                    learning_rate=constant_schedule(5e-5), 
                     ent_coef=0.1, 
                     vf_coef=1., 
                     gamma=gamma, 
@@ -367,6 +319,8 @@ if __name__ == "__main__":
         
         #try:
         model.learn(total_timesteps=int(save_periode*nbRep), progress_bar=False, callback=callback)
+        
+        
         total_steps += progressBard.locals["total_timesteps"] - progressBard.model.num_timesteps
         file = open("log.txt", "a")
         file.write(f"{datetime.datetime.now()} Reload simu timesteps : {total_steps}\n")
