@@ -311,9 +311,23 @@
 
                 <h2 id="troisième semaine">Résultat troisième semaine</h2>
 
+                <p>
+
                 A la suite du changement de la structure du réseau de neuronne de notre modèle, nous avons décidé de réitéré les expériences
                 exercées lors de la première semaine en ayant d'une part un nombre de données récoltées plus important, et d'autres parts,
-                en ne reproduisant pas les erreurs commisent par le passé.
+                en ne reproduisant pas les erreurs commisent par le passé.<br>
+                Pour s'assurer que le bot se concentre d'avantage sur le fait de marquer nous avons conçu un nouvel état initial nommé openGoal
+                qui devrait favorisé les situations où l'agent a la possibilité de marquer pendant un match.
+                        
+                </p>
+
+                <img src="img/openGoal.png">
+
+                <p>
+                    Sur l'image si dessus, l'agent bleu apparaît dans la zone bleu, pareillement pour le orange mais dans la zone rouge, tandis que la balle apparaît dans la zone rose.
+                    Par conséquent l'agent bleu aura plus tendance à apparaître derrière une balle positionné proche du but adverse avec un adversaire ayant une probabilité plus accrue
+                    d'apparaître derrière et donc de ne pas gêner un éventuel tir.
+                </p>
 
                 <h3 id="ZZeer_V.1">ZZeer_V.1</h3>
 
