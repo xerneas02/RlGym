@@ -170,6 +170,11 @@
     line-height: 1.5em;
 }
 
+.menu h2 {
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
+
 .menu h4 {
     margin-top: 1%;
     margin-bottom: 1%;
@@ -193,6 +198,15 @@ video {
     margin-bottom: 2%;
     max-width: 70%;
     max-height: 50%;
+}
+
+img {
+    margin-left: 0%;
+    margin-right: 20%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    max-width: 70%;
+    max-height: 70%;
 }
   
 

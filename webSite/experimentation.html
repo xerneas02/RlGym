@@ -73,12 +73,107 @@
             </div>
             <div class="menu">
                 <h1>Expérimentation de<br>l'apprentissage par renforcement</h1>
+
+                <h2>Carte du terrain de rocket league</h2>
+
+                <img src="img/coordonnee_map.png">
+
+                <h2>Classement de bots communautaires</h2>
+
+                <img src="./img/classe_bot.png">
+
+                <h2>Interprétation des résultats du TensorBoard</h2>
+
+                <p>
+                    Le TensorBoard vous permet de récolter des données relatives à votre simulation permettant ainsi d'améliorer les analyses et interprétations des résultats.
+                    Voici plusieurs données ainsi que leur signification:
+                </p>
+
+                <h4>rollout/ep_len_mean</h4>
+                <p>
+                    C'est la longueur moyenne de chaque épisode d'apprentissage. Cela indique la durée moyenne de chaque épisode d'interaction de l'agent avec l'environnement.
+                </p>
+
+                <h4>rollout/ep_rew_mean</h4>
+                <p>
+                    C'est la récompense moyenne par épisode. Il représente la moyenne des récompenses obtenues par l'agent au cours de chaque épisode.
+                </p>
+
+                <h4>/fps</h4>
+                <p>
+                    C'est le nombre de frames par seconde (images par seconde) que l'algorithme peut traiter pendant l'entraînement. Cela indique la vitesse à laquelle l'algorithme génère des données et met à jour les paramètres du modèle.
+                </p>
+
+                <h4>time/iterations</h4>
+                <p>
+                    C'est le nombre d'itérations (ou pas de temps) que l'algorithme a effectuées jusqu'à présent pendant l'entraînement.
+                </p>
+
+                <h4>time/time_elapsed</h4>
+                <p>
+                    C'est le temps écoulé depuis le début de l'entraînement, mesuré en secondes ou en minutes.
+                </p>
+
+                <h4>time/total_timesteps</h4>
+                <p>
+                    C'est le nombre total d'étapes (ou pas de temps) que l'algorithme a effectuées depuis le début de l'entraînement.
+                </p>
+
+                <h4>train/approx_kl</h4>
+                <p>
+                    Il s'agit de la divergence KL (Kullback-Leibler) approximative entre les nouvelles et anciennes politiques. Cela mesure à quel point la nouvelle politique diffère de l'ancienne politique.
+                </p>
+
+                <h4>train/clip_fraction</h4>
+                <p>
+                    C'est la fraction d'échantillons qui ont été tronqués lors de l'optimisation. Cela mesure à quel point les gradients ont été tronqués pour respecter la contrainte de clip lors de la mise à jour de la politique. 
+                </p>
+
+                <h4>train/clip_range</h4>
+                <p>
+                    C'est la plage de clip utilisée pour la mise à jour de la politique. C'est la valeur maximale de changement autorisée pour les paramètres de la politique.
+                </p>
+                    
+                <h4>train/entropy_loss</h4>
+                <p>
+                    C'est la perte d'entropie, qui mesure l'incertitude de la politique. Une politique plus incertaine a une entropie plus élevée.
+                </p>
+
+                <h4>train/explained_variance</h4>
+                <p>
+                    C'est la variance expliquée par le modèle par rapport aux données observées. Cela mesure à quel point les prédictions du modèle correspondent aux récompenses réelles.
+                </p>
+
+                <h4>train/learning_rate</h4>
+                <p>
+                    C'est le taux d'apprentissage utilisé par l'algorithme d'optimisation pour mettre à jour les paramètres du modèle.
+                </p>
+
+                <h4>train/loss</h4>
+                <p>
+                    C'est la perte totale de l'algorithme. Cela mesure à quel point les prédictions du modèle diffèrent des récompenses réelles.
+                </p>
+
+                <h4>train/n_updates</h4>
+                <p>
+                    C'est le nombre total de mises à jour des paramètres du modèle effectuées jusqu'à présent pendant l'entraînement.
+                </p>
+
+                <h4>train/policy_gradient_loss</h4>
+                <p>
+                    C'est la perte de gradient de politique, qui mesure à quel point la politique actuelle est éloignée de la politique optimale.
+                </p>
+
+                <h4>train/value_loss</h4>
+                <p>
+                    C'est la perte de valeur, qui mesure à quel point les valeurs prédites par le modèle correspondent aux valeurs réelles.
+                </p>
                 
                 <h2>Resultat de la première semaine</h2>
                 <p>
                     Les premiers jours du projet ont été essentiellement consacré à l'installation et la mise en place des différents modules necessaires 
                     et à la compréhension de l'architecture général du projet. Le compte rendu de ces phases vous est présenté dans les onglets <a href="setup.html">Setup</a>
-                    et <a href="architecture.html">Architecture</a>, si vous souhaitez vous lancer dans la conception de bot rocket league, nous vous conseillons de vous
+                    et <a href="architecture.html">Architecture</a>, si vous souhaitez vous lancer dans la conception d'un bot rocket league, nous vous conseillons de vous
                     informer au préalable sur ces structures et la manière dont elles fonctionnent.<br><br>
 
                     La politique et le réseau de neuronne utilisés pendant la première semaine fut celle et celui de base proposé par stable baselines 3.<br>
@@ -92,7 +187,7 @@
                     De plus, le terme "Politique" fait référence à la classe qui gère tous les réseaux utiles à la formation et donc pas seulement le réseau utilisé pour prédire les actions.<br>
                     Pour plus de précisions, je vous renvoie à la source dont ont été extraites ces informations: <a href="https://stable-baselines3.readthedocs.io/en/master/guide/custom_policy.html">Policy Networks</a>.<br><br>
 
-                    Lors de nos tout premier tests, nous avons pris la décision d'observer la réaction de l'agent si ce dernier n'était soumis qu'à une seule
+                    Lors de nos tous premiers tests, nous avons pris la décision d'observer la réaction de l'agent si ce dernier n'était soumis qu'à une seule
                     et même fonction de récompense qui se traduisait finalement par une pénalité si l'agent était dans les airs.<br>
                     Après simplement 15 à 30 minutes d'entrainement, nous nous sommes aperçus que l'agent ne sautait plus et conservait ses quatres roues collées au sol. En
                     effet, il se contentait à présent de simplement rouler de manière aléatoire dans le terrain.
@@ -129,19 +224,23 @@
 
                     Après plusieurs heures d'entrainement, nous avons pu constater une réaction innatendu de l'agent (voir exemple ci-dessous):<br>
 
-                    <video autoplay="autoplay" muted="" loop="" src="video/bot_doesnt_touch_ball.mp4"></video>
+                    <video autoplay="autoplay" muted="" loop="" src="video/bot_doesnt_touch_ball.mp4"></video><br>
 
-                    Nous pouvons observer que l'agent se rapproche difficilement de la balle mais sans jamais toucher cette dernière.<br>
+                    Nous pouvons observer que l'agent se rapproche difficilement de la balle mais sans jamais toucher cette dernière.
                     Après réflexion et l'analyse du gain de récompense qu'obtenait le bot pendant son entrainement, nous nous sommes
                     aperçut qu'il avait jugé plus rentable de se rapprocher de la balle afin de toucher la récompense de "DistancePlayerBallReward",
                     plutôt que de directement toucher cette dernière.<br>
                     C'est ainsi que nous avons pris conscience de la difficulté et de la justesse dont il faut faire preuve lorsque nous associons
-                    un coefficient à une fonction de récompense. C'est ...
+                    un coefficient à une fonction de récompense. C'est aussi la raison pour laquelle il faut observer attentivement l'évolution
+                    de comportement de l'agent pendant son entrainement au risque de l'entrainer en vain pendant une longue durée.<br><br>
 
+                    Par conséquent, nous avons opter pour un changement dans les coefficients attribués aux fonctions de récompenses.
+                    En effet, nous avons drastiquement augmenté le gain correspondant au touché de balle afin que cet action devienne plus rentable
+                    que la distance de l'agent par rapport à la balle.
 
+                </p>
+                <p class="code">
                     10       ,  # GoalScoredReward<br>
-                    #0.1     ,  # BoostDifferenceReward <br>
-                    10    ,  # GoalScoredReward<br>
                     0.000000  ,  # BoostDifferenceReward <br>
                     3       ,  # BallTouchReward<br>
                     #0.3     ,  # DemoReward<br>
@@ -169,9 +268,69 @@
                     3       ,  # FirstTouchReward<br>
                     1       ,  # DontTouchPenalityReward<br>
                     #5         # AirPenality<br>
+                </p>
+                <p>
+                    Ensuite, après de nombreuse heure d'entrainement sur des états initiaux de kickoff, l'agent était en capacité de toucher la balle à chaque
+                    simulation. Nous avons donc pris la décision d'étendre le nombre d'états initiaux en créant la situation suivante: Les deux agents sont situés
+                    dans leur camp avec comme orientation le but adverse. La balle quant à elle, est positionné au centre du terrain, selon l'axe X et non l'axe Y.
+                    Ce qui a pour objectif d'observer les réactions de l'agent sur des situations autres qu'un kickoff. Nous appelerons cette situations "LineState".<br>
+                </p>
+                <img src="./img/lineState.png">
+                <p>
+
+                    En conséquence, nous avons pu remarquer que nous avions mal interprété le résultat de la simulation. Effectivement, nous 
+                    pensions initialement que l'agent avait appris à toucher la balle. En réalité, ce dernier avait juste compris qu'en avançant tout droit,
+                    de temps en temps, il gagnait plus de points. Etant donné qu'un kickoff a tendance à favoriser le fait que la balle se trouve devant le bot,
+                    il n'avait effectivement qu'à aller tout droit de manière à percuter la balle.<br>
+
+                    Ainsi l'entrainement n'avait servi à rien, le bot ayant adopté un comportement que nous ne voulions pas. Nous avons donc récupéré un modèle de base
+                    sans aucun entrainement au préalable avec des coefficients similaires et pour comme seul état initial, le "LineState".
+                    Puis, à la suite d'une nuit entière d'entrainement, nous avons obtenu des résultats beaucoup plus significatifs. En effet, l'agent réussissait dans la 
+                    quasi-totalité des cas à toucher la balle.<br><br>
 
                 </p>
+                <img src="./img/coefLineState.png">
+                <img src="./img/stateInversted.png">
+                <img src="./img/result_first_semaine.png">
+                <img src="./img/entropy_first_week.png">
+                <img src="./img/value_loss.png">
+                <p>
+                    Selon les résultats-ci dessus, nous pouvons observer que le temps moyen d'une simulation augmente, cela signifie si on en croit les conditions d'arrêt
+                    que le bot touche de plus en plus vite la balle. En effet, la simulation s'arrête en seulement 50 ticks dans le cas où l'agent ne toucherait pas la balle,
+                    contre 2000 s'il la touche. En sachant que plus une simulation est prolongée, plus l'agent gagne de points car certaines récompenses fournissent des points à chaque
+                    tick comme la DistanceBallGoalReward qui donne plus ou moins de récompenses en fonction de la distance qui sépare l'agent de la balle. 
+                    Ensuite, la récompense moyenne obtenu en fonction au fur et à mesure des épisodes augmente elle aussi, ce qui signifie que l'agent
+                    effectue de plus en plus de tâche qui lui rapporte des récompenses.<br>
+                    En constate aussi une hausse de la perte d'entropie, par conséquent l'entropie est plus faible et cela sous-entend une politique plus certaine.
+                    C'est à dire que l'agent effectue de moins en moins d'actions aléatoires. Cependant on remarque aussi une baisse de la variance expliquée,
+                    une valeur faible indique que le modèle ne parvient pas à capturer la structure des données et que ses prédictions ne sont pas fiables. Cela est en correlation
+                    avec la hausse de la perte de valeur et un baisse de la perte du gradient.
+                    Ces résultats sont peu compréhensibles à en constater l'obtention d'un gain plus élevé de récompense...
+                </p>
+                <p>
+                    Nous avons poursuivi notre étude en positionnant l'agent en situation réelle d'un match afin d'anlyser son comportement.
+                    Le résultat résiliant de ce test fut que l'agent, lorsque ce dernier se situe du bon côté de la balle. C'est à dire entre la balle et son propre but,
+                    il n'éprouvait que peu de difficulté à toucher la balle. En revanche, si l'agent se situait entre la balle et le but adverse, son comportement
+                    devenait comme aléatoire sans aucun mouvement de concret.<br>
+                    Nous pouvons ainsi constater que l'agent peut être réactif voir très réactif dans certaines situation qui lui ont été familiaire pendant son entrainement,
+                    cependant, lorsqu'une situation lui est inconnu, les mouvements de l'agent deviennent totalement aléatoire et son comportement perds de son sens.<br><br>
 
+                    Afin de palier à ce problème, nous avons mis en place un nouvel état initial que nous nommerons "InvertedStateOrange" ou "InvertedState", ces états ont pour effet
+                    de mettre l'agent dans une situation plus complexe. Effectivement, l'un le bot est toujours orienté vers le but adverse en revanche il se situe entre
+                    le but adverse et la balle. Pour l'autre, l'agent est situé comme à son habitude entre la balle et son but. Cependant, il est orienté vers son propre but. Ces deux états initiaux
+                    ont pour objectif de complexifier et de diversifier des situations pouvant avoir lieux pendant un match de sorte à ce que les mouvements de l'agent, peu importe qu'il soit du bon ou du côté de
+                    la balle, ne soit plus aléatoire.<br>
+                </p>
+                <img src="./img/inverted.png">
+                <p>
+                    A la suite de l'entrainement, nous avons de nouveau constaté un problème. Bien que le bot réussissait à présent, malgré son placement du mauvais côté, à se diriger vers la balle et à la toucher certaines fois.
+                    Ce dernier frappait la balle dans le sens inverse du jeu et parvenait même à marquer des buts contre son camp faussant ainsi l'entrainement. En effet, il faut savoir que le gain obtenu lorsque l'agent marque un but
+                    est supérieur à l'ensemble des autres récompenses. De plus, étant donné que pour chaque entrainement le bot joue contre lui même, les fonctions de récompenses et les données récoltées ainsi que l'analyse de ces dernières
+                    prennent en compte aussi le bot adverse. Par conséquent, si un des agents marques contre son camp, il est possible que des actions effectuées par le bot qui n'a pas marqué soit valorisé
+                    alors que ces dernières n'auront aucun sens étant donné qu'il s'agit simplement d'un but marqué par le bot adverse et non pas un but marqué par la réussite d'une suite d'actions réalisées par
+                    l'agent en question.<br>
+                    Cela a engendré la création d
+                </p>
                 <h2 id="constante" class="toggle-bar" onclick="toggleMenu(1)">Constante.py<span class="toggle-arrow">🡇</span></h2>
                 <div class="content show" id="content1">
                     <p>

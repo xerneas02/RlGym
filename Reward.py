@@ -214,6 +214,7 @@ class CombinedReward(RewardFunction):
         return cls(tuple(rewards), tuple(weights))
 
     def reset(self, initial_state: GameState) -> None:
+        self.count_period += 1
         self.count = 0
         global TOUCH_VERIF, NUMBER_SIMULATION, NUMBER_GOAL, NUMBER_TOUCH, BEHIND_BALL_TIME, NUMBER_TICK
         TOUCH_VERIF = False
@@ -292,8 +293,6 @@ class CombinedReward(RewardFunction):
         
         for i in range(len(rewards)):
             self.total_per_rew[i] += rewards[i]
-            
-        self.count_period += 1
 
         return float(np.dot(self.reward_weights, rewards))
 
