@@ -1,9 +1,9 @@
-project:
+﻿project:
   name: rocket_rl_bot
   run_name_prefix: ppo_1v1
   seed: 42
   device: auto
-  resume_latest: true
+  resume_latest: false
 
 environment:
   team_size: 1
@@ -12,12 +12,12 @@ environment:
   frame_rate: 120
   simulation_speed_multiplier: 100
   num_envs: 8
-  timeout_steps: 450
-  no_touch_timeout_steps: 150
+  timeout_steps: 600
+  no_touch_timeout_steps: 225
   copy_gamestate_every_step: false
 
 training:
-  total_steps: 100000000
+  total_steps: 200000000
   rollout_steps: 8192
   batch_size: 65536
   minibatch_size: 4096
@@ -29,20 +29,30 @@ training:
   value_coef: 1.0
   learning_rate: 0.0003
   max_grad_norm: 0.5
-  eval_interval_steps: 1000000
-  checkpoint_interval_steps: 2000000
+  eval_interval_steps: 5000000
+  checkpoint_interval_steps: 5000000
   log_interval_steps: 16384
   reward_component_log_interval_steps: 8192
 
 evaluation:
-  num_matches: 20
-  max_steps_per_match: 450
+  num_matches: 8
+  max_steps_per_match: 600
   scripted_opponent: bronze_chaser
+  deterministic: true
+  seed: 1042
+  protocol: benchmark
+  benchmark_weights:
+    kickoff_like: 0.08
+    open_goal_attack: 0.12
+    simple_defense: 0.12
+    ball_center_random: 0.18
+    wall_ball: 0.15
+    random_match_state: 0.35
 
 runtime:
   mixed_precision: false
   deterministic_torch: false
-  torch_num_threads: 8
+  torch_num_threads: 1
 
 paths:
   logs_dir: logs

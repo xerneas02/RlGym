@@ -1,5 +1,6 @@
 ﻿from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional
@@ -13,6 +14,7 @@ from src.env.observations import CompactObservationBuilder
 from src.rl.model import ActorCritic
 from src.rl.topdown_viewer import TopDown2DViewer, save_trajectory
 from src.utils.checkpointing import load_checkpoint
+from src.utils.seeding import preserved_random_state
 
 
 @dataclass
@@ -49,66 +51,109 @@ def _safe_mean(values) -> float:
     return float(np.mean(values)) if values else 0.0
 
 
+def _resolve_evaluation_seed(evaluation_config: Dict) -> Optional[int]:
+    if not bool(evaluation_config.get("deterministic", False)):
+        return None
+    return int(evaluation_config.get("seed", 1042))
+
+
+def _build_evaluation_curriculum(curriculum_config: Dict, evaluation_config: Dict) -> Dict:
+    protocol = str(evaluation_config.get("protocol", "benchmark")).lower()
+    curriculum = copy.deepcopy(curriculum_config)
+    if protocol != "benchmark":
+        return curriculum
+
+    weights = evaluation_config.get("benchmark_weights")
+    if not weights:
+        weights = curriculum["stages"][0]["weights"]
+    return {
+        "stages": [
+            {
+                "name": "evaluation_benchmark",
+                "min_steps": 0,
+                "weights": {key: float(value) for key, value in weights.items()},
+            }
+        ]
+    }
+
+
+def _apply_evaluation_stage(env, evaluation_config: Dict, training_step: int) -> None:
+    protocol = str(evaluation_config.get("protocol", "benchmark")).lower()
+    if protocol == "follow_training":
+        env.update_curriculum(int(training_step))
+    else:
+        env.update_curriculum(0)
+
+
 def evaluate_policy(
     model: ActorCritic,
     env_config: Dict,
     reward_config: Dict,
     curriculum_config: Dict,
+    evaluation_config: Dict,
     num_matches: int,
     device: torch.device,
+    training_step: int = 0,
     render_2d: bool = False,
     render_fps: int = 15,
     save_trajectory_path: Optional[Path] = None,
 ) -> Dict[str, float]:
-    env = build_vector_env(env_config, reward_config, curriculum_config, num_envs=1)
-    opponent = BronzeChaserPolicy(OptimizedDiscreteAction())
-    obs = env.reset()
+    evaluation_config = dict(evaluation_config)
+    eval_seed = _resolve_evaluation_seed(evaluation_config)
+    eval_curriculum = _build_evaluation_curriculum(curriculum_config, evaluation_config)
 
-    goals = []
-    rewards = []
-    touches = []
-    possession = []
-    concedes = []
-    speeds = []
+    with preserved_random_state(seed=eval_seed, deterministic_torch=False):
+        env = build_vector_env(env_config, reward_config, eval_curriculum, num_envs=1)
+        _apply_evaluation_stage(env, evaluation_config, training_step)
+        opponent = BronzeChaserPolicy(OptimizedDiscreteAction())
+        obs = env.reset()
 
-    viewer = TopDown2DViewer(title="Rocket RL Evaluation") if render_2d else None
-    frames = [] if save_trajectory_path is not None else None
-    keep_running = True
+        goals = []
+        rewards = []
+        touches = []
+        possession = []
+        concedes = []
+        speeds = []
 
-    try:
-        while len(goals) < num_matches and keep_running:
-            blue_obs = torch.as_tensor(obs[0:1], dtype=torch.float32, device=device)
-            with torch.no_grad():
-                blue_action, _, _ = model.act(blue_obs, deterministic=True)
-            orange_action = opponent.act(obs[1]) if obs.shape[0] > 1 else int(blue_action.item())
-            obs, _, _, infos = env.step([int(blue_action.item()), int(orange_action)])
+        viewer = TopDown2DViewer(title="Rocket RL Evaluation") if render_2d else None
+        frames = [] if save_trajectory_path is not None else None
+        keep_running = True
 
-            frame = env.get_render_state(0)
-            if frame is None and infos:
-                frame = infos[0].get("render_state")
-            if frame is not None:
-                frame = dict(frame)
-                frame["meta"] = {
-                    "completed_matches": len(goals),
-                    "target_matches": int(num_matches),
-                }
-                if frames is not None:
-                    frames.append(frame)
-                if viewer is not None:
-                    keep_running = viewer.draw(frame, fps=render_fps)
+        try:
+            while len(goals) < num_matches and keep_running:
+                blue_obs = torch.as_tensor(obs[0:1], dtype=torch.float32, device=device)
+                with torch.no_grad():
+                    blue_action, _, _ = model.act(blue_obs, deterministic=True)
+                orange_action = opponent.act(obs[1]) if obs.shape[0] > 1 else int(blue_action.item())
+                obs, _, _, infos = env.step([int(blue_action.item()), int(orange_action)])
 
-            if infos and infos[0].get("episode"):
-                episode = infos[0]["episode"]
-                goals.append(float(episode["goal_rate"]))
-                rewards.append(float(episode["episode_reward"]))
-                touches.append(float(episode["touches"]))
-                possession.append(float(episode["time_of_possession"]))
-                concedes.append(float(episode["concede_rate"]))
-                speeds.append(float(episode["average_speed"]))
-    finally:
-        env.close()
-        if viewer is not None:
-            viewer.close()
+                frame = env.get_render_state(0)
+                if frame is None and infos:
+                    frame = infos[0].get("render_state")
+                if frame is not None:
+                    frame = dict(frame)
+                    frame["meta"] = {
+                        "completed_matches": len(goals),
+                        "target_matches": int(num_matches),
+                        "protocol": str(evaluation_config.get("protocol", "benchmark")),
+                    }
+                    if frames is not None:
+                        frames.append(frame)
+                    if viewer is not None:
+                        keep_running = viewer.draw(frame, fps=render_fps)
+
+                if infos and infos[0].get("episode"):
+                    episode = infos[0]["episode"]
+                    goals.append(float(episode["goal_rate"]))
+                    rewards.append(float(episode["episode_reward"]))
+                    touches.append(float(episode["touches"]))
+                    possession.append(float(episode["time_of_possession"]))
+                    concedes.append(float(episode["concede_rate"]))
+                    speeds.append(float(episode["average_speed"]))
+        finally:
+            env.close()
+            if viewer is not None:
+                viewer.close()
 
     if frames is not None and save_trajectory_path is not None:
         save_trajectory(frames, save_trajectory_path)
@@ -121,6 +166,7 @@ def evaluate_policy(
         "concede_rate": _safe_mean(concedes),
         "average_speed": _safe_mean(speeds),
         "matches_completed": float(len(goals)),
+        "evaluation_seed": float(eval_seed) if eval_seed is not None else -1.0,
     }
 
 
@@ -129,25 +175,31 @@ def evaluate_checkpoint(
     env_config: Dict,
     reward_config: Dict,
     curriculum_config: Dict,
+    evaluation_config: Dict,
     device: torch.device,
     num_matches: int,
     render_2d: bool = False,
     render_fps: int = 15,
     save_trajectory_path: Optional[Path] = None,
 ) -> Dict[str, float]:
-    env = build_vector_env(env_config, reward_config, curriculum_config, num_envs=1)
+    eval_curriculum = _build_evaluation_curriculum(curriculum_config, evaluation_config)
+    env = build_vector_env(env_config, reward_config, eval_curriculum, num_envs=1)
+    _apply_evaluation_stage(env, evaluation_config, 0)
     obs = env.reset()
     env.close()
     model = ActorCritic(obs_dim=obs.shape[-1], action_dim=env.action_space_n).to(device)
-    load_checkpoint(checkpoint_path, model, map_location=device)
+    checkpoint = load_checkpoint(checkpoint_path, model, map_location=device)
     model.eval()
+    training_step = int(checkpoint.get("training_state", {}).get("total_steps", 0))
     return evaluate_policy(
         model,
         env_config,
         reward_config,
         curriculum_config,
+        evaluation_config,
         num_matches,
         device,
+        training_step=training_step,
         render_2d=render_2d,
         render_fps=render_fps,
         save_trajectory_path=save_trajectory_path,

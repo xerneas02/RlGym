@@ -202,8 +202,10 @@ class PPOTrainer:
                     self.env_cfg,
                     self.reward_config,
                     self.curriculum_config,
+                    self.evaluation_cfg,
                     int(self.evaluation_cfg["num_matches"]),
                     self.device,
+                    training_step=self.total_steps,
                 )
                 self.logger.log_evaluation(self.total_steps, eval_metrics)
                 print(
@@ -362,9 +364,13 @@ class PPOTrainer:
 
     def _print_startup_summary(self) -> None:
         expected_steps_per_rollout = int(self.training_cfg["rollout_steps"]) * int(self.num_actors)
+        players_per_match = int(self.env_cfg["team_size"]) * (2 if bool(self.env_cfg["spawn_opponents"]) else 1)
         print(
             f"[startup] run={self.directories.run_name} device={self.device} seed={self.seed} "
             f"envs={self.env_cfg['num_envs']} actors={self.num_actors} obs_dim={self.obs_dim} actions={self.num_actions}"
+        )
+        print(
+            f"[startup] parallel_matches={self.env_cfg['num_envs']} players_per_match={players_per_match} total_actors={self.num_actors}"
         )
         print(
             f"[startup] rollout_steps={self.training_cfg['rollout_steps']} "

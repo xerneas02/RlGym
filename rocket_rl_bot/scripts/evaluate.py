@@ -40,6 +40,7 @@ def main() -> None:
         config["environment"],
         rewards,
         curriculum,
+        config["evaluation"],
         device,
         num_matches,
         render_2d=args.render_2d,
