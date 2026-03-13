@@ -129,13 +129,13 @@ def get_match(game_speed=GAME_SPEED):
                                 ),
                                 (
                                     0.00, #DefaultState *
-                                    0.10, #DefaultStateClose 
+                                    0.00, #DefaultStateClose 
                                     0.00, #DefaultStateCloseOrange
                                     0.00, #TrainingStateSetter *
                                     0.10, #RandomState *
                                     0.10, #RandomStateOrange *
                                     0.10, #InvertedState *
-                                    0.10, #InvertedStateOrange *
+                                    0.00, #InvertedStateOrange *
                                     0.00, #GoaliePracticeState
                                     0.00, #HoopsLikeSetter
                                     0.00, #BetterRandom
@@ -147,7 +147,7 @@ def get_match(game_speed=GAME_SPEED):
                                     0.00, #AirBallAD *
                                     0.00, #DefenseRapide
                                     0.00, #Mur
-                                    0.10, #OpenGoal *
+                                    0.30, #OpenGoal *
                                     0.00, #Alea
                                     0.00, #ChaosState
                                     0.00, #ReplayState

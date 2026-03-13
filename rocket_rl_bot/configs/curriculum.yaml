@@ -1,0 +1,37 @@
+stages:
+  - name: bootstrap
+    min_steps: 0
+    weights:
+      kickoff_like: 0.10
+      open_goal_attack: 0.25
+      simple_defense: 0.25
+      ball_center_random: 0.20
+      wall_ball: 0.10
+      random_match_state: 0.10
+  - name: transition_10m
+    min_steps: 10000000
+    weights:
+      kickoff_like: 0.08
+      open_goal_attack: 0.22
+      simple_defense: 0.22
+      ball_center_random: 0.20
+      wall_ball: 0.12
+      random_match_state: 0.16
+  - name: transition_50m
+    min_steps: 50000000
+    weights:
+      kickoff_like: 0.06
+      open_goal_attack: 0.18
+      simple_defense: 0.18
+      ball_center_random: 0.20
+      wall_ball: 0.16
+      random_match_state: 0.22
+  - name: transition_100m
+    min_steps: 100000000
+    weights:
+      kickoff_like: 0.05
+      open_goal_attack: 0.12
+      simple_defense: 0.12
+      ball_center_random: 0.18
+      wall_ball: 0.18
+      random_match_state: 0.35

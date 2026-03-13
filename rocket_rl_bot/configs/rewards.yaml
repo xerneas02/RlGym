@@ -1,0 +1,15 @@
+weights:
+  goal_reward: 10.0
+  ball_goal_progress: 0.02
+  velocity_to_ball: 0.01
+  touch_reward: 0.2
+  defense_position: 0.005
+  boost_efficiency: 0.001
+
+descriptions:
+  goal_reward: "Sparse and dominant match objective. +1 if the agent's team scores, -1 if it concedes."
+  ball_goal_progress: "Dense shaping from ball velocity projected toward the opponent goal."
+  velocity_to_ball: "Encourages decisive approaches instead of drifting or reversing away from the play."
+  touch_reward: "Rewards only touches that keep the ball useful: moving, directed, and not dead taps."
+  defense_position: "Keeps the bot goal-side of the ball when the play is in its own half."
+  boost_efficiency: "Light pressure to keep speed without bleeding boost on wasteful holds."

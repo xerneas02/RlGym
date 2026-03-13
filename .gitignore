@@ -7,3 +7,4 @@ logs
 events.*
 models
 *.txt
+venv
