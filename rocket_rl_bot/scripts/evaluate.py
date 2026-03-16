@@ -1,24 +1,31 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
 import torch
-import yaml
 
 from _bootstrap import bootstrap_project_root, ensure_rocketsim_available, ensure_rocketsim_arena_ready
 
 PROJECT_ROOT = bootstrap_project_root()
 
 
-def load_yaml(path: Path):
-    with path.open("r", encoding="utf-8") as handle:
-        return yaml.safe_load(handle)
+def find_latest_global(checkpoints_root: Path) -> Path:
+    from src.utils.checkpointing import find_latest_checkpoint
+
+    latest = None
+    for run_dir in sorted([path for path in checkpoints_root.iterdir() if path.is_dir()]):
+        candidate = find_latest_checkpoint(run_dir)
+        if candidate is not None:
+            latest = candidate
+    if latest is None:
+        raise FileNotFoundError(f"No checkpoint found in {checkpoints_root}")
+    return latest
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--checkpoint", required=True, type=Path)
+    parser.add_argument("--checkpoint", type=Path, default=None)
     parser.add_argument("--matches", type=int, default=None)
     parser.add_argument("--device", type=str, default="auto")
     parser.add_argument("--render-2d", action="store_true", help="Affiche une vue simplifiee du match en evaluation.")
@@ -29,14 +36,16 @@ def main() -> None:
     ensure_rocketsim_available()
     ensure_rocketsim_arena_ready(PROJECT_ROOT)
     from src.rl.evaluator import evaluate_checkpoint
+    from src.utils.config_loader import load_project_configs
 
-    config = load_yaml(PROJECT_ROOT / "configs" / "training.yaml")
-    rewards = load_yaml(PROJECT_ROOT / "configs" / "rewards.yaml")
-    curriculum = load_yaml(PROJECT_ROOT / "configs" / "curriculum.yaml")
+    config, rewards, curriculum = load_project_configs(PROJECT_ROOT)
+    checkpoint = args.checkpoint or find_latest_global(PROJECT_ROOT / config["paths"]["checkpoints_dir"])
+    if args.checkpoint is None:
+        print(f"[checkpoint] using latest checkpoint: {checkpoint}")
     num_matches = int(args.matches or config["evaluation"]["num_matches"])
     device = torch.device("cuda" if args.device in {"auto", "cuda"} and torch.cuda.is_available() else "cpu")
     metrics = evaluate_checkpoint(
-        args.checkpoint,
+        checkpoint,
         config["environment"],
         rewards,
         curriculum,

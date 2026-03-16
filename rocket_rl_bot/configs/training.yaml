@@ -1,6 +1,6 @@
 ﻿project:
   name: rocket_rl_bot
-  run_name_prefix: ppo_1v1
+  run_name_prefix: ppo_1v1_v2
   seed: 42
   device: auto
   resume_latest: false
@@ -17,7 +17,7 @@ environment:
   copy_gamestate_every_step: false
 
 training:
-  total_steps: 200000000
+  total_steps: 100000000
   rollout_steps: 8192
   batch_size: 65536
   minibatch_size: 4096
@@ -35,7 +35,7 @@ training:
   reward_component_log_interval_steps: 8192
 
 evaluation:
-  num_matches: 8
+  num_matches: 16
   max_steps_per_match: 600
   scripted_opponent: bronze_chaser
   deterministic: true
@@ -43,11 +43,11 @@ evaluation:
   protocol: benchmark
   benchmark_weights:
     kickoff_like: 0.08
-    open_goal_attack: 0.12
-    simple_defense: 0.12
-    ball_center_random: 0.18
-    wall_ball: 0.15
-    random_match_state: 0.35
+    open_goal_attack: 0.16
+    simple_defense: 0.16
+    ball_center_random: 0.20
+    wall_ball: 0.10
+    random_match_state: 0.30
 
 runtime:
   mixed_precision: false

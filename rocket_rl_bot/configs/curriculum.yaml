@@ -1,37 +1,37 @@
 ﻿stages:
-  - name: bootstrap
+  - name: bootstrap_v2
     min_steps: 0
     weights:
       kickoff_like: 0.08
-      open_goal_attack: 0.18
-      simple_defense: 0.18
-      ball_center_random: 0.20
-      wall_ball: 0.12
-      random_match_state: 0.24
-  - name: transition_10m
+      open_goal_attack: 0.26
+      simple_defense: 0.22
+      ball_center_random: 0.22
+      wall_ball: 0.06
+      random_match_state: 0.16
+  - name: transition_10m_v2
     min_steps: 10000000
     weights:
       kickoff_like: 0.06
-      open_goal_attack: 0.14
-      simple_defense: 0.14
-      ball_center_random: 0.18
-      wall_ball: 0.14
-      random_match_state: 0.34
-  - name: transition_50m
+      open_goal_attack: 0.20
+      simple_defense: 0.20
+      ball_center_random: 0.22
+      wall_ball: 0.10
+      random_match_state: 0.22
+  - name: transition_50m_v2
     min_steps: 50000000
     weights:
       kickoff_like: 0.04
-      open_goal_attack: 0.10
-      simple_defense: 0.10
-      ball_center_random: 0.16
-      wall_ball: 0.18
-      random_match_state: 0.42
-  - name: transition_100m
+      open_goal_attack: 0.14
+      simple_defense: 0.16
+      ball_center_random: 0.20
+      wall_ball: 0.14
+      random_match_state: 0.32
+  - name: transition_100m_v2
     min_steps: 100000000
     weights:
       kickoff_like: 0.03
-      open_goal_attack: 0.08
-      simple_defense: 0.08
-      ball_center_random: 0.14
-      wall_ball: 0.17
-      random_match_state: 0.50
+      open_goal_attack: 0.10
+      simple_defense: 0.12
+      ball_center_random: 0.18
+      wall_ball: 0.15
+      random_match_state: 0.42
