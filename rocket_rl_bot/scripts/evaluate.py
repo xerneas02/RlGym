@@ -31,9 +31,9 @@ def main() -> None:
     parser.add_argument(
         "--opponent",
         type=str,
-        choices=("config", "bronze", "self_play"),
+        choices=("config", "bronze", "aggressive", "necto", "seer", "self_play"),
         default="config",
-        help="Choisit l'adversaire: config=valeur de la config, bronze=scripted, self_play=le meme modele des deux cotes.",
+        help="Choisit l'adversaire: config=valeur de la config, bronze/aggressive/necto/seer=bot fixe, self_play=le meme modele des deux cotes.",
     )
     parser.add_argument("--render-2d", action="store_true", help="Affiche une vue simplifiee du match en evaluation.")
     parser.add_argument("--fps", type=int, default=15, help="FPS cible pour le viewer 2D ou le replay.")
@@ -68,6 +68,7 @@ def main() -> None:
         render_2d=args.render_2d,
         render_fps=int(args.fps),
         save_trajectory_path=args.save_trajectory,
+        project_root=PROJECT_ROOT,
     )
     for key, value in metrics.items():
         print(f"{key}: {value:.6f}")

@@ -28,6 +28,25 @@ def find_latest_matching_checkpoint(checkpoints_root: Path, run_prefixes: str | 
     return None
 
 
+def find_latest_bc_checkpoint(checkpoints_root: Path) -> Path | None:
+    if not checkpoints_root.exists():
+        return None
+
+    run_dirs = sorted(
+        [path for path in checkpoints_root.iterdir() if path.is_dir() and path.name.startswith("bc_")],
+        reverse=True,
+    )
+    for run_dir in run_dirs:
+        final_checkpoint = run_dir / "final.pt"
+        if final_checkpoint.exists():
+            return final_checkpoint
+
+        step_checkpoints = sorted(run_dir.glob("step_*.pt"))
+        if step_checkpoints:
+            return step_checkpoints[-1]
+    return None
+
+
 def resolve_checkpoint_path(candidate: Path | None) -> Path | None:
     if candidate is None:
         return None
@@ -61,6 +80,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Demarre de zero sans reprise PPO ni bootstrap replay-only.",
     )
+    parser.add_argument(
+        "--bootstrap-only",
+        action="store_true",
+        help="Ignore la reprise PPO automatique et charge uniquement un checkpoint de bootstrap (ideal apres BC).",
+    )
     return parser.parse_args()
 
 
@@ -83,19 +107,30 @@ def main() -> None:
 
     resume_checkpoint = None
     bootstrap_checkpoint = None
-    if not args.fresh:
+
+    if args.fresh and args.bootstrap_only:
+        raise ValueError("--fresh et --bootstrap-only sont incompatibles")
+
+    if args.bootstrap_only:
+        bootstrap_checkpoint = resolve_checkpoint_path(args.checkpoint)
+        if bootstrap_checkpoint is None:
+            bootstrap_checkpoint = find_latest_bc_checkpoint(checkpoints_root)
+            bootstrap_checkpoint = resolve_checkpoint_path(bootstrap_checkpoint)
+        if bootstrap_checkpoint is None:
+            raise FileNotFoundError("Aucun checkpoint BC trouve. Passe --checkpoint explicitement.")
+    elif not args.fresh:
         resume_checkpoint = resolve_checkpoint_path(args.resume_checkpoint)
         if resume_checkpoint is None:
             resume_checkpoint = find_latest_matching_checkpoint(
                 checkpoints_root,
-                ("ppo_touch_focus_v3", "ppo_touch_focus_v2", "ppo_touch_focus_v1"),
+                ("ppo_goal_finish_v1", "ppo_touch_focus_v3", "ppo_touch_focus_v2", "ppo_touch_focus_v1"),
             )
             resume_checkpoint = resolve_checkpoint_path(resume_checkpoint)
 
         if resume_checkpoint is None:
             bootstrap_checkpoint = resolve_checkpoint_path(args.checkpoint)
             if bootstrap_checkpoint is None:
-                bootstrap_checkpoint = find_latest_matching_checkpoint(checkpoints_root, "bc_replay_1v1")
+                bootstrap_checkpoint = find_latest_bc_checkpoint(checkpoints_root)
                 bootstrap_checkpoint = resolve_checkpoint_path(bootstrap_checkpoint)
 
     trainer = PPOTrainer(PROJECT_ROOT, config, rewards, curriculum, resume_checkpoint=resume_checkpoint)

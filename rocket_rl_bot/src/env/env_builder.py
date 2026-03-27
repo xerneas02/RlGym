@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -118,6 +118,7 @@ class RLGymMatchAdapter:
         self.action_space_n = self.action_parser.summary.size
         self._last_reset_obs = None
         self.latest_render_state: Optional[Dict[str, Any]] = None
+        self.latest_state: Optional[Any] = None
 
     def reset(self) -> np.ndarray:
         obs = _coerce_obs(self.raw_env.reset())
@@ -129,8 +130,9 @@ class RLGymMatchAdapter:
         self.last_touch_team = None
         self.episode_stats = self._empty_episode_stats()
         self._last_reset_obs = obs
+        self.latest_state = getattr(self.raw_env, "_prev_state", None)
         self.latest_render_state = self._extract_render_state(
-            getattr(self.raw_env, "_prev_state", None),
+            self.latest_state,
             np.zeros((self.num_agents, 8), dtype=np.float32),
         )
         return obs
@@ -150,7 +152,8 @@ class RLGymMatchAdapter:
         dones = _coerce_dones(raw_done, self.num_agents)
         infos = _coerce_infos(raw_infos, self.num_agents)
         raw_state = raw_infos.get("state") if isinstance(raw_infos, dict) else None
-        self.latest_render_state = self._extract_render_state(raw_state, parsed_actions)
+        transition_state = raw_state if raw_state is not None else getattr(self.raw_env, "_prev_state", None)
+        transition_render_state = self._extract_render_state(transition_state, parsed_actions)
         component_logs = self.reward_function.consume_step_components(self.num_agents)
 
         touched_indices = [index for index, log in enumerate(component_logs) if log.get("ball_touched", 0.0) > 0.5]
@@ -170,8 +173,8 @@ class RLGymMatchAdapter:
             infos[index]["goals_for"] = float(components.get("goals_for", 0.0))
             infos[index]["goals_against"] = float(components.get("goals_against", 0.0))
             infos[index]["curriculum_stage"] = self.state_setter.describe()["name"]
-            if self.latest_render_state is not None:
-                infos[index]["render_state"] = self.latest_render_state
+            if transition_render_state is not None:
+                infos[index]["render_state"] = transition_render_state
 
             self.episode_stats.returns[index] += float(rewards[index])
             self.episode_stats.touches[index] += float(components.get("ball_touched", 0.0))
@@ -185,10 +188,20 @@ class RLGymMatchAdapter:
                 self.episode_stats.component_sums[index][name] += float(components.get(name, 0.0))
 
         if bool(np.any(dones)):
+            if bool(self.env_config.get("end_on_goal", False)) and bool(self.env_config.get("goal_reset_to_kickoff", True)):
+                goal_happened = any(
+                    float(log.get("goals_for", 0.0)) > 0.0 or float(log.get("goals_against", 0.0)) > 0.0
+                    for log in component_logs
+                )
+                if goal_happened:
+                    self.state_setter.force_next_state("kickoff_like")
             final_infos = self._finalize_episode()
             infos = [dict(info, episode=final_infos[index]) for index, info in enumerate(infos)]
             obs = self.reset()
             dones = np.ones(self.num_agents, dtype=np.float32)
+        else:
+            self.latest_state = transition_state
+            self.latest_render_state = transition_render_state
 
         return obs, rewards, dones, infos
 
@@ -202,6 +215,9 @@ class RLGymMatchAdapter:
 
     def get_render_state(self) -> Optional[Dict[str, Any]]:
         return self.latest_render_state
+
+    def get_current_state(self) -> Any:
+        return self.latest_state
 
     def _build_raw_env(self):
         common_kwargs = dict(
@@ -364,6 +380,7 @@ class ThreadedVectorEnv:
         self.agents_per_env = [env.num_agents for env in self.envs]
         self.num_envs = len(self.envs)
         self.action_space_n = self.envs[0].action_space_n
+        self.actor_teams = np.asarray([team for env in self.envs for team in env.agent_teams], dtype=np.int64)
 
     @property
     def num_actors(self) -> int:
@@ -402,6 +419,9 @@ class ThreadedVectorEnv:
     def get_render_state(self, env_index: int = 0) -> Optional[Dict[str, Any]]:
         return self.envs[env_index].get_render_state()
 
+    def get_current_states(self) -> List[Any]:
+        return [env.get_current_state() for env in self.envs]
+
 
 def build_env_factory(
     env_config: Dict[str, Any],
@@ -423,3 +443,6 @@ def build_vector_env(
     environment_count = int(num_envs or env_config["num_envs"])
     factory = build_env_factory(env_config, reward_config, curriculum_config)
     return ThreadedVectorEnv(factory for _ in range(environment_count))
+
+
+

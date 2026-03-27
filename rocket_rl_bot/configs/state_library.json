@@ -1,0 +1,239 @@
+﻿{
+  "states": [
+    {
+      "id": "kickoff_like",
+      "name": "Kickoff Like",
+      "category": "core",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "Engagement standard pour relancer le jeu.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 0, "y": -2048, "z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.33}},
+          {"name": "orange_1", "team": 1, "position": {"x": 0, "y": 2048, "z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.33}}
+        ]
+      }
+    },
+    {
+      "id": "open_goal_attack",
+      "name": "Open Goal Attack",
+      "category": "core",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "touch_focus",
+      "description": "Attaque vers une cage relativement libre.",
+      "definition": {
+        "ball": {"position": {"x": 250, "y": 2050, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 800, "y": 250, "z": 17}, "position_random": {"enabled": true, "min_x": -1200, "max_x": 1200, "min_y": 200, "max_y": 500, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.7}},
+          {"name": "orange_1", "team": 1, "position": {"x": 200, "y": 4400, "z": 17}, "position_random": {"enabled": true, "min_x": -500, "max_x": 500, "min_y": 3900, "max_y": 4600, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.1}}
+        ]
+      }
+    },
+    {
+      "id": "simple_defense",
+      "name": "Simple Defense",
+      "category": "core",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "defense_focus",
+      "description": "Retour en defense avec balle dangereuse.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": -2200, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 0, "y": -3900, "z": 17}, "position_random": {"enabled": true, "min_x": -900, "max_x": 900, "min_y": -4200, "max_y": -3400, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.55}},
+          {"name": "orange_1", "team": 1, "position": {"x": 0, "y": -900, "z": 17}, "position_random": {"enabled": true, "min_x": -600, "max_x": 600, "min_y": -1300, "max_y": -600, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.3}}
+        ]
+      }
+    },
+    {
+      "id": "ball_center_random",
+      "name": "Ball Center Random",
+      "category": "core",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "Balle au centre avec variabilite laterale pour les voitures.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": -900, "y": -1800, "z": 17}, "position_random": {"enabled": true, "min_x": -1800, "max_x": 1800, "min_y": -2200, "max_y": -1500, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.45}},
+          {"name": "orange_1", "team": 1, "position": {"x": 900, "y": 1800, "z": 17}, "position_random": {"enabled": true, "min_x": -1800, "max_x": 1800, "min_y": 1500, "max_y": 2200, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.45}}
+        ]
+      }
+    },
+    {
+      "id": "wrong_side_recovery",
+      "name": "Wrong Side Recovery",
+      "category": "recovery",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "defense_focus",
+      "description": "Le bot est du mauvais cote de la balle et doit se reorganiser vite.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 300, "y": 900, "z": 17}, "position_random": {"enabled": true, "min_x": -800, "max_x": 800, "min_y": 400, "max_y": 1400, "min_z": 17, "max_z": 17}, "yaw": {"enabled": true, "value": 1.2, "min": 0.7, "max": 1.7}, "boost": {"enabled": false, "value": 0.55}},
+          {"name": "orange_1", "team": 1, "position": {"x": -300, "y": -900, "z": 17}, "position_random": {"enabled": true, "min_x": -800, "max_x": 800, "min_y": -1400, "max_y": -400, "min_z": 17, "max_z": 17}, "yaw": {"enabled": true, "value": -1.2, "min": -1.7, "max": -0.7}, "boost": {"enabled": false, "value": 0.55}}
+        ]
+      }
+    },
+    {
+      "id": "misaligned_recovery",
+      "name": "Misaligned Recovery",
+      "category": "recovery",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "Voitures mal orientees autour de la balle pour travailler la remise en ligne.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": -800, "y": -1200, "z": 17}, "position_random": {"enabled": true, "min_x": -1500, "max_x": -200, "min_y": -1800, "max_y": -700, "min_z": 17, "max_z": 17}, "yaw": {"enabled": true, "value": 2.7, "min": 1.9, "max": 3.1}, "boost": {"enabled": false, "value": 0.5}},
+          {"name": "orange_1", "team": 1, "position": {"x": 800, "y": 1200, "z": 17}, "position_random": {"enabled": true, "min_x": 200, "max_x": 1500, "min_y": 700, "max_y": 1800, "min_z": 17, "max_z": 17}, "yaw": {"enabled": true, "value": -2.5, "min": -3.1, "max": -1.9}, "boost": {"enabled": false, "value": 0.5}}
+        ]
+      }
+    },
+    {
+      "id": "wall_ball",
+      "name": "Wall Ball",
+      "category": "specialized",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "touch_focus",
+      "description": "Balle sur le mur pour exposer wall reads et transitions air/sol.",
+      "definition": {
+        "ball": {"position": {"x": 3600, "y": 0, "z": 260}, "position_random": {"enabled": true, "min_x": -3600, "max_x": 3600, "min_y": -1800, "max_y": 1800, "min_z": 160, "max_z": 450}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 3180, "y": -650, "z": 17}, "yaw": {"enabled": true, "value": 0.0, "min": -0.2, "max": 1.57}, "boost": {"enabled": false, "value": 0.6}},
+          {"name": "orange_1", "team": 1, "position": {"x": 3080, "y": 650, "z": 17}, "yaw": {"enabled": true, "value": 3.14, "min": -3.14, "max": -1.57}, "boost": {"enabled": false, "value": 0.6}}
+        ]
+      }
+    },
+    {
+      "id": "random_match_state",
+      "name": "Random Match State",
+      "category": "core",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "Etat match varie pour generaliser le comportement.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 220}, "position_random": {"enabled": true, "min_x": -3200, "max_x": 3200, "min_y": -4200, "max_y": 4200, "min_z": 93, "max_z": 420}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": -1300, "y": -1800, "z": 17}, "position_random": {"enabled": true, "min_x": -2800, "max_x": 2800, "min_y": -4200, "max_y": -600, "min_z": 17, "max_z": 650}, "yaw": {"enabled": true, "value": 0.4, "min": -3.14, "max": 3.14}, "boost": {"enabled": true, "value": 0.5, "min": 0.1, "max": 0.9}},
+          {"name": "orange_1", "team": 1, "position": {"x": 1200, "y": 1700, "z": 17}, "position_random": {"enabled": true, "min_x": -2800, "max_x": 2800, "min_y": 600, "max_y": 4200, "min_z": 17, "max_z": 650}, "yaw": {"enabled": true, "value": -2.4, "min": -3.14, "max": 3.14}, "boost": {"enabled": true, "value": 0.5, "min": 0.1, "max": 0.9}}
+        ]
+      }
+    },
+    {
+      "id": "better_random",
+      "name": "Better Random",
+      "category": "legacy",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "Etat aleatoire plus riche inspire de Necto.",
+      "definition": {
+        "ball": {"position": {"x": 300, "y": -700, "z": 420}, "position_random": {"enabled": true, "min_x": -3200, "max_x": 3200, "min_y": -4250, "max_y": 4250, "min_z": 93, "max_z": 1850}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": -1500, "y": -900, "z": 17}, "position_random": {"enabled": true, "min_x": -3200, "max_x": 3200, "min_y": -4250, "max_y": 4250, "min_z": 17, "max_z": 17}, "yaw": {"enabled": true, "value": 1.1, "min": -3.14, "max": 3.14}, "boost": {"enabled": true, "value": 0.5, "min": 0.0, "max": 1.0}},
+          {"name": "orange_1", "team": 1, "position": {"x": 900, "y": 600, "z": 17}, "position_random": {"enabled": true, "min_x": -3200, "max_x": 3200, "min_y": -4250, "max_y": 4250, "min_z": 17, "max_z": 17}, "yaw": {"enabled": true, "value": -0.9, "min": -3.14, "max": 3.14}, "boost": {"enabled": true, "value": 0.5, "min": 0.0, "max": 1.0}}
+        ]
+      }
+    },
+    {
+      "id": "legacy_training_state",
+      "name": "Legacy Training State",
+      "category": "legacy",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "touch_focus",
+      "description": "Collection de patterns historiques attaque/defense/centre issue de l'ancienne base.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 2816, "z": 70}, "position_random": {"enabled": true, "min_x": -500, "max_x": 500, "min_y": 2000, "max_y": 3200, "min_z": 70, "max_z": 90}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 0, "y": 0, "z": 17}, "position_random": {"enabled": true, "min_x": -500, "max_x": 500, "min_y": -1024, "max_y": 0, "min_z": 17, "max_z": 30}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.5}},
+          {"name": "orange_1", "team": 1, "position": {"x": 0, "y": 4260, "z": 17}, "position_random": {"enabled": true, "min_x": -500, "max_x": 500, "min_y": 1024, "max_y": 4260, "min_z": 17, "max_z": 30}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.5}}
+        ]
+      }
+    },
+    {
+      "id": "line_state",
+      "name": "Line State",
+      "category": "legacy",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "Voitures et balle reparties dans un couloir horizontal reglable.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 120, "z": 320}, "position_random": {"enabled": true, "min_x": -3800, "max_x": 3800, "min_y": -1200, "max_y": 1200, "min_z": 94, "max_z": 850}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": -600, "y": -2300, "z": 17}, "position_random": {"enabled": true, "min_x": -3800, "max_x": 3800, "min_y": -3500, "max_y": -1100, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.33}},
+          {"name": "orange_1", "team": 1, "position": {"x": 600, "y": 2300, "z": 17}, "position_random": {"enabled": true, "min_x": -3800, "max_x": 3800, "min_y": 1100, "max_y": 3500, "min_z": 17, "max_z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.33}}
+        ]
+      }
+    },
+    {
+      "id": "boomer_ball",
+      "name": "Boomer Ball",
+      "category": "specialized",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "touch_focus",
+      "description": "Preset tres energique avec balle rapide et haute.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 700}, "position_random": {"enabled": true, "min_x": -1500, "max_x": 1500, "min_y": -2500, "max_y": 2500, "min_z": 220, "max_z": 950}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": -1200, "y": -3200, "z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.85}},
+          {"name": "orange_1", "team": 1, "position": {"x": 1200, "y": 3200, "z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.85}}
+        ]
+      }
+    },
+    {
+      "id": "scenario_file",
+      "name": "Custom Scenario File",
+      "category": "custom",
+      "kind": "scenario",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "State defini dans un JSON editable depuis le dashboard.",
+      "definition": {
+        "ball": {"position": {"x": 0, "y": 0, "z": 93}},
+        "cars": [
+          {"name": "blue_1", "team": 0, "position": {"x": 0, "y": -2048, "z": 17}, "yaw": {"enabled": false, "value": 1.57}, "boost": {"enabled": false, "value": 0.33}},
+          {"name": "orange_1", "team": 1, "position": {"x": 0, "y": 2048, "z": 17}, "yaw": {"enabled": false, "value": -1.57}, "boost": {"enabled": false, "value": 0.33}}
+        ]
+      }
+    },
+    {
+      "id": "replay_csv",
+      "name": "Replay CSV Snapshot",
+      "category": "custom",
+      "kind": "replay_csv",
+      "enabled": true,
+      "supported_team_sizes": [1, 2, 3],
+      "reward_profile": "default",
+      "description": "State charge depuis les CSV historiques avec option miroir.",
+      "definition": {
+        "replay_folder": "DataState",
+        "mirrored": false
+      }
+    }
+  ]
+}

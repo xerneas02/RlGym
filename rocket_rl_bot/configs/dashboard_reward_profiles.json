@@ -1,0 +1,53 @@
+{
+  "active_profile": "default",
+  "profiles": [
+    {
+      "id": "default",
+      "name": "Default",
+      "weights": {
+        "goal_reward": 10.0,
+        "ball_goal_progress": 0.08,
+        "velocity_to_ball": 0.03,
+        "touch_reward": 0.55,
+        "defense_position": 0.015,
+        "boost_efficiency": 0.0003,
+        "ball_touch_reward": 0.0,
+        "distance_player_ball": 0.0,
+        "align_ball_goal": 0.0,
+        "save_reward": 0.0
+      }
+    },
+    {
+      "id": "touch_focus",
+      "name": "Touch Focus",
+      "weights": {
+        "goal_reward": 10.0,
+        "ball_goal_progress": 0.08,
+        "velocity_to_ball": 0.03,
+        "touch_reward": 0.7425000000000002,
+        "defense_position": 0.015,
+        "boost_efficiency": 0.0003,
+        "ball_touch_reward": 0.15,
+        "distance_player_ball": 0.0,
+        "align_ball_goal": 0.0,
+        "save_reward": 0.0
+      }
+    },
+    {
+      "id": "defense_focus",
+      "name": "Defense Focus",
+      "weights": {
+        "goal_reward": 10.0,
+        "ball_goal_progress": 0.08,
+        "velocity_to_ball": 0.03,
+        "touch_reward": 0.55,
+        "defense_position": 0.04,
+        "boost_efficiency": 0.0003,
+        "ball_touch_reward": 0.0,
+        "distance_player_ball": 0.0,
+        "align_ball_goal": 0.0,
+        "save_reward": 0.2
+      }
+    }
+  ]
+}

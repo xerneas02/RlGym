@@ -15,6 +15,7 @@ environment:
   timeout_steps: 450
   no_touch_timeout_steps: 150
   end_on_goal: true
+  goal_reset_to_kickoff: true
   copy_gamestate_every_step: false
 
 training:
@@ -34,6 +35,20 @@ training:
   checkpoint_interval_steps: 5000000
   log_interval_steps: 16384
   reward_component_log_interval_steps: 8192
+  opponent_mix:
+    train_blue_only: true
+    history_pool_size: 8
+    history_snapshot_interval_steps: 2000000
+    seed_history_with_current_policy: true
+    opponent_pool:
+      - name: self_play
+        weight: 0.35
+      - name: historical_self_play
+        weight: 0.25
+      - name: necto
+        weight: 0.20
+      - name: seer
+        weight: 0.20
 
 evaluation:
   num_matches: 16
@@ -58,3 +73,5 @@ runtime:
 paths:
   logs_dir: logs
   checkpoints_dir: checkpoints
+
+

@@ -1,15 +1,23 @@
 ﻿weights:
-  goal_reward: 10.0
-  ball_goal_progress: 0.08
-  velocity_to_ball: 0.03
-  touch_reward: 0.55
-  defense_position: 0.015
+  goal_reward: 12.0
+  ball_goal_progress: 0.18
+  velocity_to_ball: 0.05
+  touch_reward: 0.35
+  defense_position: 0.01
   boost_efficiency: 0.0003
+  ball_touch_reward: 0.0
+  distance_player_ball: 0.0
+  align_ball_goal: 0.0
+  save_reward: 0.0
 
 descriptions:
   goal_reward: "Sparse and dominant match objective. +1 if the agent's team scores, -1 if it concedes."
   ball_goal_progress: "Dense shaping from actual ball progress toward the opponent goal, reinforced by forward ball speed."
-  velocity_to_ball: "Light approach reward to stop indecision without turning the policy into pure ball chase."
-  touch_reward: "Rewards touches that improve ball progress, speed, and useful control; poor backward touches can be penalized."
+  velocity_to_ball: "Approach reward with kickoff commitment bonus so the bot attacks the ball decisively instead of hovering."
+  touch_reward: "Rewards purposeful contacts that create speed or progress, and penalizes soft neutral taps."
   defense_position: "Structural positioning reward: goal-side support in defense, behind-ball support in attack."
   boost_efficiency: "Very small pressure against wasteful boost holds, kept intentionally weak."
+  ball_touch_reward: "Legacy touch-focused signal with a light height bonus to distinguish stronger ball contacts."
+  distance_player_ball: "Legacy proximity shaping that rewards staying usefully connected to the ball."
+  align_ball_goal: "Legacy geometric alignment reward between the player, the ball and the attacking lane toward goal."
+  save_reward: "Legacy defensive touch reward for pushing the ball away from your own net after a threatened situation."

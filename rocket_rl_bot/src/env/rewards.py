@@ -24,11 +24,15 @@ class MinimalRewardFunction(RewardFunction):
         "touch_reward",
         "defense_position",
         "boost_efficiency",
+        "ball_touch_reward",
+        "distance_player_ball",
+        "align_ball_goal",
+        "save_reward",
     )
 
     def __init__(self, weights: Dict[str, float]) -> None:
         super().__init__()
-        self.weights = {name: float(weights[name]) for name in self.COMPONENT_NAMES}
+        self.weights = {name: float(weights.get(name, 0.0)) for name in self.COMPONENT_NAMES}
         self._prev_blue_score = 0
         self._prev_orange_score = 0
         self._prev_boost: Dict[int, float] = {}
@@ -81,6 +85,8 @@ class MinimalRewardFunction(RewardFunction):
             ball_goal_progress = self._shared_step["ball_to_orange_goal_delta"]
             previous_ball_to_goal = self._shared_step["ball_to_orange_goal_prev"]
             current_ball_to_goal = self._shared_step["ball_to_orange_goal"]
+            previous_ball_to_own_goal = self._shared_step["ball_to_blue_goal_prev"]
+            current_ball_to_own_goal = self._shared_step["ball_to_blue_goal"]
         else:
             opponent_goal = np.asarray(common_values.BLUE_GOAL_BACK, dtype=np.float32)
             own_goal = np.asarray(common_values.ORANGE_GOAL_BACK, dtype=np.float32)
@@ -88,12 +94,15 @@ class MinimalRewardFunction(RewardFunction):
             ball_goal_progress = self._shared_step["ball_to_blue_goal_delta"]
             previous_ball_to_goal = self._shared_step["ball_to_blue_goal_prev"]
             current_ball_to_goal = self._shared_step["ball_to_blue_goal"]
+            previous_ball_to_own_goal = self._shared_step["ball_to_orange_goal_prev"]
+            current_ball_to_own_goal = self._shared_step["ball_to_orange_goal"]
 
         car = player.car_data
         ball = state.ball
         car_position = np.asarray(car.position, dtype=np.float32)
         car_velocity = np.asarray(car.linear_velocity, dtype=np.float32)
         car_forward = np.asarray(car.forward(), dtype=np.float32)
+        speed_norm = float(np.linalg.norm(car_velocity) / CAR_MAX_SPEED)
         ball_position = np.asarray(ball.position, dtype=np.float32)
         ball_velocity = np.asarray(ball.linear_velocity, dtype=np.float32)
         rel_ball = ball_position - car_position
@@ -109,34 +118,44 @@ class MinimalRewardFunction(RewardFunction):
         facing_ball = float(np.dot(car_forward, direction_to_ball))
         proximity = 1.0 - min(rel_ball_norm, 4000.0) / 4000.0
         velocity_to_ball = (
-            0.60 * max(0.0, approach_speed)
-            + 0.25 * max(0.0, facing_ball)
-            + 0.15 * max(0.0, proximity)
+            0.50 * max(0.0, approach_speed)
+            + 0.20 * max(0.0, facing_ball)
+            + 0.10 * max(0.0, proximity)
+            + 0.20 * max(0.0, speed_norm) * max(0.0, facing_ball)
         )
         if approach_speed < -0.20:
-            velocity_to_ball += 0.30 * approach_speed
-        velocity_to_ball = float(np.clip(velocity_to_ball, -0.25, 1.0))
+            velocity_to_ball += 0.35 * approach_speed
+        kickoff_zone = abs(float(ball_position[0])) < 900.0 and abs(float(ball_position[1])) < 900.0 and rel_ball_norm < 2600.0
+        if kickoff_zone:
+            velocity_to_ball += 0.22 * max(0.0, speed_norm) * max(0.0, facing_ball)
+        velocity_to_ball = float(np.clip(velocity_to_ball, -0.35, 1.2))
 
         current_touch = bool(getattr(player, "ball_touched", False))
         previous_touch = self._prev_touch.get(player.car_id, False)
         touch_reward = 0.0
+        ball_touch_reward = 0.0
+        save_reward = 0.0
         if current_touch and not previous_touch:
             delta_distance = float(previous_ball_to_goal - current_ball_to_goal)
             delta_distance_norm = float(np.clip(delta_distance / 300.0, -1.0, 1.0))
-            air_bonus = 0.15 if float(ball_position[2]) > 250.0 else 0.0
-            close_control_bonus = 0.12 if rel_ball_norm < 650.0 else 0.0
-            grounded_control_bonus = 0.08 if float(ball_position[2]) < 220.0 and bool(player.on_ground) else 0.0
+            touch_ball_speed = float(np.linalg.norm(ball_velocity) / BALL_MAX_SPEED)
+            close_control_bonus = 0.08 if rel_ball_norm < 650.0 else 0.0
+            grounded_control_bonus = 0.06 if float(ball_position[2]) < 220.0 and bool(player.on_ground) else 0.0
             touch_reward = (
-                0.30
-                + 1.10 * max(0.0, delta_distance_norm)
-                + 0.75 * max(0.0, ball_goal_speed)
-                + air_bonus
+                0.55 * max(0.0, delta_distance_norm)
+                + 0.65 * max(0.0, ball_goal_speed)
+                + 0.35 * max(0.0, touch_ball_speed - 0.25)
                 + close_control_bonus
                 + grounded_control_bonus
             )
             if delta_distance_norm < -0.05 and ball_goal_speed < -0.05:
-                touch_reward = -0.25
-            touch_reward = float(np.clip(touch_reward, -0.35, 2.0))
+                touch_reward = -0.45
+            elif delta_distance_norm < 0.02 and ball_goal_speed < 0.02 and touch_ball_speed < 0.30:
+                touch_reward = min(touch_reward, -0.08)
+            touch_reward = float(np.clip(touch_reward, -0.50, 1.30))
+
+            ball_height_norm = float(np.clip((float(ball_position[2]) - 93.0) / 900.0, 0.0, 1.0))
+            ball_touch_reward = float(np.clip(0.55 + 0.25 * ball_height_norm + 0.20 * max(0.0, touch_ball_speed - 0.20), 0.0, 1.2))
 
         ball_on_own_half = bool(np.sign(float(ball_position[1])) == np.sign(float(own_goal[1])) and abs(float(ball_position[1])) > 300.0)
         own_goal_to_ball = float(np.linalg.norm(own_goal - ball_position))
@@ -154,7 +173,6 @@ class MinimalRewardFunction(RewardFunction):
 
         previous_boost = self._prev_boost.get(player.car_id, float(player.boost_amount))
         boost_delta = max(0.0, previous_boost - float(player.boost_amount))
-        speed_norm = float(np.linalg.norm(car_velocity) / CAR_MAX_SPEED)
         boost_pressed = float(previous_action[6]) if previous_action is not None and len(previous_action) >= 7 else 0.0
         boost_efficiency = 0.05 * max(0.0, speed_norm - 0.75)
         if boost_pressed > 0.5:
@@ -164,6 +182,20 @@ class MinimalRewardFunction(RewardFunction):
                 boost_efficiency -= 0.35
         boost_efficiency = float(np.clip(boost_efficiency, -1.0, 1.0))
 
+        distance_player_ball = float(np.clip(proximity, 0.0, 1.0))
+        align_raw = float(np.dot(direction_to_ball, goal_direction_unit))
+        align_ball_goal = float(np.clip(max(0.0, align_raw) * (0.35 + 0.65 * proximity) + 0.15 * max(0.0, facing_ball), 0.0, 1.0))
+
+        own_goal_to_ball_direction = ball_position - own_goal
+        own_goal_to_ball_unit = own_goal_to_ball_direction / (np.linalg.norm(own_goal_to_ball_direction) + 1e-6)
+        away_from_own_goal_speed = float(np.dot(ball_velocity, own_goal_to_ball_unit) / BALL_MAX_SPEED)
+        save_progress = float(np.clip((current_ball_to_own_goal - previous_ball_to_own_goal) / 300.0, -1.0, 1.0))
+        if current_touch and not previous_touch and ball_on_own_half:
+            save_reward = 0.65 * max(0.0, save_progress) + 0.35 * max(0.0, away_from_own_goal_speed)
+            if save_progress < -0.08 and away_from_own_goal_speed < -0.05:
+                save_reward = -0.35
+            save_reward = float(np.clip(save_reward, -0.50, 1.0))
+
         components = {
             "goal_reward": float(goal_component),
             "ball_goal_progress": float(ball_goal_progress),
@@ -171,6 +203,10 @@ class MinimalRewardFunction(RewardFunction):
             "touch_reward": float(touch_reward),
             "defense_position": float(defense_position),
             "boost_efficiency": float(boost_efficiency),
+            "ball_touch_reward": float(ball_touch_reward),
+            "distance_player_ball": float(distance_player_ball),
+            "align_ball_goal": float(align_ball_goal),
+            "save_reward": float(save_reward),
             "ball_touched": float(current_touch and not previous_touch),
             "speed": float(np.linalg.norm(car_velocity)),
             "ball_distance_to_goal": float(np.linalg.norm(direction_to_goal)),

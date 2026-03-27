@@ -1,0 +1,47 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rocket RL Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-kicker">Rocket RL Bot</div>
+        <h1>Dashboard</h1>
+        <p>Configuration d'entrainement, states JSON, rewards, replay training, runs, evaluation et export RLBot.</p>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="launch">Lancement</button>
+        <button class="nav-btn" data-view="states">State</button>
+        <button class="nav-btn" data-view="rewards">Reward</button>
+        <button class="nav-btn" data-view="replays">Entrainement Replays</button>
+        <button class="nav-btn" data-view="models">Runs & Models</button>
+        <button class="nav-btn" data-view="jobs">Jobs</button>
+      </nav>
+      <div class="sidebar-foot" id="sidebar-meta"></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="topbar-kicker">Interface locale</div>
+          <h2 id="view-title">Lancement</h2>
+        </div>
+        <div class="topbar-actions">
+          <button id="refresh-btn" class="ghost-btn">Rafraichir</button>
+        </div>
+      </header>
+      <section id="view-launch" class="view active"></section>
+      <section id="view-states" class="view"></section>
+      <section id="view-rewards" class="view"></section>
+      <section id="view-replays" class="view"></section>
+      <section id="view-models" class="view"></section>
+      <section id="view-jobs" class="view"></section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

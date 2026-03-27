@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
@@ -75,8 +75,6 @@ class CompactObservationBuilder(ObsBuilder):
         return None
 
     def build_obs(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> Any:
-        # Keep attack/defend goal semantics identical for both teams by
-        # expressing orange observations in the inverted frame.
         attack_goal = np.asarray(common_values.ORANGE_GOAL_BACK, dtype=np.float32)
         defend_goal = np.asarray(common_values.BLUE_GOAL_BACK, dtype=np.float32)
 
@@ -84,21 +82,37 @@ class CompactObservationBuilder(ObsBuilder):
             ball = state.inverted_ball
             boost_pads = getattr(state, "inverted_boost_pads", state.boost_pads)
             player_car = player.inverted_car_data
-            other_cars = [
-                other.inverted_car_data if hasattr(other, "inverted_car_data") else other.car_data
+            candidate_pairs = [
+                (
+                    other,
+                    other.inverted_car_data if hasattr(other, "inverted_car_data") else other.car_data,
+                )
                 for other in state.players
                 if other.car_id != player.car_id
             ]
-            other_players = [other for other in state.players if other.car_id != player.car_id]
         else:
             ball = state.ball
             boost_pads = state.boost_pads
             player_car = player.car_data
-            other_cars = [other.car_data for other in state.players if other.car_id != player.car_id]
-            other_players = [other for other in state.players if other.car_id != player.car_id]
+            candidate_pairs = [
+                (other, other.car_data)
+                for other in state.players
+                if other.car_id != player.car_id
+            ]
 
-        opponent_car: Optional[PhysicsObject] = other_cars[0] if other_cars else None
-        opponent_player: Optional[PlayerData] = other_players[0] if other_players else None
+        opponent_candidates = [
+            (other, car_data)
+            for other, car_data in candidate_pairs
+            if other.team_num != player.team_num
+        ]
+        selected_candidates = opponent_candidates or candidate_pairs
+        opponent_car: Optional[PhysicsObject] = None
+        opponent_player: Optional[PlayerData] = None
+        if selected_candidates:
+            opponent_player, opponent_car = min(
+                selected_candidates,
+                key=lambda item: float(np.linalg.norm(item[1].position - player_car.position)),
+            )
 
         rel_ball_position = ball.position - player_car.position
         rel_ball_velocity = ball.linear_velocity - player_car.linear_velocity
