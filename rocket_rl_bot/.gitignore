@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+
+venv/
+.venv/
+
+logs/
+checkpoints/
+replays_ssl_like/
+replay_bc_cache/
+xern_replays/
+
+.env
+.env.*
+
+.pytest_cache/
+.mypy_cache/

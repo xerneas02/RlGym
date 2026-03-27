@@ -57,10 +57,15 @@ def _resolve_evaluation_seed(evaluation_config: Dict) -> Optional[int]:
     return int(evaluation_config.get("seed", 1042))
 
 
+def _is_benchmark_protocol(protocol: str) -> bool:
+    normalized = str(protocol).lower()
+    return normalized == "benchmark" or "benchmark" in normalized
+
+
 def _build_evaluation_curriculum(curriculum_config: Dict, evaluation_config: Dict) -> Dict:
     protocol = str(evaluation_config.get("protocol", "benchmark")).lower()
     curriculum = copy.deepcopy(curriculum_config)
-    if protocol != "benchmark":
+    if not _is_benchmark_protocol(protocol):
         return curriculum
 
     weights = evaluation_config.get("benchmark_weights")

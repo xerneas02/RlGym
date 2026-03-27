@@ -1,10 +1,10 @@
 ﻿weights:
   goal_reward: 10.0
-  ball_goal_progress: 0.05
-  velocity_to_ball: 0.004
-  touch_reward: 0.35
-  defense_position: 0.012
-  boost_efficiency: 0.0002
+  ball_goal_progress: 0.08
+  velocity_to_ball: 0.03
+  touch_reward: 0.55
+  defense_position: 0.015
+  boost_efficiency: 0.0003
 
 descriptions:
   goal_reward: "Sparse and dominant match objective. +1 if the agent's team scores, -1 if it concedes."

@@ -17,8 +17,9 @@ except ImportError:  # pragma: no cover
 
 
 def build_terminal_conditions(config: Dict) -> List[object]:
-    return [
-        GoalScoredCondition(),
-        NoTouchTimeoutCondition(int(config["no_touch_timeout_steps"])),
-        TimeoutCondition(int(config["timeout_steps"])),
-    ]
+    conditions: List[object] = []
+    if bool(config.get("end_on_goal", True)):
+        conditions.append(GoalScoredCondition())
+    conditions.append(NoTouchTimeoutCondition(int(config["no_touch_timeout_steps"])))
+    conditions.append(TimeoutCondition(int(config["timeout_steps"])))
+    return conditions

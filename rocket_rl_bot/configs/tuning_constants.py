@@ -12,11 +12,12 @@ TRAINING_CONFIG_OVERRIDES = {
         "device": "auto",
     },
     "environment": {
-        "num_envs": 6,
-        "simulation_speed_multiplier": 1000,
-        "tick_skip": 10,
-        "timeout_steps": 600,
-        "no_touch_timeout_steps": 225,
+        "num_envs": 8,
+        "simulation_speed_multiplier": 100,
+        "tick_skip": 8,
+        "timeout_steps": 450,
+        "no_touch_timeout_steps": 150,
+        "end_on_goal": True,
     },
     "training": {
         "total_steps": 100_000_000,
@@ -41,11 +42,11 @@ TRAINING_CONFIG_OVERRIDES = {
 REWARD_OVERRIDES = {
     "weights": {
         "goal_reward": 10.0,
-        "ball_goal_progress": 0.05,
-        "velocity_to_ball": 0.004,
-        "touch_reward": 0.35,
-        "defense_position": 0.012,
-        "boost_efficiency": 0.0002,
+        "ball_goal_progress": 0.08,
+        "velocity_to_ball": 0.03,
+        "touch_reward": 0.55,
+        "defense_position": 0.015,
+        "boost_efficiency": 0.0003,
     },
 }
 

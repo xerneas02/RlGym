@@ -93,6 +93,7 @@ class MinimalRewardFunction(RewardFunction):
         ball = state.ball
         car_position = np.asarray(car.position, dtype=np.float32)
         car_velocity = np.asarray(car.linear_velocity, dtype=np.float32)
+        car_forward = np.asarray(car.forward(), dtype=np.float32)
         ball_position = np.asarray(ball.position, dtype=np.float32)
         ball_velocity = np.asarray(ball.linear_velocity, dtype=np.float32)
         rel_ball = ball_position - car_position
@@ -104,10 +105,17 @@ class MinimalRewardFunction(RewardFunction):
         ball_goal_progress = float(np.clip(ball_goal_progress + 0.35 * ball_goal_speed, -1.0, 1.0))
 
         direction_to_ball = rel_ball / (rel_ball_norm + 1e-6)
-        velocity_to_ball = float(np.dot(car_velocity, direction_to_ball) / CAR_MAX_SPEED)
-        velocity_to_ball = max(0.0, velocity_to_ball)
-        chase_distance_gate = float(np.clip(rel_ball_norm / 2500.0, 0.15, 1.0))
-        velocity_to_ball = float(np.clip(velocity_to_ball * chase_distance_gate, 0.0, 1.0))
+        approach_speed = float(np.dot(car_velocity, direction_to_ball) / CAR_MAX_SPEED)
+        facing_ball = float(np.dot(car_forward, direction_to_ball))
+        proximity = 1.0 - min(rel_ball_norm, 4000.0) / 4000.0
+        velocity_to_ball = (
+            0.60 * max(0.0, approach_speed)
+            + 0.25 * max(0.0, facing_ball)
+            + 0.15 * max(0.0, proximity)
+        )
+        if approach_speed < -0.20:
+            velocity_to_ball += 0.30 * approach_speed
+        velocity_to_ball = float(np.clip(velocity_to_ball, -0.25, 1.0))
 
         current_touch = bool(getattr(player, "ball_touched", False))
         previous_touch = self._prev_touch.get(player.car_id, False)
@@ -116,10 +124,19 @@ class MinimalRewardFunction(RewardFunction):
             delta_distance = float(previous_ball_to_goal - current_ball_to_goal)
             delta_distance_norm = float(np.clip(delta_distance / 300.0, -1.0, 1.0))
             air_bonus = 0.15 if float(ball_position[2]) > 250.0 else 0.0
-            touch_reward = 0.20 + 0.90 * max(0.0, delta_distance_norm) + 0.60 * max(0.0, ball_goal_speed) + air_bonus
+            close_control_bonus = 0.12 if rel_ball_norm < 650.0 else 0.0
+            grounded_control_bonus = 0.08 if float(ball_position[2]) < 220.0 and bool(player.on_ground) else 0.0
+            touch_reward = (
+                0.30
+                + 1.10 * max(0.0, delta_distance_norm)
+                + 0.75 * max(0.0, ball_goal_speed)
+                + air_bonus
+                + close_control_bonus
+                + grounded_control_bonus
+            )
             if delta_distance_norm < -0.05 and ball_goal_speed < -0.05:
-                touch_reward = -0.15
-            touch_reward = float(np.clip(touch_reward, -0.25, 1.6))
+                touch_reward = -0.25
+            touch_reward = float(np.clip(touch_reward, -0.35, 2.0))
 
         ball_on_own_half = bool(np.sign(float(ball_position[1])) == np.sign(float(own_goal[1])) and abs(float(ball_position[1])) > 300.0)
         own_goal_to_ball = float(np.linalg.norm(own_goal - ball_position))
@@ -139,11 +156,12 @@ class MinimalRewardFunction(RewardFunction):
         boost_delta = max(0.0, previous_boost - float(player.boost_amount))
         speed_norm = float(np.linalg.norm(car_velocity) / CAR_MAX_SPEED)
         boost_pressed = float(previous_action[6]) if previous_action is not None and len(previous_action) >= 7 else 0.0
-        boost_efficiency = speed_norm
+        boost_efficiency = 0.05 * max(0.0, speed_norm - 0.75)
         if boost_pressed > 0.5:
+            boost_efficiency += max(0.0, speed_norm - 0.55)
             boost_efficiency -= min(boost_delta * 4.0, 1.0)
             if speed_norm > 0.96:
-                boost_efficiency -= 0.4
+                boost_efficiency -= 0.35
         boost_efficiency = float(np.clip(boost_efficiency, -1.0, 1.0))
 
         components = {

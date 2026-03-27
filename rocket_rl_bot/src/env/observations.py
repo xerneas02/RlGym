@@ -75,6 +75,11 @@ class CompactObservationBuilder(ObsBuilder):
         return None
 
     def build_obs(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> Any:
+        # Keep attack/defend goal semantics identical for both teams by
+        # expressing orange observations in the inverted frame.
+        attack_goal = np.asarray(common_values.ORANGE_GOAL_BACK, dtype=np.float32)
+        defend_goal = np.asarray(common_values.BLUE_GOAL_BACK, dtype=np.float32)
+
         if player.team_num == common_values.ORANGE_TEAM:
             ball = state.inverted_ball
             boost_pads = getattr(state, "inverted_boost_pads", state.boost_pads)
@@ -85,16 +90,12 @@ class CompactObservationBuilder(ObsBuilder):
                 if other.car_id != player.car_id
             ]
             other_players = [other for other in state.players if other.car_id != player.car_id]
-            attack_goal = np.asarray(common_values.BLUE_GOAL_BACK, dtype=np.float32)
-            defend_goal = np.asarray(common_values.ORANGE_GOAL_BACK, dtype=np.float32)
         else:
             ball = state.ball
             boost_pads = state.boost_pads
             player_car = player.car_data
             other_cars = [other.car_data for other in state.players if other.car_id != player.car_id]
             other_players = [other for other in state.players if other.car_id != player.car_id]
-            attack_goal = np.asarray(common_values.ORANGE_GOAL_BACK, dtype=np.float32)
-            defend_goal = np.asarray(common_values.BLUE_GOAL_BACK, dtype=np.float32)
 
         opponent_car: Optional[PhysicsObject] = other_cars[0] if other_cars else None
         opponent_player: Optional[PlayerData] = other_players[0] if other_players else None

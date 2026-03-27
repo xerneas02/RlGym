@@ -12,8 +12,9 @@ environment:
   frame_rate: 120
   simulation_speed_multiplier: 100
   num_envs: 8
-  timeout_steps: 600
-  no_touch_timeout_steps: 225
+  timeout_steps: 450
+  no_touch_timeout_steps: 150
+  end_on_goal: true
   copy_gamestate_every_step: false
 
 training:

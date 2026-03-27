@@ -236,7 +236,6 @@ class PPOTrainer:
 
         flat_advantages = (flat_advantages - flat_advantages.mean()) / (flat_advantages.std() + 1e-8)
         total_samples = observations.shape[0]
-        batch_size = min(int(self.training_cfg["batch_size"]), total_samples)
         minibatch_size = int(self.training_cfg["minibatch_size"])
         epochs = int(self.training_cfg["epochs"])
 
@@ -252,13 +251,9 @@ class PPOTrainer:
         kls = []
 
         for _ in range(epochs):
-            if batch_size < total_samples:
-                batch_indices = np.random.choice(total_samples, size=batch_size, replace=False)
-            else:
-                batch_indices = np.arange(total_samples)
-            np.random.shuffle(batch_indices)
+            batch_indices = np.random.permutation(total_samples)
 
-            for start in range(0, len(batch_indices), minibatch_size):
+            for start in range(0, total_samples, minibatch_size):
                 indices = batch_indices[start : start + minibatch_size]
                 idx = torch.as_tensor(indices, dtype=torch.int64, device=self.device)
                 new_log_probs, entropy, values = self.model.evaluate_actions(
