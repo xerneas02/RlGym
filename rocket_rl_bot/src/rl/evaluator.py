@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import copy
 from dataclasses import dataclass
@@ -90,6 +90,15 @@ def _apply_evaluation_stage(env, evaluation_config: Dict, training_step: int) ->
         env.update_curriculum(0)
 
 
+def _resolve_opponent_mode(evaluation_config: Dict, opponent_mode: Optional[str]) -> str:
+    mode = str(opponent_mode or evaluation_config.get("scripted_opponent", "bronze_chaser")).lower()
+    if mode in {"bronze", "bronze_chaser", "scripted"}:
+        return "bronze"
+    if mode in {"self_play", "self", "mirror", "policy"}:
+        return "self_play"
+    raise ValueError(f"Unsupported evaluation opponent '{mode}'. Use one of: bronze, self_play.")
+
+
 def evaluate_policy(
     model: ActorCritic,
     env_config: Dict,
@@ -99,6 +108,7 @@ def evaluate_policy(
     num_matches: int,
     device: torch.device,
     training_step: int = 0,
+    opponent_mode: Optional[str] = None,
     render_2d: bool = False,
     render_fps: int = 15,
     save_trajectory_path: Optional[Path] = None,
@@ -110,7 +120,8 @@ def evaluate_policy(
     with preserved_random_state(seed=eval_seed, deterministic_torch=False):
         env = build_vector_env(env_config, reward_config, eval_curriculum, num_envs=1)
         _apply_evaluation_stage(env, evaluation_config, training_step)
-        opponent = BronzeChaserPolicy(OptimizedDiscreteAction())
+        resolved_opponent = _resolve_opponent_mode(evaluation_config, opponent_mode)
+        opponent = BronzeChaserPolicy(OptimizedDiscreteAction()) if resolved_opponent == "bronze" else None
         obs = env.reset()
 
         goals = []
@@ -129,8 +140,19 @@ def evaluate_policy(
                 blue_obs = torch.as_tensor(obs[0:1], dtype=torch.float32, device=device)
                 with torch.no_grad():
                     blue_action, _, _ = model.act(blue_obs, deterministic=True)
-                orange_action = opponent.act(obs[1]) if obs.shape[0] > 1 else int(blue_action.item())
-                obs, _, _, infos = env.step([int(blue_action.item()), int(orange_action)])
+
+                if obs.shape[0] > 1:
+                    if opponent is None:
+                        orange_obs = torch.as_tensor(obs[1:2], dtype=torch.float32, device=device)
+                        with torch.no_grad():
+                            orange_action, _, _ = model.act(orange_obs, deterministic=True)
+                        orange_action_value = int(orange_action.item())
+                    else:
+                        orange_action_value = int(opponent.act(obs[1]))
+                else:
+                    orange_action_value = int(blue_action.item())
+
+                obs, _, _, infos = env.step([int(blue_action.item()), orange_action_value])
 
                 frame = env.get_render_state(0)
                 if frame is None and infos:
@@ -141,6 +163,7 @@ def evaluate_policy(
                         "completed_matches": len(goals),
                         "target_matches": int(num_matches),
                         "protocol": str(evaluation_config.get("protocol", "benchmark")),
+                        "opponent": resolved_opponent,
                     }
                     if frames is not None:
                         frames.append(frame)
@@ -183,6 +206,7 @@ def evaluate_checkpoint(
     evaluation_config: Dict,
     device: torch.device,
     num_matches: int,
+    opponent_mode: Optional[str] = None,
     render_2d: bool = False,
     render_fps: int = 15,
     save_trajectory_path: Optional[Path] = None,
@@ -205,6 +229,7 @@ def evaluate_checkpoint(
         num_matches,
         device,
         training_step=training_step,
+        opponent_mode=opponent_mode,
         render_2d=render_2d,
         render_fps=render_fps,
         save_trajectory_path=save_trajectory_path,

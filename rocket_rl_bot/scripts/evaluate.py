@@ -28,6 +28,13 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path, default=None)
     parser.add_argument("--matches", type=int, default=None)
     parser.add_argument("--device", type=str, default="auto")
+    parser.add_argument(
+        "--opponent",
+        type=str,
+        choices=("config", "bronze", "self_play"),
+        default="config",
+        help="Choisit l'adversaire: config=valeur de la config, bronze=scripted, self_play=le meme modele des deux cotes.",
+    )
     parser.add_argument("--render-2d", action="store_true", help="Affiche une vue simplifiee du match en evaluation.")
     parser.add_argument("--fps", type=int, default=15, help="FPS cible pour le viewer 2D ou le replay.")
     parser.add_argument("--save-trajectory", type=Path, default=None, help="Sauvegarde les frames de l'evaluation en JSON.")
@@ -44,6 +51,11 @@ def main() -> None:
         print(f"[checkpoint] using latest checkpoint: {checkpoint}")
     num_matches = int(args.matches or config["evaluation"]["num_matches"])
     device = torch.device("cuda" if args.device in {"auto", "cuda"} and torch.cuda.is_available() else "cpu")
+
+    opponent_mode = None if args.opponent == "config" else args.opponent
+    resolved_from_config = str(config["evaluation"].get("scripted_opponent", "bronze_chaser"))
+    print(f"[evaluation] opponent mode: {opponent_mode or resolved_from_config}")
+
     metrics = evaluate_checkpoint(
         checkpoint,
         config["environment"],
@@ -52,6 +64,7 @@ def main() -> None:
         config["evaluation"],
         device,
         num_matches,
+        opponent_mode=opponent_mode,
         render_2d=args.render_2d,
         render_fps=int(args.fps),
         save_trajectory_path=args.save_trajectory,
