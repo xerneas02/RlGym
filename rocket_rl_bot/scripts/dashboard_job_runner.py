@@ -1,8 +1,9 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import copy
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -15,7 +16,7 @@ PROJECT_ROOT = bootstrap_project_root()
 
 
 def _load_payload(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def _write_dashboard_meta(run_name: str, payload: dict[str, Any]) -> None:
@@ -46,6 +47,12 @@ def _resolve_device(requested: str) -> torch.device:
     if requested == "cuda":
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def _sanitize_export_name(value: str) -> str:
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", str(value or "").strip())
+    safe = safe.strip("._")
+    return safe or "rlbot_policy"
 
 
 def run_train(payload: dict[str, Any]) -> None:
@@ -195,13 +202,20 @@ def run_export(payload: dict[str, Any]) -> None:
     from src.env.observations import CompactObservationBuilder
 
     checkpoint_path = Path(payload["checkpoint_path"]).resolve() if payload.get("checkpoint_path") else resolve_checkpoint_path(PROJECT_ROOT, payload["run_name"], payload.get("checkpoint_name"))
-    output_path = Path(payload.get("output_path") or (PROJECT_ROOT / ".." / "ZZeer" / "rlbot_policy.pt")).resolve()
+    requested_output = Path(payload.get("output_path") or (PROJECT_ROOT / ".." / "ZZeer" / "rlbot_policy.pt")).resolve()
     checkpoint = torch.load(checkpoint_path, map_location="cpu")
     parser = OptimizedDiscreteAction()
+    display_name = str(payload.get("display_name", checkpoint_path.parent.name))
+    if requested_output.exists() and requested_output.is_dir():
+        output_path = requested_output / f"{_sanitize_export_name(display_name)}.pt"
+    elif requested_output.suffix:
+        output_path = requested_output
+    else:
+        output_path = requested_output / f"{_sanitize_export_name(display_name)}.pt"
     export_payload = {
         "format_version": 1,
         "source_checkpoint": str(checkpoint_path),
-        "display_name": str(payload.get("display_name", checkpoint_path.parent.name)),
+        "display_name": display_name,
         "obs_dim": int(CompactObservationBuilder.OBSERVATION_DIM),
         "action_dim": int(parser.summary.size),
         "lookup_table": parser.lookup_table.astype("float32"),

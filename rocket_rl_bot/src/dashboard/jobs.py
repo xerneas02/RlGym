@@ -33,13 +33,22 @@ class JobManager:
         self.runtime_dir.mkdir(parents=True, exist_ok=True)
         self.jobs: dict[str, tuple[JobRecord, subprocess.Popen[Any] | None]] = {}
 
+    def _resolve_python_executable(self) -> str:
+        if os.name == "nt":
+            venv_python = self.project_root / "venv" / "Scripts" / "python.exe"
+        else:
+            venv_python = self.project_root / "venv" / "bin" / "python"
+        if venv_python.exists():
+            return str(venv_python)
+        return sys.executable
+
     def launch(self, kind: str, title: str, payload: dict[str, Any]) -> JobRecord:
         job_id = uuid.uuid4().hex[:12]
         payload_path = self.runtime_dir / f"{job_id}.json"
         log_path = self.runtime_dir / f"{job_id}.log"
         payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         command = [
-            sys.executable,
+            self._resolve_python_executable(),
             str(self.project_root / "scripts" / "dashboard_job_runner.py"),
             str(kind),
             "--payload",

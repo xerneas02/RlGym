@@ -1,0 +1,14 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+{
+  "goal_rate": 0.5,
+  "average_reward": 9.193263977766037,
+  "touches_per_game": 11.5625,
+  "time_of_possession": 0.533320912834879,
+  "concede_rate": 0.1875,
+  "average_speed": 870.0746072262406,
+  "matches_completed": 16.0,
+  "evaluation_seed": 1042.0
+}
